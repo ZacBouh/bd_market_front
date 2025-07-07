@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import DefaultIcon from '@mui/icons-material/Deblur';
 import {
+  Drawer,
   List,
   ListItem,
   ListItemButton,
@@ -18,16 +19,24 @@ function Sidebar() {
   const { isOpen, open, close } = useSidebar();
 
   return (
-    <SwipeableDrawer
+    <Drawer
       anchor="left"
       open={isOpen}
       onClose={close}
       onOpen={open}
       disableBackdropTransition={false}
-      swipeAreaWidth={30}
+      // swipeAreaWidth={30}
       data-pw="sidebar"
+      variant='persistent'
+      // elevation={2}
+      sx={{"& .MuiList-root": {
+        padding: 0,
+      } }}
     >
       <List sx={{ width: 250, pt: (theme) => `${theme.mixins.toolbar.minHeight}px` }}>
+        <ListItem>
+
+        </ListItem>
         {routes
           .filter((route) => route.title)
           .map(({ path, title, icon: Icon }) => (
@@ -39,7 +48,7 @@ function Sidebar() {
             </ListItem>
           ))}
       </List>
-    </SwipeableDrawer>
+    </Drawer>
   );
 }
 

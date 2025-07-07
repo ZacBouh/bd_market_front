@@ -27,7 +27,7 @@ function Header() {
 
   return (
     <AppBar
-      position="static"
+      position="relative"
       color="transparent"
       elevation={2}
       data-pw={`theme-${themeMode}`}

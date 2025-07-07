@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 
-const isSidebarOpenState = atom(false);
+const isSidebarOpenState = atom(true);
+const sideMenuWidth = atom(240)
 
-export { isSidebarOpenState };
+export { isSidebarOpenState, sideMenuWidth };

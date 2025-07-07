@@ -19,6 +19,9 @@ const sharedTheme = {
       },
     },
   },
+  custom: {
+    sideMenuWidth: 240
+  }
 };
 
 // to explore all the options, check out https://mui.com/material-ui/customization/default-theme/
@@ -37,8 +40,8 @@ const themes: Record<ThemeMode, ThemeOptions> = {
     palette: {
       mode: 'dark',
       background: {
-        default: '#111',
-        paper: '#171717',
+        default: '#0d0b1f',
+        paper: '#181424',
       },
     },
   }),
