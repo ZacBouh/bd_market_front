@@ -18,19 +18,19 @@ const routes: Routes = [
   {
     component: asyncComponentLoader(() => import('@/pages/Page1')),
     path: '/page-1',
-    title: 'Page 1',
+    title: 'Add Title',
     icon: GitHubIcon,
   },
   {
     component: asyncComponentLoader(() => import('@/pages/Page2')),
     path: '/page-2',
-    title: 'Page 2',
+    title: 'Add Author',
     icon: AddTaskIcon,
   },
   {
     component: asyncComponentLoader(() => import('@/pages/Page3')),
     path: '/page-3',
-    title: 'Page 3',
+    title: 'Add Publisher',
     icon: TerrainIcon,
   },
   {
