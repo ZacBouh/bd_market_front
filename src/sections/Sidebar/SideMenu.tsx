@@ -1,5 +1,7 @@
-import { Button, Drawer, List, ListItem, useTheme } from "@mui/material";
+import { Button, Drawer,  List, ListItem, ListItemButton, useTheme } from "@mui/material";
 import { useSidebar } from "./hooks";
+import { Link } from "react-router";
+import routes from "@/routes";
 
 export default function SideMenu(){
     const {isOpen, close: closeMenu} = useSidebar()
@@ -11,9 +13,17 @@ export default function SideMenu(){
     sx={{"& .MuiDrawer-paper ": { boxSizing: 'border-box', width: theme.custom.sideMenuWidth, backgroundColor: 'background.default'}}}
   >
     <List>
-      <ListItem>
-        Item 1 
-      </ListItem>
+        {routes.map(route => <ListItem key={route.id}>
+          <Link to={route.path} >
+          {/* <ListItemButton component={Link} > */}
+            
+          {route.icon ? <route.icon/> : null}
+          {route.title} 
+          {/* </ListItemButton> */}
+          </Link>
+        </ListItem>
+        )}
+      
       <ListItem>
         Item 2 
       </ListItem>

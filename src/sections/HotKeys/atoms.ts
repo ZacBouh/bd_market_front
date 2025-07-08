@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
 
-const isHotKeysDialogOpenState = atom(true);
+const isHotKeysDialogOpenState = atom(false);
 
 export { isHotKeysDialogOpenState };

@@ -19,20 +19,20 @@ function App() {
   return (
     <Fragment>
       <CssBaseline/>
-      <Box sx={{backgroundColor: 'red', padding: 0, margin: 0}} >
+      <BrowserRouter>
         <SideMenu/>
-      </Box>
-      <Box sx={{backgroundColor: 'background.paper',  transition: "margin-left 0.2s", marginLeft: `${sideMenuWidth}px`, padding: 0}} >
-        <Header/>
-        <div>
-        TextYellow
-        <Button
-          onClick={toggleSideMenu}
-        >Toggle</Button>
-        <HotKeys/>
-        </div>
-      </Box>
-    {/* </Box> */}
+        <Box sx={{backgroundColor: 'background.paper',  transition: "margin-left 0.2s", marginLeft: `${sideMenuWidth}px`, padding: 0}} >
+          <Header/>
+          <div>
+          TextYellow
+          <Button
+            onClick={toggleSideMenu}
+            >Toggle</Button>
+          <Pages/>
+          <HotKeys/>
+          </div>
+        </Box>
+      </BrowserRouter>
     </Fragment>
   );
 }
