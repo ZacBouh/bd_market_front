@@ -1,25 +1,35 @@
-import { Box, FormLabel, TextField, Typography } from '@mui/material';
-
+import { Box, FormLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { FullSizeCentered } from '@/components/styled';
 import { useState } from 'react';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs';
 
 function Page2() {
 
-  const [authorForm, setAuthorForm] = useState({
+  const skills = ['writer', 'penciler', 'inker', 'letterer', 'editor', 'creator']
+
+  const [authorForm, setAuthorForm] = useState<{
+    firstName: string,
+    lastName: string,
+    pseudo: string,
+    dateOfBirth: string,
+    dateOfDeath: string,
+    skills: string  | string[]
+  }>({
     firstName: '',
     lastName: '',
     pseudo: '',
     dateOfBirth: '',
     dateOfDeath: '',
-    skills: ''
+    skills: []
   })
+  console.log(authorForm)
   return (
     <>
       <meta name="title" content="Page 2" />
       <FullSizeCentered>
         <Typography variant="h3">Add an author</Typography>
         <Box component='form' onSubmit={() => console.log('added author')} >
-        <FormLabel component="legend" sx={{mb: 1}} >Author</FormLabel>
             <TextField 
               label="First Name"
               value={authorForm.firstName}
@@ -38,19 +48,38 @@ function Page2() {
               onChange={(event) => setAuthorForm((author) => ({...author, pseudo: event.target.value  }))}
               fullWidth
             />
-            <TextField 
+            <DatePicker 
               label="Date of birth"
-              value={authorForm.pseudo}
-              onChange={(event) => setAuthorForm((author) => ({...author, pseudo: event.target.value  }))}
-              fullWidth
+              value={authorForm.dateOfBirth ? dayjs(authorForm.dateOfBirth) : undefined}
+              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfBirth: dayjs(newDate).startOf('day').format('YYYY-MM-DD')})) }
             />
-            <TextField 
+            <DatePicker 
               label="Date of death"
-              value={authorForm.pseudo}
-              onChange={(event) => setAuthorForm((author) => ({...author, pseudo: event.target.value  }))}
-              fullWidth
+              value={authorForm.dateOfDeath ? dayjs(authorForm.dateOfDeath) : undefined}
+              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfDeath: dayjs(newDate).startOf('day').format('YYYY-MM-DD')  }))}
             />
-
+            <Select
+              multiple
+              displayEmpty
+              value={authorForm.skills}
+              onChange={(event) => setAuthorForm(author => ({...author, skills: event?.target.value})) }
+              renderValue={(selected) => {
+                console.log("selected : ", selected)
+                if(selected.length === 0){
+                  console.log("we are in this case")
+                  return <Typography sx={{color: 'text.secondary'}} >Select Skills</Typography>
+                } 
+                return (selected as unknown as Array<string>).join(', ')
+              }}
+            >
+              <MenuItem disabled value="">Skills</MenuItem>
+              {skills.map(skill => <MenuItem
+                key={skill}
+                value={skill}
+              >
+                {skill}
+              </MenuItem>)}
+            </Select>
         </Box>
       </FullSizeCentered>
     </>
