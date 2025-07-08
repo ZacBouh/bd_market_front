@@ -12,8 +12,8 @@ function Page2() {
     firstName: string,
     lastName: string,
     pseudo: string,
-    dateOfBirth: string,
-    dateOfDeath: string,
+    dateOfBirth: string | null,
+    dateOfDeath: string | null,
     skills: string  | string[]
   }>({
     firstName: '',
@@ -23,7 +23,7 @@ function Page2() {
     dateOfDeath: '',
     skills: []
   })
-  console.log(authorForm)
+  console.log(authorForm.dateOfBirth)
   return (
     <>
       <meta name="title" content="Page 2" />
@@ -50,13 +50,13 @@ function Page2() {
             />
             <DatePicker 
               label="Date of birth"
-              value={authorForm.dateOfBirth ? dayjs(authorForm.dateOfBirth) : undefined}
-              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfBirth: dayjs(newDate).startOf('day').format('YYYY-MM-DD')})) }
+              value={authorForm.dateOfBirth ? dayjs(authorForm.dateOfBirth) : null}
+              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfBirth: dayjs(newDate).isValid() ? dayjs(newDate).startOf('day').format('YYYY-MM-DD') : ''})) }
             />
             <DatePicker 
               label="Date of death"
-              value={authorForm.dateOfDeath ? dayjs(authorForm.dateOfDeath) : undefined}
-              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfDeath: dayjs(newDate).startOf('day').format('YYYY-MM-DD')  }))}
+              value={authorForm.dateOfDeath ? dayjs(authorForm.dateOfDeath) : null}
+              onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfDeath: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
             />
             <Select
               multiple
