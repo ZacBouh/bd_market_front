@@ -5,5 +5,14 @@ const authors = atomWithStorage<any[]>('authors', [])
 
 export function useAuthors(){
     const [authorsList, setAuthorsList] = useAtom(authors)
-    return {authorsList, setAuthorsList}
+    const addAuthor = (newAuthor : any) => {
+        if (newAuthor.firstName || newAuthor.pseudo){
+            const id = crypto.randomUUID()
+            const newAuthorWithId = {...newAuthor, id}
+            setAuthorsList((authorsList) => [...authorsList, newAuthorWithId ])
+            return newAuthorWithId
+        }
+        return ''
+    }
+    return {authorsList, setAuthorsList, addAuthor}
 }   

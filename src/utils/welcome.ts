@@ -25,7 +25,7 @@ function welcome() {
     'padding: 10px',
   ].join(';');
 
-  console.log(`%c=== ${title} ===`, styles);
+  console.log(`%c=== ${'Hello'} ===`, styles);
 }
 
 export default welcome;

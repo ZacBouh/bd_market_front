@@ -1,16 +1,17 @@
 import { Typography } from '@mui/material';
-
 import { FullSizeCentered } from '@/components/styled';
+import PublisherForm from '@/components/Forms/PublisherForm/PublisherForm';
 
-function Page3() {
+function PublisherPage() {
   return (
     <>
       <meta name="title" content="Page 3" />
       <FullSizeCentered>
-        <Typography variant="h3">Page 3</Typography>
+        <Typography variant="h3">Add a Publisher</Typography>
+        <PublisherForm/>
       </FullSizeCentered>
     </>
   );
 }
 
-export default Page3;
+export default PublisherPage;

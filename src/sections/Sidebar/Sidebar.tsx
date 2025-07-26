@@ -23,8 +23,6 @@ function Sidebar() {
       anchor="left"
       open={isOpen}
       onClose={close}
-      onOpen={open}
-      disableBackdropTransition={false}
       // swipeAreaWidth={30}
       data-pw="sidebar"
       variant='persistent'

@@ -1,35 +1,34 @@
-import { Box, Button, FormControl, FormLabel, TextField, Typography } from '@mui/material';
-import { FullSizeCentered } from '@/components/styled';
+import { Box, Button, FormControl, FormLabel, TextField } from '@mui/material';
 import { newTitleForm } from './atom';
 import { useAtom } from 'jotai';
 import { useAuthors } from '@/hooks/useAuthor';
+import { useTitles } from '@/hooks/useTitle';
 
-function Page1() {
-  const initialState = {
-    title: '',
-    author: {
-      firstName: '',
-      lastName: '',
-      pseudo: ''
-    },
-    publisher: '',
-  }
-  const [titleForm, setTitleForm] = useAtom(newTitleForm)
-  const {authorsList, setAuthorsList} = useAuthors()  
-  
-  console.log(authorsList)
 
-  return (
-    <>
-      <meta name="title" content="Page 1" />
-      
-      <FullSizeCentered>
-        <Typography variant="h3">Add a title</Typography>
-        <Box component={'form'} sx={{display: 'grid', gap: 3}} onSubmit={(event) => {
+const TitleForm = () => {
+    const initialState = {
+        title: '',
+        author: {
+            firstName: '',
+            lastName: '',
+            pseudo: ''
+        },
+        publisher: '',
+    }
+    const [titleForm, setTitleForm] = useAtom(newTitleForm)
+    const {authorsList, addAuthor} = useAuthors()  
+    const { titlesList, setTitlesList } = useTitles()
+    
+    return  <Box component='form'  onSubmit={(event) => {
           event.preventDefault()
-          setAuthorsList(authorsList => [...authorsList, titleForm.author])
+          const authorId = addAuthor(titleForm.author).id
+          setTitlesList(titlesList => [...titlesList, {...titleForm, author: authorId}])
           console.log("Form submitted", titleForm) 
-        }}>
+          console.log("Titles", titlesList)
+          console.log("Authors",authorsList) 
+        }}
+          sx={{width:'100%'}}
+        >
           <TextField 
             label="Title"
             value={titleForm.title}
@@ -37,7 +36,7 @@ function Page1() {
             required
             fullWidth
           />
-          <FormControl component='fieldset' sx={{display: 'grid', gap: 1}} fullWidth>
+          <FormControl component='fieldset'  fullWidth>
             <FormLabel component="legend" sx={{mb: 1}} >Author</FormLabel>
             <TextField 
               label="First Name"
@@ -70,9 +69,6 @@ function Page1() {
           <Button type='submit' >Ajouter</Button>
           </Box>
         </Box>
-      </FullSizeCentered>
-    </>
-  );
 }
 
-export default Page1;
+export default TitleForm
