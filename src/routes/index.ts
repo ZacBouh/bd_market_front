@@ -40,6 +40,12 @@ const routes: Routes = [
     icon: BugReportIcon,
   },
   {
+    component: asyncComponentLoader(() => import('@/pages/SubscribePage')),
+    path: '/Subscribe',
+    title: 'Subscribe',
+    icon: BugReportIcon,
+  },
+  {
     component: asyncComponentLoader(() => import('@/pages/NotFound')),
     path: '*',
   },
