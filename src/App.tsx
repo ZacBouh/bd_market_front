@@ -24,14 +24,11 @@ function App() {
         <SideMenu/>
         <Box sx={{backgroundColor: 'background.paper',  transition: "margin-left 0.2s", marginLeft: `${sideMenuWidth}px`, padding: 0}} >
           <Header/>
-          <div>
-          TextYellow
           <Button
             onClick={toggleSideMenu}
-            >Toggle</Button>
+            >Open</Button>
           <Pages/>
           <HotKeys/>
-          </div>
         </Box>
       </BrowserRouter>
       </LocalizationProvider>

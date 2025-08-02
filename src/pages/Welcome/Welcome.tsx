@@ -16,7 +16,6 @@ function Welcome() {
 
   const width = isPortrait ? '40%' : '30%';
   const height = isPortrait ? '30%' : '40%';
-  console.log(getDefaultStore())
 
   return (
     <>

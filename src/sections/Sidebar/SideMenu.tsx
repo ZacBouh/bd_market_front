@@ -19,11 +19,7 @@ export default function SideMenu(){
             {route.title} 
           </ListItemButton>
         </ListItem>
-        )}
-      
-      <ListItem>
-        Item 2 
-      </ListItem>
+        )}      
       <Button
         onClick={closeMenu}
       >
