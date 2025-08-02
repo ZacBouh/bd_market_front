@@ -10,6 +10,7 @@ type PathRouteCustomProps = {
   component: FC;
   icon?: FC<SvgIconProps>;
   routes?: Routes;
+  isProtected?: boolean
 };
 
 export type { Routes };

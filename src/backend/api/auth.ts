@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { store, userAtom } from '@/store'
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
 type LoginCredentials = {
@@ -29,8 +31,9 @@ async function registerUser(payload : NewUser) : Promise<CreatedUser>{
 
 async function loginUser(payload : LoginCredentials) : Promise<LoggedInUser> {
     const response = await axios.post<LoggedInUser>(`${apiBaseUrl}/api/login_check`, payload)
+    store.set(userAtom, response.data)
     return response.data
 }
 
 export { registerUser, loginUser }
-export type {CreatedUser, NewUser, LoginCredentials}
+export type {CreatedUser, NewUser, LoginCredentials, LoggedInUser}

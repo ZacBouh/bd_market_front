@@ -3,6 +3,7 @@ import { Route } from 'react-router';
 import type { Theme } from '@mui/material';
 
 import { objectInsertIf } from '@/utils/insertIf';
+import { wrapWithGuard } from '@/components/AuthGuard/wrapWithGuard';
 
 import { Routes } from '../types';
 
@@ -13,12 +14,12 @@ function getPageHeight(theme: Theme) {
 }
 
 function renderRoutes(routes: Routes) {
-  return routes.map(({ path, component: Component, routes: nestedRoutes }) => {
+  return routes.map(({ path, component: Component, routes: nestedRoutes, isProtected }) => {
     return (
       <Route
         key={path}
         path={path}
-        element={<Component />}
+        element={wrapWithGuard(Component, isProtected)}
         {...objectInsertIf(nestedRoutes, {
           children: nestedRoutes && renderRoutes(nestedRoutes as Routes),
         })}
