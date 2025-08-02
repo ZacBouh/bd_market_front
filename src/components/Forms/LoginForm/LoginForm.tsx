@@ -1,5 +1,6 @@
 import { Box, Button,  TextField } from '@mui/material';
 import { useState } from 'react';
+import { loginUser } from '@/backend/api/auth';
 
 const LoginForm = () => {
     const initialState = {
@@ -8,9 +9,11 @@ const LoginForm = () => {
     }
     const [loginForm, setLoginForm] = useState(initialState)
     
-    return <Box component='form'  onSubmit={(event) => {
+    return <Box component='form'  onSubmit={async (event) => {
             event.preventDefault()
-            console.log("Form submitted", loginForm) 
+            console.log("Form submitted", loginForm)
+            const loginResponse = await loginUser(loginForm)
+            console.log(loginResponse)
         }}
           sx={{width:'100%'}}
         >
