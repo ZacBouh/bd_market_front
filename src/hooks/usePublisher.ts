@@ -1,9 +1,7 @@
 import {  useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
-
-const publishers = atomWithStorage<any[]>('publishers', [])
+import { publishersAtom } from "@/store";
 
 export function usePublishers(){
-    const [publishersList, setPublishersList] = useAtom(publishers)
-    return { publishersList, setPublishersList}
+    const [publishersList, setPublishersList] = useAtom(publishersAtom)
+    return  {publishersList, setPublishersList}
 }   

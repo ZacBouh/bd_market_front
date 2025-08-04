@@ -19,11 +19,11 @@ const createPublisher = async (newPublisher : NewPublisher) => {
     return response.data
 }
 
-const getPublishers = async () => {
-    const response = await api.get<CreatedPublisher[]>('/publishers')
-    store.set(publishersAtom, response.data)
-    console.log('retrieved data')
-    return response.data
+const getPublishers = () => {
+    const controller = new AbortController()
+    api.get<CreatedPublisher[]>('/publishers', {signal: controller.signal})
+    .then(response => store.set(publishersAtom, response.data))
+    return () => controller.abort()
 }
 
 export { createPublisher, getPublishers }

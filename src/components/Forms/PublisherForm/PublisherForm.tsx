@@ -5,20 +5,28 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { usePublishers } from '@/hooks/usePublisher';
 import { createPublisher } from '@/backend/api/publishers';
-import type { NewPublisher } from '@/backend/api/publishers';
+import type { CreatedPublisher, NewPublisher } from '@/backend/api/publishers';
+import { useEffect } from 'react';
 
-const PublisherForm = () => {
+type PublisherFormProps = {
+    prePopulatedName?: string,
+    onSuccess?: (createdPublisher? : CreatedPublisher) => void
+}
+
+const PublisherForm = (props : PublisherFormProps) => {
+    const {prePopulatedName, onSuccess} = props
     const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
-    const {publishersList, setPublishersList} = usePublishers()  
-    const skills = ['France', 'USA', 'Japan', 'Italy', 'Belgium']
-    console.log("Publishers",publishersList)
+    const {publishersList} = usePublishers()
+    useEffect(() => {
+        prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
+    } 
+     ,[prePopulatedName])
     
     return <Box component='form'  onSubmit={async (event) => {
             event.preventDefault()
-            setPublishersList(publishersList => [...publishersList, publisherForm])
             console.log("Form submitted", publisherForm)
             const createdPublisher = await createPublisher(publisherForm)
-            console.log(createdPublisher)
+            onSuccess && onSuccess(createdPublisher)
         }}
           sx={{width:'100%'}}
         >
@@ -73,3 +81,4 @@ const PublisherForm = () => {
 }
 
 export default PublisherForm
+export type {PublisherFormProps}
