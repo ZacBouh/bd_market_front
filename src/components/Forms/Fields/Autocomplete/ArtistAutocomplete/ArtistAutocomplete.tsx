@@ -5,14 +5,14 @@ import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, Auto
 import { atom, useAtom } from "jotai"
 import { useEffect } from "react"
 
-const artistAutoCompleteAtom = atom<artistAutoCompleteState>({
+const artistAutoCompleteAtom = atom<ArtistAutoCompleteState>({
     inputValue: '',
     prevInputValue: '',
     value: null,
     modalOpen: false
 })
 
-type artistAutoCompleteState = {
+type ArtistAutoCompleteState = {
     inputValue : string,
     prevInputValue: string,
     value: CreatedArtist | null,
@@ -40,26 +40,28 @@ const CreateArtistModal = (props : CreateArtistModalProps ) => {
     </Modal>
 }
 const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
-    const {required, onChange} = props
+    const {required, onChange, sx} = props
     const label = "Artist"
     const {artistsList} = useArtists()
     useEffect( () => getArtists() , [])
     const createArtistOption = {...artistsList[0], id: 0, pseudo: '', firstName: 'Add New Artist', lastName: ''}
     const [state, setState] = useAtom(artistAutoCompleteAtom)
-   return <Box>
+   return <Box sx={sx}>
        <Autocomplete
+            disableClearable={false}
             inputValue={state.inputValue}
             value={state.value}
             options={artistsList}
             getOptionLabel={option => `${option?.firstName} ${option?.lastName}${option?.pseudo && ` aka ${option?.pseudo}`}`}
             renderInput={(params) => <TextField {...params} required={required} label={label}/>}
             renderOption={(props, option) => {
+                const {key, ...itemProps} = props
                 if(option.id === 0){
-                    return <li {...props} key={option.id} style={{fontStyle:'italic'}}>
+                    return <li {...itemProps} key={key} style={{fontStyle:'italic'}}>
                         {option.firstName}        
                     </li>
                 }
-                return <li {...props} key={option.id}>{option?.firstName} {option?.lastName} {option?.pseudo && `aka ${option.pseudo}`}</li>
+                return <li {...itemProps} key={key}>{option?.firstName} {option?.lastName} {option?.pseudo && `aka ${option.pseudo}`}</li>
             }}
             filterOptions={(options, state) => {
                 const filtered = options.filter((option) => `${option?.firstName} ${option?.lastName} ${option?.pseudo && option.pseudo}`.toLowerCase().includes(state.inputValue.toLowerCase()))
@@ -71,10 +73,10 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
                     setState(state => ({...state, modalOpen: true, inputValue: state.prevInputValue}))
                     return
                 }
-                option && setState(state => ({
+                setState(state => ({
                     ...state,
-                    prevInputValue: getArtistOptionLabel(option),
-                    inputValue: getArtistOptionLabel(option),
+                    prevInputValue: option ? getArtistOptionLabel(option) : '',
+                    inputValue: option ? getArtistOptionLabel(option) : '',
                 }))
                 onChange && onChange(_, option, ...args)
             }}

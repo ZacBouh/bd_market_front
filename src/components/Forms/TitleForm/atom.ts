@@ -1,13 +1,23 @@
+import { CreatedArtist } from "@/backend/api/artists";
+import { CreatedPublisher } from "@/backend/api/publishers";
 import { atom } from "jotai";
 
-const newTitleForm = atom({
-    title: '',
-    author: {
-      firstName: '',
-      lastName: '',
-      pseudo: ''
-    },
-    publisher: '',
-  })
+type NewTitleFormState = {
+    title: string,
+    artists : CreatedArtist['id'][],
+    publisher: CreatedPublisher['id'] | null, 
+    description: string
+} 
 
-export { newTitleForm }
+const newTitleFormInitialState = {
+      title: '',
+      artists: [],
+      publisher: null,
+      description: ''
+  }
+
+
+
+const newTitleForm = atom<NewTitleFormState>(newTitleFormInitialState)
+
+export { newTitleForm, newTitleFormInitialState }

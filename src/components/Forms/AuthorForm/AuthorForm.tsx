@@ -6,6 +6,7 @@ import { createArtist, CreatedArtist } from '@/backend/api/artists';
 import { useAtom } from 'jotai';
 import { artistsSkillsAtom } from '@/store';
 import { getArtistsSkills } from '@/backend/api/artists';
+import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkillsSelect';
 
 export type AuthorFormProps = {
   prePopulatedName?: string,
@@ -89,7 +90,7 @@ const AuthorForm = (props : AuthorFormProps) => {
           value={authorForm.dateOfDeath ? dayjs(authorForm.dateOfDeath) : null}
           onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfDeath: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
         />
-        <Select
+        {/* <Select
           multiple
           displayEmpty
           value={authorForm.skills}
@@ -101,6 +102,12 @@ const AuthorForm = (props : AuthorFormProps) => {
             } 
             return (selected as unknown as Array<string>).join(', ')
           }}
+        > */}
+        <ArtistSkillsSelect
+          multiple
+          displayEmpty
+          value={authorForm.skills}
+          onChange={(event) => setAuthorForm(author => ({...author, skills: Array.isArray(event?.target.value) ? event?.target.value : [event?.target.value] })) }
         >
           <MenuItem disabled value="">Skills</MenuItem>
           {skills.map(skill => <MenuItem
@@ -109,7 +116,7 @@ const AuthorForm = (props : AuthorFormProps) => {
           >
             {skill}
           </MenuItem>)}
-        </Select>
+        </ArtistSkillsSelect>
         <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setAuthorForm(initialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>
