@@ -81,11 +81,11 @@ const PublisherAutocomplete = (props : PublisherAutocompleteProps ) => {
                 setModalOpen(false)
             }}
             prePopulatedName={prevInputValue}
-            onPublisherCreated={(NewPublisher) =>{
-                if(NewPublisher) {
-                    setInputValue(NewPublisher.name)
-                    setValue(NewPublisher)
-                    onChange && onChange(null, NewPublisher, 'selectOption', {option: NewPublisher})
+            onPublisherCreated={(newPublisher) =>{
+                if(newPublisher) {
+                    setInputValue(newPublisher.name)
+                    setValue(newPublisher)
+                    onChange && onChange(null, newPublisher, 'selectOption', {option: newPublisher})
                     setModalOpen(false)
                 }     
             }}

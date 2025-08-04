@@ -1,5 +1,5 @@
 import { api } from "./api";
-import { artistsSkillsAtom, store } from "@/store";
+import { artistsAtom, artistsSkillsAtom, store } from "@/store";
 
 type NewArtist = {
     "firstName": string | null,
@@ -19,12 +19,24 @@ const createArtist = async (payload : NewArtist) => {
     return response.data
 }
 
-const getArtistsSkills = async () => {
-    const response = await api.get<{skills: string[]}>('/skills')
-    store.set(artistsSkillsAtom, response.data.skills)
-    return response.data
+const getArtistsSkills = () => {
+    const controller = new AbortController()
+    api.get<{skills: string[]}>('/skills', {signal: controller.signal})
+    .then(response => store.set(artistsSkillsAtom, response.data.skills))
+    return () => controller.abort()
+}
+ 
+const getArtists = () => {
+    const controller = new AbortController()
+    api.get<CreatedArtist[]>('/artists', {signal: controller.signal})
+    .then(response => {
+        store.set(artistsAtom, response.data)
+        console.log('retrieved artists : ', response.data)
+    })
+    return () => controller.abort()
 }
 
-export {createArtist, getArtistsSkills}
+
+export {createArtist, getArtistsSkills, getArtists}
 
 export type { CreatedArtist }

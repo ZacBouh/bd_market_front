@@ -4,6 +4,7 @@ import { useAtom } from 'jotai';
 import { useAuthors } from '@/hooks/useAuthor';
 import { useTitles } from '@/hooks/useTitle';
 import PublisherAutocomplete from '../Fields/Autocomplete/PublisherAutocomplete/PublisherAutocomplete';
+import ArtistAutocomplete from '../Fields/Autocomplete/ArtistAutocomplete/ArtistAutocomplete';
 
 const TitleForm = () => {
     const initialState = {
@@ -39,24 +40,13 @@ const TitleForm = () => {
           <FormControl component='fieldset'  fullWidth>
             <FormLabel component="legend" sx={{mb: 1}} >Author</FormLabel>
             <TextField 
-              label="First Name"
+              label="Description"
               value={titleForm.author.firstName}
               onChange={(event) => setTitleForm((title) => ({...title, author: {...title.author, firstName: event.target.value}}))}
               fullWidth
             />
-            <TextField 
-              label="Last Name"
-              value={titleForm.author.lastName}
-              onChange={(event) => setTitleForm((title) => ({...title, author: {...title.author, lastName: event.target.value}}))}
-              fullWidth
-            />
-            <TextField 
-              label="Pseudo"
-              value={titleForm.author.pseudo}
-              onChange={(event) => setTitleForm((title) => ({...title, author: {...title.author, pseudo: event.target.value}}))}
-              fullWidth
-            />
           </FormControl>
+          <ArtistAutocomplete required />
           <PublisherAutocomplete
             onChange={(_, publisher) => setTitleForm(title => ({...title, publisher: publisher?.id.toString() ?? ''})) }
             required

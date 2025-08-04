@@ -2,17 +2,18 @@ import { Box, Button,  MenuItem, Select, TextField, Typography } from '@mui/mate
 import { useEffect, useState } from 'react';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-import { useAuthors } from '@/hooks/useAuthor';
-import { createArtist } from '@/backend/api/artists';
+import { createArtist, CreatedArtist } from '@/backend/api/artists';
 import { useAtom } from 'jotai';
 import { artistsSkillsAtom } from '@/store';
 import { getArtistsSkills } from '@/backend/api/artists';
 
-const AuthorForm = () => {
-    useEffect(() => {
-      getArtistsSkills()
-    },[])
-    const {addAuthor} = useAuthors()
+export type AuthorFormProps = {
+  prePopulatedName?: string,
+  onSuccess?: (createdArtist?: CreatedArtist) => void
+}
+
+const AuthorForm = (props : AuthorFormProps) => {
+    const {prePopulatedName, onSuccess} = props
     const [skills] =  useAtom(artistsSkillsAtom)
     const initialState = {
       firstName: '',
@@ -22,7 +23,7 @@ const AuthorForm = () => {
       dateOfDeath: '',
       skills: []
     } 
-
+    
     const [authorForm, setAuthorForm] = useState<{
       firstName: string,
       lastName: string,
@@ -31,13 +32,28 @@ const AuthorForm = () => {
       dateOfDeath: string | null,
       skills: string[]
     }>(initialState)
-
+    
+    useEffect(() => {
+      if(prePopulatedName){
+        const names = prePopulatedName.trim().split(' ')
+        const sliceIndex = names.length >= 3 ? 2 : 1
+        const firstName = names.slice(0, sliceIndex).join(' ')
+        const lastName = names.slice(sliceIndex).join(' ')
+        setAuthorForm(form => ({
+          ...form,
+          firstName,
+          lastName
+        }))   
+      }
+      return getArtistsSkills()
+    },[prePopulatedName])
+    console.log(authorForm)
     const handleSubmit = async (event :  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
-      addAuthor(authorForm)
       console.log("Form submitted", authorForm) 
       const createdAuthor = await createArtist(authorForm)
       console.log(createdAuthor)
+      onSuccess && onSuccess(createdAuthor)
     }
 
     return <Box component='form' onSubmit={handleSubmit} 
