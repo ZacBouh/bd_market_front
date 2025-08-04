@@ -1,12 +1,19 @@
 import { Box, Button,  MenuItem, Select, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
 import { useAuthors } from '@/hooks/useAuthor';
+import { createArtist } from '@/backend/api/artists';
+import { useAtom } from 'jotai';
+import { artistsSkillsAtom } from '@/store';
+import { getArtistsSkills } from '@/backend/api/artists';
 
 const AuthorForm = () => {
-    const {authorsList, setAuthorsList, addAuthor} = useAuthors()
-    const skills = ['writer', 'penciler', 'inker', 'letterer', 'editor', 'creator']
+    useEffect(() => {
+      getArtistsSkills()
+    },[])
+    const {addAuthor} = useAuthors()
+    const [skills] =  useAtom(artistsSkillsAtom)
     const initialState = {
       firstName: '',
       lastName: '',
@@ -22,13 +29,15 @@ const AuthorForm = () => {
       pseudo: string,
       dateOfBirth: string | null,
       dateOfDeath: string | null,
-      skills: string  | string[]
+      skills: string[]
     }>(initialState)
 
-    const handleSubmit = (event :  React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event :  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       addAuthor(authorForm)
       console.log("Form submitted", authorForm) 
+      const createdAuthor = await createArtist(authorForm)
+      console.log(createdAuthor)
     }
 
     return <Box component='form' onSubmit={handleSubmit} 
@@ -68,7 +77,7 @@ const AuthorForm = () => {
           multiple
           displayEmpty
           value={authorForm.skills}
-          onChange={(event) => setAuthorForm(author => ({...author, skills: event?.target.value})) }
+          onChange={(event) => setAuthorForm(author => ({...author, skills: Array.isArray(event?.target.value) ? event?.target.value : [event?.target.value] })) }
           renderValue={(selected) => {
             console.log("selected : ", selected)
             if(selected.length === 0){

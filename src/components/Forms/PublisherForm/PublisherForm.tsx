@@ -4,17 +4,21 @@ import { useAtom } from 'jotai';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { usePublishers } from '@/hooks/usePublisher';
+import { createPublisher } from '@/backend/api/publishers';
+import type { NewPublisher } from '@/backend/api/publishers';
 
 const PublisherForm = () => {
-    const [publisherForm, setPublisherForm] = useAtom(newPublisherForm)
+    const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
     const {publishersList, setPublishersList} = usePublishers()  
     const skills = ['France', 'USA', 'Japan', 'Italy', 'Belgium']
     console.log("Publishers",publishersList)
     
-    return <Box component='form'  onSubmit={(event) => {
+    return <Box component='form'  onSubmit={async (event) => {
             event.preventDefault()
             setPublishersList(publishersList => [...publishersList, publisherForm])
-            console.log("Form submitted", publisherForm) 
+            console.log("Form submitted", publisherForm)
+            const createdPublisher = await createPublisher(publisherForm)
+            console.log(createdPublisher)
         }}
           sx={{width:'100%'}}
         >
@@ -25,12 +29,23 @@ const PublisherForm = () => {
             required
             fullWidth
             />
+            <TextField 
+            label="Description"
+            value={publisherForm.description}
+            onChange={(event) => setPublisherForm((publisher) => ({...publisher, description: event.target.value}))}
+            fullWidth
+            />
             <DatePicker 
             label="Creation Date"
-            value={publisherForm.creationDate ? dayjs(publisherForm.creationDate) : null}
-            onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, creationDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            value={publisherForm.birthDate ? dayjs(publisherForm.birthDate) : null}
+            onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, birthDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
             />
-            <Select
+            <DatePicker 
+            label="Death Date"
+            value={publisherForm.deathDate ? dayjs(publisherForm.deathDate) : null}
+            onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, deathDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            />
+            {/* <Select
                 displayEmpty
                 value={publisherForm.country}
                 onChange={(event) => setPublisherForm(publisher => ({...publisher, country: event?.target.value})) }
@@ -49,7 +64,7 @@ const PublisherForm = () => {
                 >
                     {skill}
                 </MenuItem>)}
-            </Select>
+            </Select> */}
             <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
             <Button onClick={() => setPublisherForm(initialState)} >Reset</Button>
             <Button type='submit' >Ajouter</Button>

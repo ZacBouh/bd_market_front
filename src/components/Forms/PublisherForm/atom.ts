@@ -1,9 +1,11 @@
 import { atom } from "jotai";
+import type { NewPublisher } from "@/backend/api/publishers";
 
-const initialState = {
+const initialState : NewPublisher = {
     name: '',
-    creationDate: '',
-    country: ''
+    birthDate: null,
+    deathDate: null,
+    description: ''  
   }
 
 const newPublisherForm = atom(initialState)
