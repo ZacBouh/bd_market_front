@@ -22,7 +22,7 @@ const ArtistSkillsSelect = (props : ArtistSkillsSelectProps) => {
             defaultValue={multiple ? [] : ''}
             renderValue={(selected) => {
                 console.log("selected : ", selected)
-                if(multiple && Array.isArray(selected) && selected.length > 1 ){
+                if(multiple && Array.isArray(selected) && selected.length > 0 ){
                   return (selected as unknown as Array<string>).join(', ')
                 }
                 if(typeof selected === 'string' && selected !== '' ) return selected
