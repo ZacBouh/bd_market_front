@@ -48,8 +48,7 @@ const AuthorForm = (props : AuthorFormProps) => {
       }
       return getArtistsSkills()
     },[prePopulatedName])
-    console.log(authorForm)
-    const handleSubmit = async (event :  React.FormEvent<HTMLFormElement>) => {
+      const handleSubmit = async (event :  React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       console.log("Form submitted", authorForm) 
       const createdAuthor = await createArtist(authorForm)

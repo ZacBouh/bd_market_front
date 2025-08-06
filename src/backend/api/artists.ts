@@ -1,7 +1,7 @@
 import { api } from "./api";
 import { artistsAtom, artistsSkillsAtom, store } from "@/store";
 
-type NewArtist = {
+export type NewArtist = {
     "firstName": string | null,
     "lastName": string | null,
     "pseudo": string | null,
@@ -10,8 +10,13 @@ type NewArtist = {
     "skills"?: string[]
 }
 
-type CreatedArtist = NewArtist & {
+export type CreatedArtist = NewArtist & {
     id: number
+}
+
+export type ArtistContribution = {
+    artist: CreatedArtist['id']
+    skills: string[]
 }
 
 const createArtist = async (payload : NewArtist) => {
@@ -38,5 +43,3 @@ const getArtists = () => {
 
 
 export {createArtist, getArtistsSkills, getArtists}
-
-export type { CreatedArtist }

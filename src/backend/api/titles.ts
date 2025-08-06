@@ -1,22 +1,24 @@
 import { api } from "./api";
 
-import type { CreatedArtist } from "./artists";
+import type { ArtistContribution, CreatedArtist } from "./artists";
+import type { CreatedPublisher } from "./publishers";
 
-type NewTitle = {
+export type NewTitle = {
     name: string,
     releaseDate: string | null,
-    description: string | null,
     language: string | null,
-    artists: CreatedArtist['id'][]
+    artistsContributions : ArtistContribution[],
+    publisher: CreatedPublisher['id'] | null, 
+    description: string
 }
 
-type CreatedTitle = NewTitle & {
+export type CreatedTitle = NewTitle & {
     id: number,
     createdAt: string, 
     updatedAt: string 
 }
 
-const createTitle = async (payload : NewTitle) => {
+export const createTitle = async (payload : NewTitle) => {
     const response = await api.post<CreatedTitle>('/titles', payload)   
     return response.data
 }

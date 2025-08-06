@@ -2,28 +2,21 @@ import { CreatedArtist, getArtists } from "@/backend/api/artists"
 import AuthorForm, { AuthorFormProps } from "@/components/Forms/AuthorForm/AuthorForm"
 import { useArtists } from "@/hooks/useArtist"
 import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteProps, Box, Modal, ModalProps, TextField } from "@mui/material"
-import { atom, useAtom } from "jotai"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
-const artistAutoCompleteAtom = atom<ArtistAutoCompleteState>({
-    inputValue: '',
-    prevInputValue: '',
-    value: null,
-    modalOpen: false
-})
 
-type ArtistAutoCompleteState = {
+export type ArtistAutoCompleteState = {
     inputValue : string,
     prevInputValue: string,
     value: CreatedArtist | null,
     modalOpen: boolean
 }
 
-type ArtistAutocompleteProps = Omit<AutocompleteProps<CreatedArtist, false, false, false>, 
+export type ArtistAutocompleteProps = Omit<AutocompleteProps<CreatedArtist, false, false, false>, 
     'freeSolo'| 'renderInput' | 'options'
 > & {
     required?: boolean
-    onChange?: (event: null | React.SyntheticEvent<Element, Event>, artist: CreatedArtist | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<CreatedArtist> | undefined  ) => void
+    onChangeCallback?: (event: null | React.SyntheticEvent<Element, Event>, artist: CreatedArtist | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<CreatedArtist> | undefined  ) => void
 }
 
 type CreateArtistModalProps = Omit<ModalProps, 'children'> & {
@@ -40,12 +33,17 @@ const CreateArtistModal = (props : CreateArtistModalProps ) => {
     </Modal>
 }
 const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
-    const {required, onChange, sx} = props
+    const {required, sx, onChangeCallback, ...restProps} = props
     const label = "Artist"
     const {artistsList} = useArtists()
     useEffect( () => getArtists() , [])
     const createArtistOption = {...artistsList[0], id: 0, pseudo: '', firstName: 'Add New Artist', lastName: ''}
-    const [state, setState] = useAtom(artistAutoCompleteAtom)
+    const [state, setState] = useState<ArtistAutoCompleteState>({
+        inputValue: '',
+        prevInputValue: '',
+        value: null,
+        modalOpen: false
+    })
    return <Box sx={sx}>
        <Autocomplete
             disableClearable={false}
@@ -69,6 +67,7 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
                 return !inputExists ? [...filtered, createArtistOption] : filtered
             }}
             onChange={(_, option, ...args) => {
+                console.log("onchange triggerred")
                 if(option?.id === 0){
                     setState(state => ({...state, modalOpen: true, inputValue: state.prevInputValue}))
                     return
@@ -77,27 +76,30 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
                     ...state,
                     prevInputValue: option ? getArtistOptionLabel(option) : '',
                     inputValue: option ? getArtistOptionLabel(option) : '',
+                    value: option
                 }))
-                onChange && onChange(_, option, ...args)
+                onChangeCallback && onChangeCallback(_, option, ...args)
             }}
             onInput={(event) => {
                 const textInput = (event.target as HTMLInputElement).value
                 setState(state => ({...state, prevInputValue: textInput, inputValue: textInput}))
             }}
-            {...props}
+            {...restProps}
        /> 
        <CreateArtistModal 
             open={state.modalOpen}
             prePopulatedName={state.prevInputValue}
             onArtistCreated={(newArtist) => {
                 if(newArtist){
+                    console.log('updating state with new artist')
                     setState(state => ({
                         ...state,
                         inputValue: getArtistOptionLabel(newArtist),
                         value: newArtist, 
                         modalOpen: false
                     }))
-                    onChange && onChange(null, newArtist, 'selectOption', {option: newArtist})  
+                    getArtists()
+                    onChangeCallback && onChangeCallback(null, newArtist, 'selectOption', {option: newArtist})
                 } 
             }}
             onClose={() => setState(state => ({...state, modalOpen: false}))} 

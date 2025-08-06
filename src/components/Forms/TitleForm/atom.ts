@@ -1,19 +1,15 @@
-import { CreatedArtist } from "@/backend/api/artists";
-import { CreatedPublisher } from "@/backend/api/publishers";
 import { atom } from "jotai";
+import type { NewTitle } from "@/backend/api/titles";
 
-type NewTitleFormState = {
-    title: string,
-    artists : CreatedArtist['id'][],
-    publisher: CreatedPublisher['id'] | null, 
-    description: string
-} 
+type NewTitleFormState = NewTitle 
 
-const newTitleFormInitialState = {
-      title: '',
-      artists: [],
+const newTitleFormInitialState : NewTitleFormState = {
+      name: '',
+      artistsContributions: [],
       publisher: null,
-      description: ''
+      description: '',
+      releaseDate: '',
+      language: ''
   }
 
 

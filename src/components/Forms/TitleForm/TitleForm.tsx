@@ -1,26 +1,26 @@
 import { Box, Button, FormControl, FormLabel, TextField } from '@mui/material';
-import { newTitleForm } from './atom';
+import { newTitleForm, newTitleFormInitialState } from './atom';
 import { useAtom } from 'jotai';
-import { useAuthors } from '@/hooks/useAuthor';
-import { useTitles } from '@/hooks/useTitle';
 import PublisherAutocomplete from '../Fields/Autocomplete/PublisherAutocomplete/PublisherAutocomplete';
-import ArtistAutocomplete from '../Fields/Autocomplete/ArtistAutocomplete/ArtistAutocomplete';
-import { title } from 'process';
-
 import MultiArtistAutocomplete from '../Fields/Autocomplete/MultiArtistAutocomplete/MultiArtistAutocomplete';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import { createTitle } from '@/backend/api/titles';
 
 const TitleForm = () => {
     const [titleForm, setTitleForm] = useAtom(newTitleForm)
-    return  <Box component='form'  onSubmit={(event) => {
+    return  <Box component='form'  onSubmit={ async (event) => {
           event.preventDefault()
-          console.log("Form submitted", titleForm) 
+          console.log("Form submitted", titleForm)
+          const createdTitle = await createTitle(titleForm) 
+          console.log("response from createTitle", createdTitle)
         }}
           sx={{width:'100%'}}
         >
           <TextField 
             label="Title"
-            value={titleForm.title}
-            onChange={(event) => setTitleForm((title) => ({...title, title: event.target.value}))}
+            value={titleForm.name}
+            onChange={(event) => setTitleForm((title) => ({...title, name: event.target.value}))}
             required
             fullWidth
           />
@@ -29,18 +29,25 @@ const TitleForm = () => {
             <TextField 
               label="Description"
               value={titleForm.description}
-              onChange={(event) => setTitleForm((title) => ({...title, author: {...title.author, firstName: event.target.value}}))}
+              onChange={(event) => setTitleForm((title) => ({...title, description: event.target.value}))}
               fullWidth
             />
           </FormControl>
-          <MultiArtistAutocomplete/>
-          <ArtistAutocomplete required />
+          <MultiArtistAutocomplete onMultiArtistChange={(contributions) => {
+            const validContributions  = contributions.filter((contribution) => !!contribution?.artist && !!contribution?.skills)
+            setTitleForm(titleForm => ({...titleForm, artistsContributions: validContributions.map(({artist, skills})=> ({artist : artist as number, skills}))}))  
+          }} />
           <PublisherAutocomplete
             onChange={(_, publisher) => setTitleForm(title => ({...title, publisher: publisher?.id ?? null})) }
             required
           />
+          <DatePicker 
+            label="Release Date"
+            value={titleForm.releaseDate ? dayjs(titleForm.releaseDate) : null}
+            onChange={(newDate) => setTitleForm((title) => ({...title, releaseDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+          />
           <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-          <Button onClick={() => setTitleForm(initialState)} >Reset</Button>
+          <Button onClick={() => setTitleForm(newTitleFormInitialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>
           </Box>
         </Box>
