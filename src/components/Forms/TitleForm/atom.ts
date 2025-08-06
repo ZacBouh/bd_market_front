@@ -1,7 +1,9 @@
 import { atom } from "jotai";
 import type { NewTitle } from "@/backend/api/titles";
 
-type NewTitleFormState = NewTitle 
+type NewTitleFormState = NewTitle & {
+  coverImageFile: File | undefined
+}
 
 const newTitleFormInitialState : NewTitleFormState = {
       name: '',
@@ -9,7 +11,8 @@ const newTitleFormInitialState : NewTitleFormState = {
       publisher: null,
       description: '',
       releaseDate: '',
-      language: ''
+      language: '', 
+      coverImageFile: undefined
   }
 
 

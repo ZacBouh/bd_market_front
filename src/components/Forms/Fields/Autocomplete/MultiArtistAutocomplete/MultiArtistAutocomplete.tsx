@@ -52,9 +52,6 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
             onClick={() => setArtists(artists => [...artists, emptyArtistEntry])}
             sx={{width: '100%'}}
             ><AddIcon/> Add Artist Contribution</Button>
-        <Button 
-            onClick={() => console.log("ARTISTS ENTRIES", artists)}
-            >log</Button>
     </Box> 
 }
 

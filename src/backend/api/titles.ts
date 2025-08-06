@@ -18,7 +18,7 @@ export type CreatedTitle = NewTitle & {
     updatedAt: string 
 }
 
-export const createTitle = async (payload : NewTitle) => {
+export const createTitle = async (payload : FormData) => {
     const response = await api.post<CreatedTitle>('/titles', payload)   
     return response.data
 }

@@ -6,6 +6,8 @@ import MultiArtistAutocomplete from '../Fields/Autocomplete/MultiArtistAutocompl
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { createTitle } from '@/backend/api/titles';
+import FileInput from '../Fields/FileUpload/FileInput';
+import objectToFormData from '@/utils/formData';
 
 const TitleForm = () => {
     const [titleForm, setTitleForm] = useAtom(newTitleForm)
@@ -13,7 +15,7 @@ const TitleForm = () => {
           event.stopPropagation()
           event.preventDefault()
           console.log("Form submitted", titleForm)
-          const createdTitle = await createTitle(titleForm) 
+          const createdTitle = await createTitle(objectToFormData(titleForm)) 
           console.log("response from createTitle", createdTitle)
         }}
           sx={{width:'100%'}}
@@ -47,9 +49,22 @@ const TitleForm = () => {
             value={titleForm.releaseDate ? dayjs(titleForm.releaseDate) : null}
             onChange={(newDate) => setTitleForm((title) => ({...title, releaseDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
           />
+          <FileInput 
+              label={"Choose a cover image"}
+              accept='image/*'
+              onFileChange={(event) => setTitleForm(title => ({...title, coverImageFile: event.target.files?.[0]})) } 
+          />
           <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setTitleForm(newTitleFormInitialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>
+          <Button 
+            onClick={() => {
+              const formData = objectToFormData(titleForm)
+              console.log("Title Form Content : ", titleForm)
+              console.log("Conversion to FormData : ", formData )
+
+            }}
+            >log</Button>
           </Box>
         </Box>
 }
