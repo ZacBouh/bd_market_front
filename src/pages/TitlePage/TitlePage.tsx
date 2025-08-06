@@ -12,8 +12,8 @@ function TitlePage() {
       
       <FullSizeCentered>
         <Typography variant="h3">Add a title</Typography>
-
         <TitleForm/>
+
       </FullSizeCentered>
     </>
   );

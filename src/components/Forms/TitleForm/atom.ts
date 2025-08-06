@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import type { NewTitle } from "@/backend/api/titles";
 
 type NewTitleFormState = NewTitle & {
   coverImageFile: File | undefined

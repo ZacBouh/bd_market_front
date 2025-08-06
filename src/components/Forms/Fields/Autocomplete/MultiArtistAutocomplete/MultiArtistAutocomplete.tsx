@@ -1,10 +1,9 @@
-import { Box, BoxProps, Button, SelectChangeEvent, SelectProps, Stack } from "@mui/material"
+import { Box, BoxProps, Button,  Stack } from "@mui/material"
 import ArtistAutocomplete, { ArtistAutocompleteProps } from "../ArtistAutocomplete/ArtistAutocomplete"
 import ArtistSkillsSelect, { ArtistSkillsSelectProps } from "../../Select/ArtistSkillsSelect/ArtistSkillsSelect"
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useState } from "react"
-import { CreatedArtist } from "@/backend/api/artists"
 
 export type MultiArtistAutocompleteEntry = {
     _id: string

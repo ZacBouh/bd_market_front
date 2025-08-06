@@ -1,7 +1,7 @@
 import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteProps, Box, Modal, ModalProps, TextField } from "@mui/material"
 import { usePublishers } from "@/hooks"
 import  React, { useEffect, useState } from "react"
-import { CreatedPublisher, getPublishers} from "@/backend/api/publishers"
+import {  getPublishers} from "@/backend/api/publishers"
 import PublisherForm, { PublisherFormProps } from "@/components/Forms/PublisherForm/PublisherForm"
 
 type PublisherAutocompleteProps = Omit<AutocompleteProps<CreatedPublisher, false, false, false>, 

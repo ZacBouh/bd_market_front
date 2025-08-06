@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { usePublishers } from '@/hooks/usePublisher';
 import { createPublisher } from '@/backend/api/publishers';
-import type { CreatedPublisher, NewPublisher } from '@/backend/api/publishers';
 import { useEffect } from 'react';
 
 type PublisherFormProps = {

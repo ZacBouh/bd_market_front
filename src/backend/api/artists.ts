@@ -1,24 +1,7 @@
 import { api } from "./api";
 import { artistsAtom, artistsSkillsAtom, store } from "@/store";
-import { CreatedTitle } from "./titles";
 
-export type NewArtist = {
-    "firstName": string | null,
-    "lastName": string | null,
-    "pseudo": string | null,
-    "birthDate"?: string | null,
-    "deathDate"?: string | null,
-    "skills"?: string[]
-}
 
-export type CreatedArtist = NewArtist & {
-    id: number
-}
-
-export type NewArtistContribution = {
-    artist: CreatedArtist['id']
-    skills: string[]
-}
 
 export type CreatedArtistContribution = NewArtistContribution & {
     id: number,

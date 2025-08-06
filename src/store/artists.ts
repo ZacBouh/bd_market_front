@@ -1,4 +1,3 @@
-import { CreatedArtist } from "@/backend/api/artists";
 import { atomWithStorage } from "jotai/utils";
 
 const artistsSkillsAtom = atomWithStorage<string[]>('artistsSkills', [])

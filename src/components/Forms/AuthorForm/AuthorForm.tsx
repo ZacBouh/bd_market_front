@@ -2,7 +2,7 @@ import { Box, Button,  MenuItem, Select, TextField, Typography } from '@mui/mate
 import { useEffect, useState } from 'react';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-import { createArtist, CreatedArtist } from '@/backend/api/artists';
+import { createArtist } from '@/backend/api/artists';
 import { useAtom } from 'jotai';
 import { artistsSkillsAtom } from '@/store';
 import { getArtistsSkills } from '@/backend/api/artists';

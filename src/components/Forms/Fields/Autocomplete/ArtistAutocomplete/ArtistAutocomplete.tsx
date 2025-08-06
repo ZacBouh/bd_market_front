@@ -1,4 +1,4 @@
-import { CreatedArtist, getArtists } from "@/backend/api/artists"
+import { getArtists } from "@/backend/api/artists"
 import AuthorForm, { AuthorFormProps } from "@/components/Forms/AuthorForm/AuthorForm"
 import { useArtists } from "@/hooks/useArtist"
 import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteProps, Box, Modal, ModalProps, TextField } from "@mui/material"
