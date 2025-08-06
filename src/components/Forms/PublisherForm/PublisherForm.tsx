@@ -23,6 +23,7 @@ const PublisherForm = (props : PublisherFormProps) => {
      ,[prePopulatedName])
     
     return <Box component='form'  onSubmit={async (event) => {
+            event.stopPropagation()
             event.preventDefault()
             console.log("Form submitted", publisherForm)
             const createdPublisher = await createPublisher(publisherForm)

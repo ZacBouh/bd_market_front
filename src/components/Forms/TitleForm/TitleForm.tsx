@@ -10,6 +10,7 @@ import { createTitle } from '@/backend/api/titles';
 const TitleForm = () => {
     const [titleForm, setTitleForm] = useAtom(newTitleForm)
     return  <Box component='form'  onSubmit={ async (event) => {
+          event.stopPropagation()
           event.preventDefault()
           console.log("Form submitted", titleForm)
           const createdTitle = await createTitle(titleForm) 
