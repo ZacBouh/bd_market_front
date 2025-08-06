@@ -23,7 +23,9 @@ type CreatedTitle = NewTitle & {
     id: number,
     createdAt: string, 
     updatedAt: string,
+    coverImage: UploadedImage
     uploadedImages: UploadedImage[]
+    artistsContributions : CreatedContribution[]
 }
 
 type NewPublisher = {
@@ -55,4 +57,10 @@ type CreatedArtist = NewArtist & {
 type NewArtistContribution = {
     artist: CreatedArtist['id']
     skills: string[]
+}
+
+type CreatedContribution = {
+    artist: {id: CreatedArtist['id'], fullName: string}
+    skills: string[]
+    title: number
 }

@@ -1,9 +1,7 @@
 import {  useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
-
-const titles = atomWithStorage<any[]>('authors', [])
+import { titlesAtom } from "@/store";
 
 export function useTitles(){
-    const [titlesList, setTitlesList] = useAtom(titles)
-    return {titlesList, setTitlesList}
+    const [titles, setTitles] = useAtom(titlesAtom)
+    return {titles, setTitles}
 }   

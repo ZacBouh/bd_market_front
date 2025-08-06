@@ -1,9 +1,65 @@
-import Grid from "@mui/material/Grid2"
+import React from 'react';
+import { Grid2 } from '@mui/material';  // MUI's Grid v2
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Container,
+} from '@mui/material';
+import { API_BASE_URL } from '@/backend/api/api';
 
-export type TitleGalleryProps = {
-    titles: CreatedTitle
+const titles = [
+  { title: 'Batman: Year One', author: 'Frank Miller', image: '…' },
+  // … more entries
+];
+
+type TitleGalleryProps = {
+    titles: CreatedTitle[]
 }
 
-const TitleGallery = () => {
-    return <Grid></Grid>
+const TitleGallery = (props : TitleGalleryProps) => {
+    const {titles, ...restProps} = props
+    
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
+        {titles.map((title, i) => (
+          <Grid2
+            key={i}
+            size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+          >
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 2,
+                transition: 'transform 0.2s, box-shadow 0.3s',
+                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <CardActionArea sx={{ flexGrow: 1 }}>
+                <CardMedia
+                  component="img"
+                  height="300"
+                  image={API_BASE_URL + "" + title.coverImage.url}
+                  alt={title.coverImage.imageName}
+                />
+                <CardContent>
+                  <Typography variant="h6">{title.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    by {title.artistsContributions[0].artist.fullName}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid2>
+        ))}
+      </Grid2>
+    </Container>
+  );
 }
+
+export default TitleGallery

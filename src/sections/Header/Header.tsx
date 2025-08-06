@@ -18,7 +18,7 @@ function Header() {
   const { open: openHotKeysDialog } = useHotKeysDialog();
   const notifications = useNotifications();
   const {setAuthorsList} = useAuthors()
-  const {setTitlesList} = useTitles()
+  const {setTitles} = useTitles()
   const {setPublishersList} = usePublishers()
 
   function showNotification() {
