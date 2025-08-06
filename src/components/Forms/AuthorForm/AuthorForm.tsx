@@ -7,6 +7,8 @@ import { useAtom } from 'jotai';
 import { artistsSkillsAtom } from '@/store';
 import { getArtistsSkills } from '@/backend/api/artists';
 import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkillsSelect';
+import FileInput from '../Fields/FileUpload/FileInput';
+import objectToFormData from '@/utils/formData';
 
 export type AuthorFormProps = {
   prePopulatedName?: string,
@@ -16,23 +18,17 @@ export type AuthorFormProps = {
 const AuthorForm = (props : AuthorFormProps) => {
     const {prePopulatedName, onSuccess} = props
     const [skills] =  useAtom(artistsSkillsAtom)
-    const initialState = {
+    const initialState : AuthorFormState = {
       firstName: '',
       lastName: '',
       pseudo: '',
       dateOfBirth: '',
       dateOfDeath: '',
-      skills: []
+      skills: [],
+      coverImageFile: undefined
     } 
     
-    const [authorForm, setAuthorForm] = useState<{
-      firstName: string,
-      lastName: string,
-      pseudo: string,
-      dateOfBirth: string | null,
-      dateOfDeath: string | null,
-      skills: string[]
-    }>(initialState)
+    const [authorForm, setAuthorForm] = useState<AuthorFormState>(initialState)
     
     useEffect(() => {
       if(prePopulatedName){
@@ -52,7 +48,7 @@ const AuthorForm = (props : AuthorFormProps) => {
       event.stopPropagation()
       event.preventDefault()
       console.log("Form submitted", authorForm) 
-      const createdAuthor = await createArtist(authorForm)
+      const createdAuthor = await createArtist(objectToFormData(authorForm))
       console.log(createdAuthor)
       onSuccess && onSuccess(createdAuthor)
     }
@@ -90,19 +86,6 @@ const AuthorForm = (props : AuthorFormProps) => {
           value={authorForm.dateOfDeath ? dayjs(authorForm.dateOfDeath) : null}
           onChange={(newDate) => setAuthorForm((author) => ({...author, dateOfDeath: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
         />
-        {/* <Select
-          multiple
-          displayEmpty
-          value={authorForm.skills}
-          onChange={(event) => setAuthorForm(author => ({...author, skills: Array.isArray(event?.target.value) ? event?.target.value : [event?.target.value] })) }
-          renderValue={(selected) => {
-            console.log("selected : ", selected)
-            if(selected.length === 0){
-              return <Typography sx={{color: 'text.secondary'}} >Select Skills</Typography>
-            } 
-            return (selected as unknown as Array<string>).join(', ')
-          }}
-        > */}
         <ArtistSkillsSelect
           multiple
           displayEmpty
@@ -117,6 +100,11 @@ const AuthorForm = (props : AuthorFormProps) => {
             {skill}
           </MenuItem>)}
         </ArtistSkillsSelect>
+        <FileInput 
+          label={"Choose a picture"}  
+          accept='image/*'
+          onFileChange={(event) => setAuthorForm(authorForm => ({...authorForm, coverImageFile: event.target.files?.[0]})) }
+        />
         <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setAuthorForm(initialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>

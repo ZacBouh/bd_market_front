@@ -57,14 +57,6 @@ const TitleForm = () => {
           <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setTitleForm(newTitleFormInitialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>
-          <Button 
-            onClick={() => {
-              const formData = objectToFormData(titleForm)
-              console.log("Title Form Content : ", titleForm)
-              console.log("Conversion to FormData : ", formData )
-
-            }}
-            >log</Button>
           </Box>
         </Box>
 }

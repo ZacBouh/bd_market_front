@@ -51,7 +51,8 @@ type NewArtist = {
 }
 
 type CreatedArtist = NewArtist & {
-    id: number
+    id: number,
+    coverImage: UploadedImage
 }
 
 type NewArtistContribution = {
@@ -63,4 +64,14 @@ type CreatedContribution = {
     artist: {id: CreatedArtist['id'], fullName: string}
     skills: string[]
     title: number
+}
+
+type AuthorFormState = {
+    firstName: string,
+    lastName: string,
+    pseudo: string,
+    dateOfBirth: string | null,
+    dateOfDeath: string | null,
+    skills: string[],
+    coverImageFile: File | undefined    
 }

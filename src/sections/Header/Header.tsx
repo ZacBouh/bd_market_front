@@ -29,7 +29,7 @@ function Header() {
 
   const handleClearLocalStorageState = () => {
     setAuthorsList([])
-    setTitlesList([])
+    setTitles([])
     setPublishersList([])
     console.log('cleared data in local storage')
   }

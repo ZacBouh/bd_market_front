@@ -10,16 +10,16 @@ import {
 import { API_BASE_URL } from '@/backend/api/api';
 
 type TitleGalleryProps = {
-    titles: CreatedTitle[]
+    artists: CreatedArtist[]
 }
 
-const TitleGallery = (props : TitleGalleryProps) => {
-    const {titles, ...restProps} = props
+const ArtistGallery = (props : TitleGalleryProps) => {
+    const {artists, ...restProps} = props
     
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
-        {titles.map((title, i) => (
+        {artists.map((artist, i) => (
           <Grid2
             key={i}
             size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
@@ -38,14 +38,16 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={API_BASE_URL + "" + title.coverImage.url}
-                  alt={title.coverImage.imageName}
+                  image={API_BASE_URL + "" + artist?.coverImage?.url}
+                  alt={artist?.coverImage?.imageName}
                 />
                 <CardContent>
-                  <Typography variant="h6">{title.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    by {title.artistsContributions[0].artist.fullName}
-                  </Typography>
+                  <Typography variant="h6">{artist.firstName} {artist.lastName}</Typography>
+                  {artist.skills?.sort().map(skill => (
+                    <Typography key={skill}  variant="body2" color="text.secondary">
+                        {skill}
+                    </Typography>
+                  ))}
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -56,4 +58,4 @@ const TitleGallery = (props : TitleGalleryProps) => {
   );
 }
 
-export default TitleGallery
+export default ArtistGallery

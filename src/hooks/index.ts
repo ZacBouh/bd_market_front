@@ -1,5 +1,5 @@
-import { useAuthors } from "./useAuthor";
+import { useArtists } from "./useArtists";
 import { usePublishers } from "./usePublisher";
 import { useTitles } from "./useTitle";
 
-export {useAuthors, usePublishers, useTitles}
+export {useArtists as useAuthors, usePublishers, useTitles}

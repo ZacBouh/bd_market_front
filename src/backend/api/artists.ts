@@ -8,7 +8,7 @@ export type CreatedArtistContribution = NewArtistContribution & {
     title: CreatedTitle['id']
 }
 
-const createArtist = async (payload : NewArtist) => {
+const createArtist = async (payload : FormData) => {
     const response = await api.post<CreatedArtist>('/artists', payload)
     return response.data
 }
