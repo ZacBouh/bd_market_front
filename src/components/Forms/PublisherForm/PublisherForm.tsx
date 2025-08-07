@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { usePublishers } from '@/hooks/usePublisher';
-import { createPublisher } from '@/backend/api/publishers';
+import { createPublisher } from '@/backend/api/publisher';
 import { useEffect } from 'react';
 import objectToFormData from '@/utils/formData';
 import FileInput from '../Fields/FileUpload/FileInput';

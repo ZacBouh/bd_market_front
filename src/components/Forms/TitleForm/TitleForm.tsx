@@ -5,18 +5,29 @@ import PublisherAutocomplete from '../Fields/Autocomplete/PublisherAutocomplete/
 import MultiArtistAutocomplete from '../Fields/Autocomplete/MultiArtistAutocomplete/MultiArtistAutocomplete';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
-import { createTitle } from '@/backend/api/titles';
+import { createTitle } from '@/backend/api/title';
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
+import { useEffect } from 'react';
 
-const TitleForm = () => {
+export type TitleFormProps = {
+  prePopulatedName?: string,
+  onTitleCreated?: (createdTitle: CreatedTitle) => any
+}
+
+const TitleForm = (props : TitleFormProps) => {
+    const {onTitleCreated, prePopulatedName} = props
     const [titleForm, setTitleForm] = useAtom(newTitleForm)
+    useEffect( () => {
+      prePopulatedName && setTitleForm(title => ({...title, name: prePopulatedName})) 
+    } , [prePopulatedName])
     return  <Box component='form'  onSubmit={ async (event) => {
           event.stopPropagation()
           event.preventDefault()
           console.log("Form submitted", titleForm)
           const createdTitle = await createTitle(objectToFormData(titleForm)) 
           console.log("response from createTitle", createdTitle)
+          onTitleCreated && onTitleCreated(createdTitle)
         }}
           sx={{width:'100%'}}
         >

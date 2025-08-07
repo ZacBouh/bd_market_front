@@ -1,3 +1,24 @@
+type LoginCredentials = {
+    email: string,
+    password: string
+}
+
+type NewUser = LoginCredentials & {
+    pseudo: string
+}
+
+type CreatedUser = NewUser & {
+    id: number,
+    createdAt: string,
+    updatedAt: string,
+    role: string[]
+}
+
+type LoggedInUser = {
+    user : CreatedUser,
+    token: string
+}
+
 type UploadedImage = {
     id: number, 
     fileName: string,
@@ -76,4 +97,37 @@ type ArtistForm = {
     dateOfDeath: string | null,
     skills: string[],
     coverImageFile: File | undefined    
+}
+
+type CopyCondition = 'mint' | 'near_mint'| 'very_fine'| 'fine'| 'very_good'| 'good'| 'fair'| 'poor'
+
+type NewCopy = {
+    ownerId: number | null ,
+    titleId?: number | null ,
+    copyCondition?:  CopyCondition | null,
+    price?: string | null,
+    currency?: string | null,
+    boughtForPrice?: string | null ,
+    boughtForCurrency?: string | null,    
+    coverImage?: File | undefined,
+}
+
+type CreatedCopy = NewCopy  & {
+    id: number,
+    createdAt: string,
+    updatedAt: string,
+}
+
+type AutoCompleteFieldState<T> = {
+    inputValue : string,
+    prevInputValue: string,
+    value: T | null,
+    modalOpen: boolean
+}
+
+type AcceptedCurrency = 'euro'
+
+type Price = {
+    amount: string,
+    currency: AcceptedCurrency
 }

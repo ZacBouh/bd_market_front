@@ -1,7 +1,7 @@
 import { Centered, FullSizeCentered } from '@/components/styled';
 import Typography from '@mui/material/Typography';
 import TitleForm from '@/components/Forms/TitleForm/TitleForm';
-import { getTitles } from '@/backend/api/titles';
+import { getTitles } from '@/backend/api/title';
 import { useEffect } from 'react';
 import TitleGallery from '@/components/Gallery/TitleGallery/TitleGallery';
 import { useTitles } from '@/hooks';

@@ -1,4 +1,3 @@
-import { LoggedInUser } from "@/backend/api/auth";
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 

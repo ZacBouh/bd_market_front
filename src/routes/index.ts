@@ -14,6 +14,13 @@ const routes: Routes = [
     icon: HomeIcon,
   },
   {
+    component: asyncComponentLoader(() => import('@/pages/UserLibraryPage')),
+    path: '/library',
+    title: 'My Library',
+    icon: AddTaskIcon,
+    isProtected: true
+  },
+  {
     component: asyncComponentLoader(() => import('@/pages/TitlePage')),
     path: '/titles',
     title: 'Add Title',

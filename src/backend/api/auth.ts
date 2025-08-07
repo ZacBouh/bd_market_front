@@ -6,26 +6,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const GOOGLE_OAUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
 const GOOGLE_OAUTH_REDIRECT_URI = import.meta.env.VITE_GOOGLE_OAUTH_REDIRECT_URI
 
-type LoginCredentials = {
-    email: string,
-    password: string
-}
-
-type NewUser = LoginCredentials & {
-    pseudo: string
-}
-
-type CreatedUser = NewUser & {
-    id: number,
-    createdAt: string,
-    updatedAt: string,
-    role: string[]
-}
-
-type LoggedInUser = {
-    user : CreatedUser,
-    token: string
-}
 
 async function registerUser(payload : NewUser) : Promise<CreatedUser>{
     const response = await axios.post<CreatedUser>(`${API_BASE_URL}/auth/register`, payload)
@@ -55,4 +35,3 @@ async function getGoogleOAuthOpenIdUrl(loginFromUrl?: string) : Promise<any>
 }
 
 export { registerUser, loginUser, getGoogleOAuthOpenIdUrl }
-export type {CreatedUser, NewUser, LoginCredentials, LoggedInUser}

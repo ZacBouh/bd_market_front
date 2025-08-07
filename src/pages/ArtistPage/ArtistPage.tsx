@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import ArtistGallery from '@/components/Gallery/ArtistGallery/ArtistGallery';
 import { useArtists } from '@/hooks';
 import { Container } from '@mui/material';
-import { getArtists } from '@/backend/api/artists';
+import { getArtists } from '@/backend/api/artist';
 
 const   AuthorPage = () => {
   const {artists} = useArtists()

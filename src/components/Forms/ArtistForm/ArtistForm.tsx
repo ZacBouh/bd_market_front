@@ -2,10 +2,10 @@ import { Box, Button,  MenuItem, Select, TextField, Typography } from '@mui/mate
 import { useEffect, useState } from 'react';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-import { createArtist } from '@/backend/api/artists';
+import { createArtist } from '@/backend/api/artist';
 import { useAtom } from 'jotai';
 import { artistsSkillsAtom } from '@/store';
-import { getArtistsSkills } from '@/backend/api/artists';
+import { getArtistsSkills } from '@/backend/api/artist';
 import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkillsSelect';
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';

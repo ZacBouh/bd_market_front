@@ -1,4 +1,4 @@
-import { getArtists } from "@/backend/api/artists"
+import { getArtists } from "@/backend/api/artist"
 import ArtistForm, { ArtistFormProps } from "@/components/Forms/ArtistForm/ArtistForm"
 import { useArtists } from "@/hooks/useArtist"
 import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteProps, Box, Modal, ModalProps, TextField } from "@mui/material"
@@ -67,7 +67,6 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
                 return !inputExists ? [...filtered, createArtistOption] : filtered
             }}
             onChange={(_, option, ...args) => {
-                console.log("onchange triggerred")
                 if(option?.id === 0){
                     setState(state => ({...state, modalOpen: true, inputValue: state.prevInputValue}))
                     return

@@ -1,4 +1,4 @@
-import { getArtistsSkills } from "@/backend/api/artists"
+import { getArtistsSkills } from "@/backend/api/artist"
 import { artistsSkillsAtom } from "@/store"
 import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectProps } from "@mui/material/Select"
