@@ -5,6 +5,8 @@ import { useState } from "react"
 import CopyConditionSelect from "../Fields/Select/CopyConditionSelect/CopyConditionSelect"
 import FileInput from "../Fields/FileUpload/FileInput"
 import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect"
+import { createCopy } from "@/backend/api/copy"
+import objectToFormData from "@/utils/formData"
 
 
 const AddCopyForm = () => {
@@ -19,7 +21,7 @@ const AddCopyForm = () => {
             event.stopPropagation()
             event.preventDefault()
             console.log("Add Copy Form Submitted", newCopy)
-            
+            createCopy(objectToFormData(newCopy))
         }}
         sx={{width: '100%'}}
     >
@@ -45,7 +47,7 @@ const AddCopyForm = () => {
         <FileInput
             label="Choose an Image"
             accept="image/*"
-            onFileChange={(event) => setNewCopy(newCopy => ({...newCopy, coverImage: event.target.files?.[0]})) }
+            onFileChange={(event) => setNewCopy(newCopy => ({...newCopy, coverImageFile: event.target.files?.[0]})) }
         />
         <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
             <Button onClick={() => console.log("clicked reset, not implemented")} >Reset</Button>

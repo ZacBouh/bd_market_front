@@ -109,7 +109,7 @@ type NewCopy = {
     currency?: string | null,
     boughtForPrice?: string | null ,
     boughtForCurrency?: string | null,    
-    coverImage?: File | undefined,
+    coverImageFile?: File | undefined,
 }
 
 type CreatedCopy = NewCopy  & {
