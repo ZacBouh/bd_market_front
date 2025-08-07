@@ -39,7 +39,8 @@ type NewPublisher = {
 type CreatedPublisher = NewPublisher & {
     id: number,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
+    coverImage: UploadedImage,
 }
 
 type NewArtist = {

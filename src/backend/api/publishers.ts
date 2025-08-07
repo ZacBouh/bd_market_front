@@ -11,7 +11,10 @@ const createPublisher = async (newPublisher : FormData) => {
 const getPublishers = () => {
     const controller = new AbortController()
     api.get<CreatedPublisher[]>('/publishers', {signal: controller.signal})
-    .then(response => store.set(publishersAtom, response.data))
+    .then(response =>{
+        console.log("Retrieved Publishers : ", response.data)
+        store.set(publishersAtom, response.data)
+    })
     return () => controller.abort()
 }
 
