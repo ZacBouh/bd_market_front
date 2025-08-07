@@ -1,5 +1,5 @@
 import { getArtists } from "@/backend/api/artists"
-import AuthorForm, { AuthorFormProps } from "@/components/Forms/AuthorForm/AuthorForm"
+import ArtistForm, { ArtistFormProps } from "@/components/Forms/ArtistForm/ArtistForm"
 import { useArtists } from "@/hooks/useArtist"
 import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason, AutocompleteProps, Box, Modal, ModalProps, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
@@ -21,14 +21,14 @@ export type ArtistAutocompleteProps = Omit<AutocompleteProps<CreatedArtist, fals
 
 type CreateArtistModalProps = Omit<ModalProps, 'children'> & {
     prePopulatedName: string,
-    onArtistCreated: AuthorFormProps['onSuccess']
+    onArtistCreated: ArtistFormProps['onSuccess']
 }
 
 const CreateArtistModal = (props : CreateArtistModalProps ) => {
     const {prePopulatedName, onArtistCreated, ...modalProps} = props
     return <Modal {...modalProps}>
         <Box sx={{bgcolor: 'background.paper'}}>
-            <AuthorForm prePopulatedName={prePopulatedName} onSuccess={onArtistCreated} />
+            <ArtistForm prePopulatedName={prePopulatedName} onSuccess={onArtistCreated} />
         </Box>
     </Modal>
 }

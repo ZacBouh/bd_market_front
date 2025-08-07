@@ -3,7 +3,7 @@ import { publishersAtom, store } from "@/store";
 
 
 
-const createPublisher = async (newPublisher : NewPublisher) => {
+const createPublisher = async (newPublisher : FormData) => {
     const response = await api.post<CreatedPublisher>('/publishers', newPublisher)
     return response.data
 }

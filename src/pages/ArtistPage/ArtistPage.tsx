@@ -1,19 +1,20 @@
 import { Centered } from '@/components/styled';
-import AuthorForm from '@/components/Forms/AuthorForm/AuthorForm';
+import ArtistForm from '@/components/Forms/ArtistForm/ArtistForm';
 import Typography from '@mui/material/Typography';
 import ArtistGallery from '@/components/Gallery/ArtistGallery.tsx/ArtistGallery';
-import { useAuthors } from '@/hooks';
+import { useArtists } from '@/hooks';
 import { Container } from '@mui/material';
+import { getArtists } from '@/backend/api/artists';
 
 const   AuthorPage = () => {
-  const {artists} = useAuthors()
+  const {artists} = useArtists()
   return (
     <>
       <meta name="title" content="Page 2" />
       <Container>
         <Centered>
-          <Typography variant="h3">Add an author</Typography>
-          <AuthorForm/>
+          <Typography variant="h3">Add an artist</Typography>
+          <ArtistForm onSuccess={() => getArtists()} />
         </Centered>
         <ArtistGallery artists={artists}/>
       </Container>

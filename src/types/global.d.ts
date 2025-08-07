@@ -32,7 +32,8 @@ type NewPublisher = {
     name: string,
     birthDate: string | null,
     deathDate: string | null, 
-    description: string | null,    
+    description: string | null,
+    coverImageFile: File | undefined     
 }
 
 type CreatedPublisher = NewPublisher & {
@@ -66,7 +67,7 @@ type CreatedContribution = {
     title: number
 }
 
-type AuthorFormState = {
+type ArtistForm = {
     firstName: string,
     lastName: string,
     pseudo: string,

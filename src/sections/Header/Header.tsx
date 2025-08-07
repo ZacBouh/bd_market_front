@@ -2,7 +2,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { AppBar, Button, Divider, IconButton, Stack, Toolbar, Tooltip } from '@mui/material';
-import { useAuthors, usePublishers, useTitles } from '@/hooks';
+import { useArtists, usePublishers, useTitles } from '@/hooks';
 
 import { useNotifications } from '@toolpad/core/useNotifications';
 
@@ -17,9 +17,9 @@ function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
   const { open: openHotKeysDialog } = useHotKeysDialog();
   const notifications = useNotifications();
-  const {setAuthorsList} = useAuthors()
+  const {setArtists} = useArtists()
   const {setTitles} = useTitles()
-  const {setPublishersList} = usePublishers()
+  const {setPublishers} = usePublishers()
 
   function showNotification() {
     notifications.show(getRandomJoke(), {
@@ -28,9 +28,9 @@ function Header() {
   }
 
   const handleClearLocalStorageState = () => {
-    setAuthorsList([])
+    setArtists([])
     setTitles([])
-    setPublishersList([])
+    setPublishers([])
     console.log('cleared data in local storage')
   }
 

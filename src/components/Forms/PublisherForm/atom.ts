@@ -4,7 +4,8 @@ const initialState : NewPublisher = {
     name: '',
     birthDate: null,
     deathDate: null,
-    description: ''  
+    description: '',
+    coverImageFile: undefined   
   }
 
 const newPublisherForm = atom(initialState)

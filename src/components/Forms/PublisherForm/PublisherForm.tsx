@@ -6,6 +6,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { usePublishers } from '@/hooks/usePublisher';
 import { createPublisher } from '@/backend/api/publishers';
 import { useEffect } from 'react';
+import objectToFormData from '@/utils/formData';
+import FileInput from '../Fields/FileUpload/FileInput';
 
 type PublisherFormProps = {
     prePopulatedName?: string,
@@ -15,7 +17,7 @@ type PublisherFormProps = {
 const PublisherForm = (props : PublisherFormProps) => {
     const {prePopulatedName, onSuccess} = props
     const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
-    const {publishersList} = usePublishers()
+    const {publishers} = usePublishers()
     useEffect(() => {
         prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
     } 
@@ -25,7 +27,8 @@ const PublisherForm = (props : PublisherFormProps) => {
             event.stopPropagation()
             event.preventDefault()
             console.log("Form submitted", publisherForm)
-            const createdPublisher = await createPublisher(publisherForm)
+            const createdPublisher = await createPublisher(objectToFormData(publisherForm))
+            console.log("Publisher Form Response", createdPublisher)
             onSuccess && onSuccess(createdPublisher)
         }}
           sx={{width:'100%'}}
@@ -53,26 +56,11 @@ const PublisherForm = (props : PublisherFormProps) => {
             value={publisherForm.deathDate ? dayjs(publisherForm.deathDate) : null}
             onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, deathDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
             />
-            {/* <Select
-                displayEmpty
-                value={publisherForm.country}
-                onChange={(event) => setPublisherForm(publisher => ({...publisher, country: event?.target.value})) }
-                renderValue={(selected) => {
-                console.log("selected : ", selected)
-                if(selected.length === 0){
-                return <Typography sx={{color: 'text.secondary'}} >Select Country</Typography>
-                } 
-                return <Typography sx={{color: 'text.secondary'}} >{selected}</Typography>
-                }}
-            >
-                <MenuItem value=""><Typography sx={{color: 'text.secondary'}} >-</Typography></MenuItem>
-                    {skills.map(skill => <MenuItem
-                    key={skill}
-                    value={skill}
-                >
-                    {skill}
-                </MenuItem>)}
-            </Select> */}
+            <FileInput
+                label={"Choose a logo"}
+                accept='image/*'
+                onFileChange={(event) => setPublisherForm(publisherForm => ({...publisherForm, coverImageFile: event.target.files?.[0]})) }
+            />
             <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
             <Button onClick={() => setPublisherForm(initialState)} >Reset</Button>
             <Button type='submit' >Ajouter</Button>

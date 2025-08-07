@@ -10,15 +10,15 @@ import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkills
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
 
-export type AuthorFormProps = {
+export type ArtistFormProps = {
   prePopulatedName?: string,
   onSuccess?: (createdArtist?: CreatedArtist) => void
 }
 
-const AuthorForm = (props : AuthorFormProps) => {
+const ArtistForm = (props : ArtistFormProps) => {
     const {prePopulatedName, onSuccess} = props
     const [skills] =  useAtom(artistsSkillsAtom)
-    const initialState : AuthorFormState = {
+    const initialState : ArtistForm = {
       firstName: '',
       lastName: '',
       pseudo: '',
@@ -28,7 +28,7 @@ const AuthorForm = (props : AuthorFormProps) => {
       coverImageFile: undefined
     } 
     
-    const [authorForm, setAuthorForm] = useState<AuthorFormState>(initialState)
+    const [authorForm, setAuthorForm] = useState<ArtistForm>(initialState)
     
     useEffect(() => {
       if(prePopulatedName){
@@ -112,4 +112,4 @@ const AuthorForm = (props : AuthorFormProps) => {
     </Box>
 }
 
-export default AuthorForm
+export default ArtistForm

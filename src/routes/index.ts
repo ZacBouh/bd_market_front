@@ -21,9 +21,9 @@ const routes: Routes = [
     isProtected: true
   },
   {
-    component: asyncComponentLoader(() => import('@/pages/AuthorPage')),
-    path: '/authors',
-    title: 'Add Author',
+    component: asyncComponentLoader(() => import('@/pages/ArtistPage')),
+    path: '/artists',
+    title: 'Add Artist',
     icon: AddTaskIcon,
     isProtected: true
   },

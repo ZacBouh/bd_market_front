@@ -27,10 +27,10 @@ const CreatePublisherModal = (props : CreatePublisherModalProps ) => {
 
 const PublisherAutocomplete = (props : PublisherAutocompleteProps ) => {
     const {required, onChange, inputValue: _inputValue} = props 
-    const {publishersList} = usePublishers()
+    const {publishers} = usePublishers()
     const label = "Publisher"
     const [modalOpen, setModalOpen] = useState(false)
-    const createPublisherOption = {...publishersList[0], id: 0, name: 'Add New Publisher'}
+    const createPublisherOption = {...publishers[0], id: 0, name: 'Add New Publisher'}
     const [inputValue, setInputValue] = useState('') 
     const [prevInputValue, setPrevInputValue] = useState('') 
     const [value, setValue] = useState<CreatedPublisher| null>(null)
@@ -39,7 +39,7 @@ const PublisherAutocomplete = (props : PublisherAutocompleteProps ) => {
         <Autocomplete
         inputValue={inputValue}
         value={value} 
-        options={publishersList}
+        options={publishers}
         getOptionLabel={(option) => option.name}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         renderInput={(params) => <TextField {...params} required={required} label={label}/>}
