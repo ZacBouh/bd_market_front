@@ -14,6 +14,8 @@ const AddCopyForm = () => {
     const initialState : NewCopy = {
         titleId: null,
         ownerId: user?.user.id ?? null,
+        boughtForCurrency: 'euro',
+        currency: 'euro'
     }
     const [newCopy, setNewCopy] = useState<NewCopy>(initialState)
     return <Box component='form'
