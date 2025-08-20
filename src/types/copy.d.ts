@@ -1,7 +1,7 @@
 type CopyCondition = 'mint' | 'near_mint'| 'very_fine'| 'fine'| 'very_good'| 'good'| 'fair'| 'poor'
 
 type NewCopy = {
-    ownerId: number | null ,
+    ownerId: number | null  ,
     titleId?: number | null ,
     copyCondition?:  CopyCondition | null,
     price?: string | null,
@@ -11,8 +11,11 @@ type NewCopy = {
     coverImageFile?: File | undefined,
 }
 
-type CreatedCopy = NewCopy  & {
+type CreatedCopy = Omit<NewCopy, 'ownerId' | 'titleId'>  & {
     id: number,
     createdAt: string,
     updatedAt: string,
+    owner: Partial<CreatedUser>,
+    title: Partial<CreatedTitle>,
+    coverImage: UploadedImage
 }
