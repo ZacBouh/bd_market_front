@@ -8,8 +8,12 @@ import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect
 import { createCopy } from "@/backend/api/copy"
 import objectToFormData from "@/utils/formData"
 
+type AddCopyFormProps = {
+    copyToEdit? : CreatedCopy
+}
 
-const AddCopyForm = () => {
+const AddCopyForm = (props : AddCopyFormProps) => {
+    const {copyToEdit} = props
     const {user} = useUser()
     const initialState : NewCopy = {
         titleId: null,
