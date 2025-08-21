@@ -5,11 +5,12 @@ import AddCopyForm from '@/components/Forms/AddCopyForm/AddCopyForm';
 import CopyGallery from '@/components/Gallery/CopyGallery/CopyGallery';
 import { useEffect, useState } from 'react';
 import { getCopies } from '@/backend/api/copy';
+import { useCopy } from '@/hooks/useCopy';
 
 function UserLibraryPage() {
-  const [copies, setCopies] = useState<CreatedCopy[]>([])
+  const {copies} = useCopy()
   useEffect(() => {
-    return getCopies((copies) => setCopies(copies))
+    return getCopies()
   }, [])
   
   return (

@@ -1,3 +1,4 @@
+import { copyAtom, store } from "@/store";
 import { api } from "./api";
 
 const createCopy = (newCopy : FormData) => {
@@ -5,19 +6,30 @@ const createCopy = (newCopy : FormData) => {
     api.post('/copy', newCopy)
     .then(response => {
         console.log("CreateCopy response", response.data)
+        getCopies()
     })
 
     return () => controller.abort()
 }
 
-const getCopies = (callback: (copies:CreatedCopy[]) => any) => {
+const getCopies = (callback?: (copies:CreatedCopy[]) => any) => {
     const controller = new AbortController()
     api.get<CreatedCopy[]>('/copy')
     .then(response => {
         console.log("Retrieved User copies : ", response.data)
-        callback(response.data)
+        store.set(copyAtom, response.data)
+        callback && callback(response.data)
     })
     return () => controller.abort()
 }
 
-export {createCopy, getCopies}
+const removeCopy = (copyId : CreatedCopy['id'] , callback?: (arg?: DeleteResponse) => any) => {
+    const controller = new AbortController()
+    api.delete<DeleteResponse>('/copy', {data: {id: copyId}})
+    .then(response =>{
+        callback && callback(response.data)
+    })
+    return () => controller.abort()
+}
+
+export {createCopy, getCopies, removeCopy}

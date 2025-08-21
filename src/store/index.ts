@@ -4,6 +4,7 @@ import { artistsSkillsAtom } from "./artists";
 import { publishersAtom } from "./publishers";
 import { artistsAtom } from "./artists";
 import { titlesAtom } from "./titles";
+import { copyAtom } from "./copy";
 
 const store = createStore()
 
@@ -13,4 +14,5 @@ export { store,
     publishersAtom, 
     artistsAtom,
     titlesAtom,
+    copyAtom
 }

@@ -1,4 +1,4 @@
-import { Button, CardActions, Grid2 } from '@mui/material';  // MUI's Grid v2
+import { Box, Button, CardActions, Chip, Grid2, IconButton } from '@mui/material';  // MUI's Grid v2
 import {
   Card,
   CardActionArea,
@@ -8,14 +8,17 @@ import {
   Container,
 } from '@mui/material';
 import { API_BASE_URL } from '@/backend/api/api';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
+import { getCopies, removeCopy } from '@/backend/api/copy';
 
 type CopyGalleryProps = {
     copies: CreatedCopy[]
 }
 
 const CopyGallery = (props : CopyGalleryProps) => {
-    const {copies, ...restProps} = props
-    
+  const {copies, ...restProps} = props
+  
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
@@ -48,9 +51,22 @@ const CopyGallery = (props : CopyGalleryProps) => {
                   </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions sx={{mt: 'auto', flexGrow: 0}}>
-                <Button size="small" color='secondary' variant='contained' disabled>{copy.price} {copy.currency}</Button>
-                <Button size="small" color='secondary' variant='contained' disabled>{copy.copyCondition}</Button>
+              <CardActions sx={{mt: 'auto', display: 'flex', justifyContent: 'space-between'}}>
+                <Box>
+                  {copy.price && <Chip label={`${copy.price} ${copy.currency}`} size="small" color='default' variant='filled' /> }
+                  <Chip label={copy.copyCondition} size="small" color='default' variant='filled' />
+                </Box>
+                <ButtonMenu 
+                  ButtonElement={IconButton} 
+                  buttonProps={{children: <MoreVertIcon/>, sx: {ml: 'auto', borderRadius: 2}}} 
+                  menuItems={[{label: 'Remove from library', handleClick: () => {
+                    removeCopy(copy.id, (response) =>{
+                       console.log(response?.message)
+                       getCopies()
+                    })
+                  } }]}
+                >
+                </ButtonMenu>
               </CardActions>
             </Card>
           </Grid2>

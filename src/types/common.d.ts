@@ -11,3 +11,9 @@ type Price = {
     amount: string,
     currency: AcceptedCurrency
 }
+
+type DeleteResponse<T = void> = {
+    message: string
+    success: boolean
+    data?: T
+}
