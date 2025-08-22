@@ -16,10 +16,11 @@ const AddCopyForm = (props : AddCopyFormProps) => {
     const {copyToEdit} = props
     const {user} = useUser()
     const initialState : NewCopy = {
-        titleId: null,
-        ownerId: user?.user.id ?? null,
-        boughtForCurrency: 'euro',
-        currency: 'euro'
+        ...copyToEdit,
+        titleId: copyToEdit?.title?.id ?? null,
+        ownerId: copyToEdit?.owner?.id  ?? user?.user.id ?? null,
+        boughtForCurrency: copyToEdit?.boughtForCurrency ?? 'euro',
+        currency: copyToEdit?.currency ?? 'euro',
     }
     const [newCopy, setNewCopy] = useState<NewCopy>(initialState)
     return <Box component='form'
