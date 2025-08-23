@@ -2,13 +2,13 @@ type CopyCondition = 'mint' | 'near_mint'| 'very_fine'| 'fine'| 'very_good'| 'go
 
 type NewCopy = {
     ownerId: number | null  ,
-    titleId?: number | null ,
-    copyCondition?:  CopyCondition | null,
-    price?: string | null,
-    currency?: string | null,
-    boughtForPrice?: string | null ,
-    boughtForCurrency?: string | null,    
-    coverImageFile?: File | undefined,
+    titleId?: number,
+    copyCondition?:  CopyCondition,
+    price?: string,
+    currency?: AcceptedCurrency,
+    boughtForPrice?: string,
+    boughtForCurrency?: AcceptedCurrency,    
+    coverImageFile?: File,
 }
 
 type CreatedCopy = Omit<NewCopy, 'ownerId' | 'titleId'>  & {

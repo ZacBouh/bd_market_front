@@ -6,13 +6,14 @@ import { NumericFormat, NumericFormatProps } from 'react-number-format'
 type PriceInputSelectProps = {
     onChange?: (price: Price) => void
     label?: string 
+    price?: Price
 }
 
 
 
 const PriceInputSelect = (props : PriceInputSelectProps) => {
-
-    const [price, setPrice]= useState<Price>({amount: '', currency: 'euro'})    
+    const initialState : Price = props.price ?? {amount: '', currency: 'euro'}
+    const [price, setPrice]= useState<Price>(initialState)    
     const {onChange} = props
     const label = props.label ?? 'Price'
     return <Box>

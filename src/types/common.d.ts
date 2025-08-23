@@ -12,8 +12,12 @@ type Price = {
     currency: AcceptedCurrency
 }
 
-type DeleteResponse<T = void> = {
+type ApiResponse = {
+    success: boolean,
+    message?: string
+}
+
+type DeleteResponse<T = void> = ApiResponse & {
     message: string
-    success: boolean
     data?: T
 }

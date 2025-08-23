@@ -4,7 +4,8 @@ import React, { useState } from "react"
 export type FileInputProps = React.InputHTMLAttributes<HTMLInputElement> & ButtonProps & StackProps & {
     label?: React.ReactNode,
     onFileChange?: (event: React.ChangeEvent<HTMLInputElement>) => any,
-    selectedFileNamePrefix?: string
+    selectedFileNamePrefix?: string, 
+    inputName?: string
 }
 
 
@@ -12,6 +13,7 @@ const FileInput = (props : FileInputProps) => {
     const {id, variant, component, label, sx, direction, onFileChange, selectedFileNamePrefix, accept, ...restProps} = props
     const [fileName, setFileName] = useState('')
     const inputId = (id ?? crypto.randomUUID()) + '_file_upload'
+    const inputName = props.inputName ?? "coverImageFile"
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event?.target?.files?.[0]
@@ -28,6 +30,7 @@ const FileInput = (props : FileInputProps) => {
             style={{display: 'none'}}
             id={inputId}
             onChange={handleFileChange}
+            name={inputName}
         />
         <label htmlFor={inputId}>
             <Button variant={variant ?? "outlined"} component={component ?? "span"} {...{sx}} >

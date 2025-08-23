@@ -11,6 +11,8 @@ import { API_BASE_URL } from '@/backend/api/api';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getCopies, removeCopy } from '@/backend/api/copy';
+import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
+import { useState } from 'react';
 
 type CopyGalleryProps = {
     copies: CreatedCopy[]
@@ -18,7 +20,8 @@ type CopyGalleryProps = {
 
 const CopyGallery = (props : CopyGalleryProps) => {
   const {copies, ...restProps} = props
-  
+  const [editCopyModalOpen, setEditCopyModalOpen] = useState(false)
+  const [editedCopy, setEditedCopy] = useState<CreatedCopy | undefined>(undefined)
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
@@ -59,12 +62,17 @@ const CopyGallery = (props : CopyGalleryProps) => {
                 <ButtonMenu 
                   ButtonElement={IconButton} 
                   buttonProps={{children: <MoreVertIcon/>, sx: {ml: 'auto', borderRadius: 2}}} 
-                  menuItems={[{label: 'Remove from library', handleClick: () => {
-                    removeCopy(copy.id, (response) =>{
+                  menuItems={[
+                    {label: 'Remove from library', handleClick: () => {
+                       removeCopy(copy.id, (response) =>{
                        console.log(response?.message)
                        getCopies()
-                    })
-                  } }]}
+                    })}}, 
+                    {label: 'Edit Copy', handleClick: () => {
+                      setEditCopyModalOpen(true)
+                      setEditedCopy(copy)
+                    }}
+                  ]}
                 >
                 </ButtonMenu>
               </CardActions>
@@ -72,6 +80,7 @@ const CopyGallery = (props : CopyGalleryProps) => {
           </Grid2>
         ))}
       </Grid2>
+        <EditCopyModal open={editCopyModalOpen} handleClose={() => setEditCopyModalOpen(false)} copy={editedCopy}  />
     </Container>
   );
 }

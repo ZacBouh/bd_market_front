@@ -32,4 +32,14 @@ const removeCopy = (copyId : CreatedCopy['id'] , callback?: (arg?: DeleteRespons
     return () => controller.abort()
 }
 
-export {createCopy, getCopies, removeCopy}
+const updateCopy = (updatedCopy: FormData) => {
+    const controller = new AbortController()
+    api.post<ApiResponse>('/copy/update', updatedCopy)
+    .then(response => {
+        console.log("Update copy response" , response.data)
+        getCopies()
+    })
+    return () => controller.abort()
+}
+
+export {createCopy, getCopies, removeCopy, updateCopy}

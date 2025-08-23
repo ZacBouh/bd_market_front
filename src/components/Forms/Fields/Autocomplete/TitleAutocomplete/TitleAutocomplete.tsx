@@ -19,18 +19,13 @@ type TitleAutocompleteProps = {
         option: CreatedTitle | null, 
         reason: AutocompleteChangeReason, 
         details?: AutocompleteChangeDetails<CreatedTitle> | undefined) => any 
+    title?: Partial<CreatedTitle>,
+    disabled?: boolean
 }
 
 
 
 type TitleAutocompleteState = AutoCompleteFieldState<CreatedTitle>
-
-const initialState: TitleAutocompleteState = {
-    inputValue: '',
-    prevInputValue: '',
-    value: null,
-    modalOpen: false
-}
 
 type TitleAutoCompleteOptionCardProps = {
     option: CreatedTitle,
@@ -86,6 +81,13 @@ const CreateTitleModal = (props : CreateArtistModalProps) => {
 }
 
 const TitleAutocomplete = (props : TitleAutocompleteProps) => {
+    const {title} = props 
+    const initialState: TitleAutocompleteState = {
+        inputValue: title?.name ?? '',
+        prevInputValue: '',
+        value: null,
+        modalOpen: false,
+    }
     const [state, setState] = useState<TitleAutocompleteState>(initialState)
     const {titles} = useTitles()
     const {sx, required, label, onChangeCallback} = props
@@ -130,6 +132,7 @@ const TitleAutocomplete = (props : TitleAutocompleteProps) => {
                 const textInput = (event.target as HTMLInputElement).value
                 setState(state => ({...state, prevInputValue: textInput, inputValue: textInput}))
             }}
+            disabled={props.disabled ?? false}
        />
        <CreateTitleModal
             open={state.modalOpen}

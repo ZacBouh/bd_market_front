@@ -1,3 +1,4 @@
+import { initialState } from "@/components/Forms/PublisherForm/atom"
 import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectProps } from "@mui/material/Select"
 import Typography from "@mui/material/Typography"
@@ -5,6 +6,7 @@ import { useState } from "react"
 
 type CopyConditionSelectProps = {
     onChange?: (condition: {value: CopyCondition, label: string}) => void
+    condition?: CopyCondition | ''
 } & Omit<SelectProps, 'onChange'>
 
 export const CopyConditionOptions : Record<CopyCondition, string> = {
@@ -18,10 +20,12 @@ export const CopyConditionOptions : Record<CopyCondition, string> = {
     'poor': 'Poor' ,
 }
 
-
+type CopyConditionSelectInitialState = {value: CopyCondition | '', label: string | ''} 
 
 const CopyConditionSelect = (props : CopyConditionSelectProps) => {
-    const [state, setState] = useState<{value: CopyCondition | '', label: string | ''}>({value: '', label: ''})
+    const { condition } = props
+    const initialState : CopyConditionSelectInitialState = {value: condition ?? '', label: condition ? CopyConditionOptions[condition] : ''}
+    const [state, setState] = useState<CopyConditionSelectInitialState>(initialState)
     const {onChange}= props
     return <Select 
         value={state.value ?? ''}
