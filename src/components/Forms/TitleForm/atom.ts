@@ -1,9 +1,5 @@
 import { atom } from "jotai";
 
-type NewTitleFormState = NewTitle & {
-  coverImageFile: File | undefined
-}
-
 const newTitleFormInitialState : NewTitleFormState = {
       name: '',
       artistsContributions: [],

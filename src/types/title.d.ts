@@ -26,3 +26,7 @@ type CreatedContribution = {
     skills: string[]
     title: number
 }
+
+type NewTitleFormState = NewTitle & {
+  coverImageFile: File | undefined
+}

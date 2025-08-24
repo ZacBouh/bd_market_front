@@ -55,7 +55,7 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
             renderOption={(props, option) => {
                 const {key, ...itemProps} = props
                 if(option.id === 0){
-                    return <li {...itemProps} key={key} style={{fontStyle:'italic'}}>
+                    return <li {...itemProps} key={option.id} style={{fontStyle:'italic'}}>
                         {option.firstName}        
                     </li>
                 }

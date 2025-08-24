@@ -9,6 +9,7 @@ import { createTitle } from '@/backend/api/title';
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
 import { useEffect } from 'react';
+import StandardSelect from '../Fields/Select/StandardSelect/StandardSelect';
 
 export type TitleFormProps = {
   prePopulatedName?: string,
@@ -21,6 +22,9 @@ const TitleForm = (props : TitleFormProps) => {
     useEffect( () => {
       prePopulatedName && setTitleForm(title => ({...title, name: prePopulatedName})) 
     } , [prePopulatedName])
+
+    const displayLangName = new Intl.DisplayNames([navigator.language || 'en'], {type: 'language'})
+    
     return  <Box component='form'  onSubmit={ async (event) => {
           event.stopPropagation()
           event.preventDefault()
@@ -64,6 +68,13 @@ const TitleForm = (props : TitleFormProps) => {
               label={"Choose a cover image"}
               accept='image/*'
               onFileChange={(event) => setTitleForm(title => ({...title, coverImageFile: event.target.files?.[0]})) } 
+          />
+          <StandardSelect
+            options={[{label: displayLangName.of('fr') ?? 'fr', value: 'fr'}, {label: displayLangName.of('en') ?? 'en', value: 'en'}]}
+            defaultValue={{label: displayLangName.of('fr') ?? 'fr', value: 'fr'}}
+            multiple={false}
+            onChange={(lang) => setTitleForm(title => ({...title, language: lang?.value ?? 'fr'}))}
+            textInputLabel='Select a language'
           />
           <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setTitleForm(newTitleFormInitialState)} >Reset</Button>

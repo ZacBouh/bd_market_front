@@ -1,6 +1,5 @@
 import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectProps } from "@mui/material/Select"
-import Typography from "@mui/material/Typography"
 import { useState } from "react"
 
 type CurrencySelectProps ={
