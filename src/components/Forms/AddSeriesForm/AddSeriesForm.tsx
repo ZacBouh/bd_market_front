@@ -4,6 +4,8 @@ import PublisherAutocomplete from "../Fields/Autocomplete/PublisherAutocomplete/
 import FileInput from "../Fields/FileUpload/FileInput"
 import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
 import OnGoingStatusSelect from "../Fields/Select/OnGoingStatusSelect/OnGoingStatusSelect"
+import objectToFormData from "@/utils/formData"
+import { createSeries } from "@/backend/api/series"
 
 const AddSeriesForm = () => {
     const initialState : Partial<NewSeries> = {
@@ -16,6 +18,9 @@ const AddSeriesForm = () => {
             event.preventDefault()
             event.stopPropagation()
             console.log('Submitted form ', newSeries)
+            const formdata = objectToFormData(newSeries)
+            console.log(formdata)
+            createSeries(formdata)
         }}
     >
         <TextField
@@ -29,7 +34,6 @@ const AddSeriesForm = () => {
             onChange={(_, publisher) => setNewSeries(series => ({...series, publisherId: publisher?.id}))}
             required
         />
-        {/* coverImage */}
         <FileInput 
               label={"Choose a cover image"}
               accept='image/*'
@@ -39,7 +43,6 @@ const AddSeriesForm = () => {
             onChange={(lang) => setNewSeries(series => ({...series, language: lang?.value})) }
             required
         />
-        {/* onGoingStatus */}
         <OnGoingStatusSelect
             onChange={(status) => setNewSeries(series => ({...series, onGoingStatus: status?.value}))}
         />
