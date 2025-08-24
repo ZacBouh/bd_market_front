@@ -8,10 +8,11 @@ type NewSeries = {
     onGoingStatus?: OnGoingStatus, 
 }
 
-type CreatedSeries = NewSeries & {
+type CreatedSeries = Omit<NewSeries, 'publisherId' | 'titlesId' | 'coverImageFile' > & {
     id : NewSeries['id']
     createdAt: string, 
     updatedAt: string,
     coverImage?: UploadedImage
     uploadedImages?: UploadedImage[]
+    publisher: Partial<CreatedPublisher>
 }
