@@ -1,13 +1,6 @@
 import { api } from "./api";
 import { artistsAtom, artistsSkillsAtom, store } from "@/store";
 
-
-
-export type CreatedArtistContribution = NewArtistContribution & {
-    id: number,
-    title: CreatedTitle['id']
-}
-
 const createArtist = async (payload : FormData) => {
     const response = await api.post<CreatedArtist>('/artists', payload)
     return response.data

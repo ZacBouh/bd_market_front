@@ -1,3 +1,6 @@
+export type { SupportedLanguage  } from "./enums/supportedLanguage"
+export type { SupportedOnGoingStatus } from "./enums/onGoingStatus"
+
 type AutoCompleteFieldState<T> = {
     inputValue : string,
     prevInputValue: string,
@@ -21,3 +24,6 @@ type DeleteResponse<T = void> = ApiResponse & {
     message: string
     data?: T
 }
+
+
+

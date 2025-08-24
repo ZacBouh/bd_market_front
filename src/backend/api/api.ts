@@ -16,4 +16,18 @@ api.interceptors.request.use(config => {
     return config
 })
 
+api.interceptors.response.use(
+    response => response, 
+    error => {
+        if (error.response?.status === 401){
+            console.warn("Unauthorized !Redirect to login page")
+            const intendedPath =  window.location.pathname + window.location.search
+            sessionStorage.setItem('redirectAfterLogin', intendedPath)
+            window.location.href = '/login'
+        }
+        // console.log("Interceptor Error log : ", error)
+        return Promise.reject(error)
+    }
+)
+
 export { api, API_BASE_URL }

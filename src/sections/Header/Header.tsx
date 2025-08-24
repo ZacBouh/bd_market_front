@@ -6,12 +6,12 @@ import { useArtists, usePublishers, useTitles } from '@/hooks';
 
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { repository, title } from '@/config';
 import { useHotKeysDialog } from '@/sections/HotKeys/hooks';
 import { useThemeMode } from '@/theme';
 
 import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
+import { useUser } from '@/hooks/useUser';
 
 function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
@@ -20,6 +20,7 @@ function Header() {
   const {setArtists} = useArtists()
   const {setTitles} = useTitles()
   const {setPublishers} = usePublishers()
+  const {user} = useUser()
 
   function showNotification() {
     notifications.show(getRandomJoke(), {
@@ -61,8 +62,8 @@ function Header() {
               </HotKeysButton>
             </Tooltip>
             <Divider orientation="vertical" flexItem />
-            <Tooltip title="It's open source" arrow>
-              <IconButton color="info" size="large" component="a" href={repository} target="_blank">
+            <Tooltip title="Get user atom content" arrow>
+              <IconButton color="info" size="large" component="a" onClick={() => console.log("Current User", user)} target="_blank">
                 <GitHubIcon />
               </IconButton>
             </Tooltip>

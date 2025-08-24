@@ -1,7 +1,7 @@
 import { Autocomplete, TextField, createFilterOptions } from "@mui/material"
 import React, { useState } from "react"
 
-type StandardSelectProps<T extends {label: string}, M extends boolean> =  {
+export type StandardSelectProps<T extends {label: string}, M extends boolean> =  {
         multiple: M
         defaultValue: M extends true ? T[] : T
         renderOption?: (option:  T ) => React.ReactNode
@@ -9,6 +9,7 @@ type StandardSelectProps<T extends {label: string}, M extends boolean> =  {
         options: T[]
         textInputLabel?: string
         filterOptions?: (options: T[], state: {inputValue: string}) => T[]
+        required?: true
     }
 
 
@@ -33,10 +34,9 @@ const StandardSelect = <T extends {label:string}, M extends boolean>(props : Sta
                     {props.renderOption ? props.renderOption(option) : option.label}
                 </li>
             }}
-            renderInput={(params) => <TextField {...params} label={props.textInputLabel}/>}
+            renderInput={(params) => <TextField {...params} required={props.required} label={props.textInputLabel}/>}
             isOptionEqualToValue={(a, b) => a.label === b.label}
             filterOptions={props.filterOptions ?? defaultFilterOptions}
-
         />   
     
 }

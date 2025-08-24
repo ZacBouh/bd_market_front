@@ -6,6 +6,9 @@ type NewTitle = {
     publisher: CreatedPublisher['id'] | null, 
     description: string
 }
+type NewTitleFormState = NewTitle & {
+  coverImageFile: File | undefined
+}
 
 type CreatedTitle = NewTitle & {
     id: number,
@@ -21,12 +24,13 @@ type NewArtistContribution = {
     skills: string[]
 }
 
+type CreatedArtistContribution = NewArtistContribution & {
+    id: number,
+    title: CreatedTitle['id']
+}
+
 type CreatedContribution = {
     artist: {id: CreatedArtist['id'], fullName: string}
     skills: string[]
     title: number
-}
-
-type NewTitleFormState = NewTitle & {
-  coverImageFile: File | undefined
 }
