@@ -1,9 +1,9 @@
-import { supportedLanguages } from "@/types/enums/supportedLanguage"
+import { SupportedLanguage, supportedLanguages } from "@/types/enums/supportedLanguage"
 import StandardSelect, {StandardSelectProps} from "../StandardSelect/StandardSelect"
 
 type LanguageSelectOption = {
   label: string,
-  value: string
+  value: SupportedLanguage
 }
 
 type LanguageSelectProps = Partial<StandardSelectProps<LanguageSelectOption, false>>

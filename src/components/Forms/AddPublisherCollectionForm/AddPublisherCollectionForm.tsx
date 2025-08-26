@@ -6,10 +6,14 @@ import PublisherAutocomplete from "../Fields/Autocomplete/PublisherAutocomplete/
 import dayjs from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import FileInput from "../Fields/FileUpload/FileInput"
+import objectToFormData from "@/utils/formData"
+import { createPublisherCollection } from "@/backend/api/publisherCollection"
+import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
 
 const AddPublisherCollectionForm = () => {
     const initialState : Partial<NewPublisherCollection> = {
-        name: ''
+        name: '',
+        language: 'fr'
     }
     const [collection, setCollection] = useState<Partial<NewPublisherCollection>>(initialState)
     return <Box component='form'
@@ -17,6 +21,8 @@ const AddPublisherCollectionForm = () => {
             event.stopPropagation()
             event.preventDefault()
             console.log("Publisher Collection form ", collection)
+            const formData = objectToFormData(collection)
+            createPublisherCollection(formData)
         }}
     >
         <TextField
@@ -52,6 +58,9 @@ const AddPublisherCollectionForm = () => {
                 label={"Choose a logo"}
                 accept='image/*'
                 onFileChange={(event) => setCollection(collection => ({...collection, coverImageFile: event.target.files?.[0]})) }
+        />
+        <LanguageSelect
+            onChange={(lang) => setCollection(collection => ({...collection, language: lang.value}))}
         />
         <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
             <Button onClick={() => console.log("clicked reset, not implemented")} >Reset</Button>

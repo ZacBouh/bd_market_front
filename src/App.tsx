@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { BrowserRouter } from 'react-router';
 
 import { Box, Button, CssBaseline} from '@mui/material';
@@ -15,9 +15,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Provider } from 'jotai';
 import { store } from './store';
+import { routerNavigate } from './utils/routerNavigate';
 
 function App() {
   const { toggle: toggleSideMenu, width: sideMenuWidth} = useSidebar()
+  
   return (
     <Fragment>
       <Provider store={store} >

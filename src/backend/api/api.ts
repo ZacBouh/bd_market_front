@@ -1,5 +1,7 @@
 import axios from "axios"
 import { store, userAtom } from "@/store"
+import { logout } from "@/hooks/useUser"
+import { routerNavigate } from "@/utils/routerNavigate"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -23,7 +25,9 @@ api.interceptors.response.use(
             console.warn("Unauthorized !Redirect to login page")
             const intendedPath =  window.location.pathname + window.location.search
             sessionStorage.setItem('redirectAfterLogin', intendedPath)
-            window.location.href = '/login'
+            routerNavigate.setIntendedTo(intendedPath)
+            logout()
+            routerNavigate.navigate('/login')
         }
         // console.log("Interceptor Error log : ", error)
         return Promise.reject(error)

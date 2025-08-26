@@ -12,6 +12,7 @@ import { useThemeMode } from '@/theme';
 import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
 import { useUser } from '@/hooks/useUser';
+import { routerNavigate } from '@/utils/routerNavigate';
 
 function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
@@ -90,6 +91,13 @@ function Header() {
                 <DeleteForeverIcon />
               </IconButton>
             </Tooltip>
+            <Button
+              onClick={() => {
+                routerNavigate.setIntendedTo('/titles')
+                const redirectPath = routerNavigate.getIntendedTo()
+                typeof  redirectPath === 'string' && routerNavigate.navigate(redirectPath)
+              }}
+            >Try Navigate</Button>
           </Stack>
         </Stack>
       </Toolbar>
