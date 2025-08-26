@@ -49,6 +49,13 @@ const routes: Routes = [
     isProtected: true
   },
   {
+    component: asyncComponentLoader(() => import('@/pages/PublisherCollectionPage')),
+    path: '/collections',
+    title: 'Collections',
+    icon: AddTaskIcon, 
+    isProtected: true
+  },
+  {
     component: asyncComponentLoader(() => import('@/pages/LoginPage')),
     path: '/login',
     title: 'Login',

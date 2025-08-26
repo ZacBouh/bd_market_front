@@ -1,28 +1,32 @@
 export type { SupportedLanguage  } from "./enums/supportedLanguage"
 export type { SupportedOnGoingStatus } from "./enums/onGoingStatus"
 
-type AutoCompleteFieldState<T> = {
-    inputValue : string,
-    prevInputValue: string,
-    value: T | null,
-    modalOpen: boolean
-}
+declare global {
 
-type AcceptedCurrency = 'euro'
-
-type Price = {
-    amount: string,
-    currency: AcceptedCurrency
-}
-
-type ApiResponse = {
-    success: boolean,
-    message?: string
-}
-
-type DeleteResponse<T = void> = ApiResponse & {
-    message: string
-    data?: T
+    
+    type AutoCompleteFieldState<T> = {
+        inputValue : string,
+        prevInputValue: string,
+        value: T | null,
+        modalOpen: boolean
+    }
+    
+    type AcceptedCurrency = 'euro'
+    
+    type Price = {
+        amount: string,
+        currency: AcceptedCurrency
+    }
+    
+    type ApiResponse = {
+        success: boolean,
+        message?: string
+    }
+    
+    type DeleteResponse<T = void> = ApiResponse & {
+        message: string
+        data?: T
+    }
 }
 
 

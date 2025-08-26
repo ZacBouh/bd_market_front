@@ -44,7 +44,7 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 <CardContent>
                   <Typography variant="h6">{title.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    by {title.artistsContributions[0].artist.fullName}
+                    by {title?.artistsContributions[0]?.artist?.fullName ?? '?'}
                   </Typography>
                 </CardContent>
               </CardActionArea>
