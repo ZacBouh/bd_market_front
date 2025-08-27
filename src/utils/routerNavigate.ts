@@ -20,6 +20,14 @@ class RouterNavigate {
         }
         this.#navigateFunction(to)
     }
+    postLoginRedirect(){
+        if(this.#intendedTo === undefined){
+            this.navigate('/collections')
+            return
+        }
+        this.navigate(this.#intendedTo)
+        this.#intendedTo = undefined
+    }
 }
 
 export const routerNavigate = new RouterNavigate()

@@ -22,10 +22,12 @@ api.interceptors.response.use(
     response => response, 
     error => {
         if (error.response?.status === 401){
-            console.warn("Unauthorized !Redirect to login page")
             const intendedPath =  window.location.pathname + window.location.search
+            console.warn("Unauthorized !Redirect to login page, storing post login redirect path : ", intendedPath)
             sessionStorage.setItem('redirectAfterLogin', intendedPath)
-            routerNavigate.setIntendedTo(intendedPath)
+            if(routerNavigate.getIntendedTo() === undefined){
+                routerNavigate.setIntendedTo(intendedPath)
+            }
             logout()
             routerNavigate.navigate('/login')
         }

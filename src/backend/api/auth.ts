@@ -16,10 +16,9 @@ async function registerUser(payload : NewUser) : Promise<CreatedUser>{
 async function loginUser(payload : LoginCredentials) : Promise<LoggedInUser> {
     const response = await axios.post<LoggedInUser>(`${API_BASE_URL}/api/login_check`, payload)
     store.set(userAtom, response.data)
-    const redirectAfterLogin = routerNavigate.getIntendedTo() 
-    if(typeof redirectAfterLogin === 'string'){
-        routerNavigate.navigate(redirectAfterLogin)
-    }
+    const redirectAfterLogin = routerNavigate.getIntendedTo()
+    console.log("Post login redirect path : ", redirectAfterLogin) 
+    routerNavigate.postLoginRedirect()
     return response.data
 }
 

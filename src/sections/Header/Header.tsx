@@ -13,6 +13,7 @@ import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
 import { useUser } from '@/hooks/useUser';
 import { routerNavigate } from '@/utils/routerNavigate';
+import { store, userAtom } from '@/store';
 
 function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
@@ -68,6 +69,11 @@ function Header() {
                 <GitHubIcon />
               </IconButton>
             </Tooltip>
+            <Tooltip title="Clear user atom content" arrow>
+              <IconButton color="error" size="large" component="a" onClick={() => user && store.set(userAtom, {...user, token: '' })} target="_blank">
+                <GitHubIcon />
+              </IconButton>
+            </Tooltip>
             <Divider orientation="vertical" flexItem />
             <Tooltip title="Switch theme" arrow>
               <IconButton
@@ -93,7 +99,7 @@ function Header() {
             </Tooltip>
             <Button
               onClick={() => {
-                routerNavigate.setIntendedTo('/titles')
+                routerNavigate.setIntendedTo('/collections')
                 const redirectPath = routerNavigate.getIntendedTo()
                 typeof  redirectPath === 'string' && routerNavigate.navigate(redirectPath)
               }}
