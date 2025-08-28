@@ -10,6 +10,7 @@ import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
 import { useEffect } from 'react';
 import StandardSelect from '../Fields/Select/StandardSelect/StandardSelect';
+import SeriesAutocomplete from '../Fields/Autocomplete/SeriesAutocomplete/SeriesAutocomplete';
 
 export type TitleFormProps = {
   prePopulatedName?: string,
@@ -42,6 +43,7 @@ const TitleForm = (props : TitleFormProps) => {
             required
             fullWidth
           />
+          <SeriesAutocomplete/>
           <FormControl component='fieldset'  fullWidth>
             <FormLabel component="legend" sx={{mb: 1}} >Author</FormLabel>
             <TextField 

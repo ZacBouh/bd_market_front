@@ -6,7 +6,9 @@ type LanguageSelectOption = {
   value: SupportedLanguage
 }
 
-type LanguageSelectProps = Partial<StandardSelectProps<LanguageSelectOption, false>>
+type LanguageSelectProps = Omit<Partial<StandardSelectProps<LanguageSelectOption, false>>,  'defaultValue'> & {
+  defaultValue?: SupportedLanguage
+}
 
 const LanguageSelect = (props : LanguageSelectProps) => {
   const displayLangName = new Intl.DisplayNames([navigator.language || 'en'], {type: 'language'})
@@ -16,7 +18,7 @@ const LanguageSelect = (props : LanguageSelectProps) => {
     value: code
     }))
   
-  const defaultValue : LanguageSelectOption = props.defaultValue ?? {label: displayLangName.of('fr') ?? 'fr', value: 'fr'}
+  const defaultValue : LanguageSelectOption  = props.defaultValue ? {label: displayLangName.of(props.defaultValue) ?? props.defaultValue, value:props.defaultValue } : {label: displayLangName.of('fr') ?? 'fr', value: 'fr'}
 
   return <StandardSelect<LanguageSelectOption, false>
       options={options}

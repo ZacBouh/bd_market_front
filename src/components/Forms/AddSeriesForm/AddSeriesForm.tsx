@@ -6,21 +6,29 @@ import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
 import OnGoingStatusSelect from "../Fields/Select/OnGoingStatusSelect/OnGoingStatusSelect"
 import objectToFormData from "@/utils/formData"
 import { createSeries } from "@/backend/api/series"
+import { SupportedLanguage } from "@/types/common"
 
-const AddSeriesForm = () => {
+export type AddSeriesFormProps = {
+    prePopulatedName?:string,
+    prePolutatedLanguage?: SupportedLanguage,
+    onSeriesCreated?: (series: CreatedSeries) => any 
+}
+
+const AddSeriesForm = (props: AddSeriesFormProps) => {
     const initialState : Partial<NewSeries> = {
-        name: '',
-        language: 'fr',
+        name: props.prePopulatedName ?? '',
+        language: props.prePolutatedLanguage ?? 'fr',
     } 
     const [newSeries, setNewSeries] = useState<Partial<NewSeries>>(initialState)
     return <Box component={'form'}
-        onSubmit={(event) =>{
+        onSubmit={async (event) =>{
             event.preventDefault()
             event.stopPropagation()
             console.log('Submitted form ', newSeries)
             const formdata = objectToFormData(newSeries)
             console.log(formdata)
-            createSeries(formdata)
+            const createdSeries = await createSeries(formdata)
+            props.onSeriesCreated && props.onSeriesCreated(createdSeries)
         }}
     >
         <TextField
@@ -40,6 +48,7 @@ const AddSeriesForm = () => {
               onFileChange={(event) => setNewSeries(series => ({...series, coverImageFile: event.target.files?.[0]})) } 
           />
         <LanguageSelect
+            defaultValue={props.prePolutatedLanguage}
             onChange={(lang) => setNewSeries(series => ({...series, language: lang?.value})) }
             required
         />

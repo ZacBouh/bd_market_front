@@ -9,7 +9,7 @@ type NewSeries = {
 }
 
 type CreatedSeries = Omit<NewSeries, 'publisherId' | 'titlesId' | 'coverImageFile' > & {
-    id : NewSeries['id']
+    id : number
     createdAt: string, 
     updatedAt: string,
     coverImage?: UploadedImage
