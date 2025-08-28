@@ -6,7 +6,7 @@ import {  useEffect, useState } from "react"
 
 type SeriesAutocompleteProps = {
     label?: string
-    required?: true,
+    required?: true
     onChange?: (series: CreatedSeries | null) => any
     getOptionLabel? : (option: CreatedSeries) => string
 }

@@ -11,6 +11,8 @@ import objectToFormData from '@/utils/formData';
 import { useEffect } from 'react';
 import StandardSelect from '../Fields/Select/StandardSelect/StandardSelect';
 import SeriesAutocomplete from '../Fields/Autocomplete/SeriesAutocomplete/SeriesAutocomplete';
+import PublisherCollectionAutocomplete from '../Fields/Autocomplete/PublisherCollectionAutocomplete.tsx/PublisherCollectionAutocomplete';
+import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 
 export type TitleFormProps = {
   prePopulatedName?: string,
@@ -43,7 +45,12 @@ const TitleForm = (props : TitleFormProps) => {
             required
             fullWidth
           />
-          <SeriesAutocomplete/>
+          <SeriesAutocomplete 
+            onChange={series => setTitleForm(title => ({...title, series})) }
+          />
+          <PublisherCollectionAutocomplete 
+            onChange={collection => setTitleForm(title => ({...title, collection: collection}))}
+          />
           <FormControl component='fieldset'  fullWidth>
             <FormLabel component="legend" sx={{mb: 1}} >Author</FormLabel>
             <TextField 
@@ -78,10 +85,13 @@ const TitleForm = (props : TitleFormProps) => {
             onChange={(lang) => setTitleForm(title => ({...title, language: lang?.value ?? 'fr'}))}
             textInputLabel='Select a language'
           />
-          <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
+          {/* <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
           <Button onClick={() => setTitleForm(newTitleFormInitialState)} >Reset</Button>
           <Button type='submit' >Ajouter</Button>
-          </Box>
+          </Box> */}
+          <FormSubmitAndResetButtons
+            state={titleForm}
+          />
         </Box>
 }
 

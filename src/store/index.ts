@@ -6,6 +6,7 @@ import { artistsAtom } from "./artists";
 import { titlesAtom } from "./titles";
 import { copyAtom } from "./copy";
 import { seriesAtom } from "./series";
+import { collectionsAtom } from "./publisherCollections";
 
 const store = createStore()
 
@@ -16,5 +17,6 @@ export { store,
     artistsAtom,
     titlesAtom,
     copyAtom,
-    seriesAtom
+    seriesAtom,
+    collectionsAtom
 }

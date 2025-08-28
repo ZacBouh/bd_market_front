@@ -11,4 +11,15 @@ declare global {
         deathDate? : string,
         coverImageFile? : File,
     }
+
+    type CreatedPublisherCollection = Omit<NewPublisherCollection, 'titleIds' | 'coverImageFile' | 'publisherId'> & {
+        id: number
+        publisher: CreatedPublisher
+        createdAt: string,
+        updatedAt: string,
+        coverImage?: {
+            id: UploadedImage['id']
+            imageName: UploadedImage['imageName']
+        }
+    }
 }
