@@ -31,6 +31,7 @@ const ScanForm = () => {
             event.preventDefault()
             event.stopPropagation()
             const payload = objectToFormData(state) 
+            console.log(state)
             console.log(payload)
             scanPicture(payload)
         }}  
@@ -65,6 +66,13 @@ const ScanForm = () => {
             <ImageCrop 
                 imgUrl={URL.createObjectURL(file)}
                 clampInside={true}
+                onCrop={(croppedImage) => {
+                    setState(state => {
+                        const newState = {...state}
+                        newState[state.value] = croppedImage.file
+                        return newState
+                    })
+                }}
             />
         }
         <FormSubmitAndResetButtons
