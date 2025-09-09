@@ -12,11 +12,11 @@ const FormSubmitAndResetButtons = (props : FormSubmitAndResetButtonsProps) => {
     const env = import.meta.env.VITE_ENV
     const logLabel = props.logLabel ?? "Content of the Form "
     return <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
+        <Button onClick={handleReset} >Reset</Button>
+        <Button type='submit' >Ajouter</Button>
         {env === 'dev' && 
             <Button onClick={() => console.info(logLabel, props.state)} >Log Content</Button>
         }
-        <Button onClick={handleReset} >Reset</Button>
-        <Button type='submit' >Ajouter</Button>
     </Box>
 }
 

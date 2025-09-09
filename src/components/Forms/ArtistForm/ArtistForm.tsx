@@ -9,6 +9,7 @@ import { getArtistsSkills } from '@/backend/api/artist';
 import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkillsSelect';
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
+import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 
 export type ArtistFormProps = {
   prePopulatedName?: string,
@@ -105,10 +106,10 @@ const ArtistForm = (props : ArtistFormProps) => {
           accept='image/*'
           onFileChange={(event) => setAuthorForm(authorForm => ({...authorForm, coverImageFile: event.target.files?.[0]})) }
         />
-        <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-          <Button onClick={() => setAuthorForm(initialState)} >Reset</Button>
-          <Button type='submit' >Ajouter</Button>
-        </Box>
+        <FormSubmitAndResetButtons
+          state={authorForm}
+          handleReset={() => setAuthorForm(initialState)}
+        />
     </Box>
 }
 

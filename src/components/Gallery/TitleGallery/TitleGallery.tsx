@@ -38,8 +38,8 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={API_BASE_URL + title.coverImage.url}
-                  alt={title.coverImage.imageName}
+                  image={API_BASE_URL + title?.coverImage?.url}
+                  alt={title?.coverImage?.imageName}
                 />
                 <CardContent>
                   <Typography variant="h6">{title.name}</Typography>

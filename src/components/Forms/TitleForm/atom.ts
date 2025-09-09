@@ -6,7 +6,7 @@ const newTitleFormInitialState : NewTitleFormState = {
       publisher: null,
       description: '',
       releaseDate: '',
-      language: '', 
+      language: 'fr', 
       coverImageFile: undefined
   }
 

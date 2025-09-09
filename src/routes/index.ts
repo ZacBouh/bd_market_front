@@ -1,6 +1,7 @@
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import HomeIcon from '@mui/icons-material/Home';
+import ScanIcon from '@mui/icons-material/Flip';
 import asyncComponentLoader from '@/utils/loader';
 import { store, userAtom } from '@/store';
 
@@ -12,6 +13,13 @@ const routes: Routes = [
     path: '/',
     title: 'Welcome',
     icon: HomeIcon,
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/ScanPage')),
+    path: '/scan',
+    title: 'Scan',
+    icon: ScanIcon,
+    isProtected: true
   },
   {
     component: asyncComponentLoader(() => import('@/pages/UserLibraryPage')),

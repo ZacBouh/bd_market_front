@@ -1,5 +1,6 @@
 export type { SupportedLanguage  } from "./enums/supportedLanguage"
 export type { SupportedOnGoingStatus } from "./enums/onGoingStatus"
+export type { ComicBookScanPart } from "./enums/BookScanPart"
 
 declare global {
 
