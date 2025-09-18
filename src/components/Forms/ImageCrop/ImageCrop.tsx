@@ -203,9 +203,16 @@ const ImageCrop = (props: ImageCropProps) => {
         </Box>
         <Button
             onClick={async () => {
-                console.log(`cropping based on maskBox`, maskBox)
-                const croppedImage = await cropVisibleImage(props.imgUrl, maskBox)
-                props.onCrop && props.onCrop(croppedImage) 
+              console.log(`cropping based on maskBox`, maskBox)
+              const croppedImage = await cropVisibleImage(props.imgUrl, maskBox)
+              const fullBox : BoundingBox = [
+                {x: 0, y: 0},
+                {x: 1, y: 0},
+                {x: 1, y: 1},
+                {x: 0, y: 1},
+              ]
+              setMaskBox(fullBox)
+              props.onCrop && props.onCrop(croppedImage) 
             }}
         >Crop</Button>
     </Stack>

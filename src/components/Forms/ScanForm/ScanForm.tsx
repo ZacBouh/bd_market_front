@@ -15,16 +15,23 @@ type ScanPartOption<T extends  ComicBookScanPart = ComicBookScanPart> = {
     value: T 
 }
 
+type ScanFormProps = {
+    selectBookPart? : true
+    onFileChange?: (file : File) => unknown
+    onBookPartChange?: (bookPart : ComicBookScanPart) => unknown 
+    onCropImage?: (croppedImageFile: File) => unknown
+}
+
 type ScanFormState = ScanPartOption & Partial<Record<ComicBookScanPart, File>>
 
 
-const ScanForm = () => {
+const ScanForm = (props : ScanFormProps) => {
     const defaultValue : ScanPartOption = {
         value: 'BACK_COVER',
         label: 'Back Cover'
     }
     const [state, setState] = useState<ScanFormState>(defaultValue)
-    const options : ScanPartOption[] = Object.keys(comicBookScanPartOptions).map(option => ({value : option as ComicBookScanPart, label: comicBookScanPartOptions[option as ComicBookScanPart] })) 
+    const options : ScanPartOption[] = Object.keys(comicBookScanPartOptions).map(option => ({value : option as ComicBookScanPart, label: comicBookScanPartOptions[option as ComicBookScanPart]})) 
     const file = state[state.value]
     return <Box component='form'
         onSubmit={event => {
@@ -42,25 +49,30 @@ const ScanForm = () => {
             inputName={state.value}
             onFileChange={(event) =>{
                 const newState : ScanFormState = {...state}
-                newState[state.value] =  event.target.files?.[0]
+                const file =  event.target.files?.[0]
+                newState[state.value] = file
                 setState(newState)
+                props.onFileChange && file && props.onFileChange(file)
             }}
         />
-        <StandardSelect<ScanPartOption<ComicBookScanPart>, false>
-            multiple={false}
-            defaultValue={defaultValue}
-            options={options}
-            onChange={value => {
-                const newState : ScanFormState = {...state, ...value}   
-                const fileEntryLabel = Object.keys(newState).filter(key => Object.keys(comicBookScanPartOptions).includes(key)) as ComicBookScanPart[]
-                if(fileEntryLabel.length > 0){
-                    newState[value.value] = newState[fileEntryLabel[0]]
-                    delete newState[fileEntryLabel[0]] 
-                } 
-                setState(newState)
-                console.log(`Selected value for Scanning ${value}`)
-            }}    
-        />        
+        { props.selectBookPart && 
+            <StandardSelect<ScanPartOption<ComicBookScanPart>, false>
+                multiple={false}
+                defaultValue={defaultValue}
+                options={options}
+                onChange={value => {
+                    const newState : ScanFormState = {...state, ...value}   
+                    const fileEntryLabel = Object.keys(newState).filter(key => Object.keys(comicBookScanPartOptions).includes(key)) as ComicBookScanPart[]
+                    if(fileEntryLabel.length > 0){
+                        newState[value.value] = newState[fileEntryLabel[0]]
+                        delete newState[fileEntryLabel[0]] 
+                    } 
+                    setState(newState)
+                    props.onBookPartChange && props.onBookPartChange(value.value)
+                    console.log(`Selected value for Scanning ${value}`)
+                }}    
+            />        
+        }
         </Stack>
         {file && 
             <ImageCrop 
@@ -70,6 +82,7 @@ const ScanForm = () => {
                     setState(state => {
                         const newState = {...state}
                         newState[state.value] = croppedImage.file
+                        props.onCropImage && props.onCropImage(croppedImage.file)
                         return newState
                     })
                 }}
