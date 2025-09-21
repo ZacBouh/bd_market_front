@@ -15,3 +15,13 @@ export const getTitles = () => {
     })
     return () => controller.abort()
 }
+
+export const findTitles = (titleIds: number[], callback?: (arg: CreatedTitle[]) => unknown) => {
+    const controller = new AbortController()
+    api.post<CreatedTitle[]>('/title', {titleIds}, {signal: controller.signal})
+    .then(response =>{
+        callback && callback(response.data)
+         console.log("Retrieved titles ", response.data)
+    })
+    return () => controller.abort()
+}

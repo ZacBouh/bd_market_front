@@ -19,9 +19,9 @@ const TitleGallery = (props : TitleGalleryProps) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
-        {titles.map((title, i) => (
+        {titles.map((title) => (
           <Grid2
-            key={i}
+            key={title.id}
             size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
           >
             <Card

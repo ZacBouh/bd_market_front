@@ -1,24 +1,29 @@
 import AddScanImageButton from "@/components/Forms/Buttons/AddScanImageButton"
-import { Button, Card, CardContent, Container, Modal, Stack, Typography } from "@mui/material"
+import { Box,  Container,  Stack,  } from "@mui/material"
 import { useEffect, useState } from "react"
 import indexStorage from "@/store/indexedDbStorage"
 import FormSubmitAndResetButtons from "@/components/Forms/Buttons/FormSubmitAndResetButtons"
 import objectToFormData from "@/utils/formData"
+import { scanPicture } from "@/backend/api/scan"
+import ScanResultHandler from "./ScanResultHandler"
+import type { ScanResultHandlerProps } from "./ScanResultHandler"
 
 export type ScanPageState = {
     BACK_COVER?: File,
     FRONT_COVER?: File,
     SPINE?: File
+    hasScanResult: boolean, 
+    scanResult?:  ScanResultHandlerProps['data']
 } 
 
 const ScanPage = () => {
-    const [state, setState] = useState<ScanPageState>({}) 
+    const [state, setState] = useState<ScanPageState>({hasScanResult: false}) 
     const [hydrated, setHydrated] = useState(false)
     const [get, set, remove] = indexStorage
     
     useEffect(() => {
         console.log('loading files from index')
-        get('scanPageState', {})
+        get('scanPageState', {hasScanResult: false})
         .then(storedState =>{
             setState(storedState)
             setHydrated(true)
@@ -35,39 +40,53 @@ const ScanPage = () => {
     const hasFile = Object.keys(state).filter(key => state[key as keyof typeof state] instanceof File).length > 0
     console.log("has file : %s", hasFile)
   
-    return <Container component={'form'} onSubmit={(event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        const payload = objectToFormData(state)
-        
-    }} >
-                <Stack direction="row" gap={4}>
-                    <AddScanImageButton 
-                        label="Front Cover"
-                        onSelectedImage={(imageFile) => setState(state => ({...state, FRONT_COVER: imageFile})) }
-                        selectedImage={state.FRONT_COVER}
-                    />
-                    <AddScanImageButton 
-                        label="Back Cover"
-                        onSelectedImage={(imageFile) => setState(state => ({...state, BACK_COVER: imageFile}))}
-                        selectedImage={state.BACK_COVER}
-                    />
-                    <AddScanImageButton 
-                        label="Spine"
-                        onSelectedImage={(imageFile) => setState(state => ({...state, SPINE: imageFile})) }
-                        selectedImage={state.SPINE}
-                    />
-                </Stack>
-                {hasFile && 
-                    <FormSubmitAndResetButtons
-                        state={state}
-                        handleReset={() => {
-                            remove('scanPageState')
-                            setState({})
-                        }}
-                    />
-                }
-            </Container>
+    return <Container>
+            {!state.hasScanResult && 
+                <Box component={'form'} onSubmit={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    const payload = objectToFormData(state)
+                    scanPicture(payload, (data) =>{
+                        console.log("Scan Picture response", data)
+                        setState(state => ({...state, hasScanResult: true, scanResult: data}))
+                    })
+                }} >
+                
+                    <Stack direction="row" gap={4}>
+                        <AddScanImageButton 
+                            label="Front Cover"
+                            onSelectedImage={(imageFile) => setState(state => ({...state, FRONT_COVER: imageFile})) }
+                            selectedImage={state.FRONT_COVER}
+                        />
+                        <AddScanImageButton 
+                            label="Back Cover"
+                            onSelectedImage={(imageFile) => setState(state => ({...state, BACK_COVER: imageFile}))}
+                            selectedImage={state.BACK_COVER}
+                        />
+                        <AddScanImageButton 
+                            label="Spine"
+                            onSelectedImage={(imageFile) => setState(state => ({...state, SPINE: imageFile})) }
+                            selectedImage={state.SPINE}
+                        />
+                    </Stack>
+                    {hasFile && 
+                        <FormSubmitAndResetButtons
+                            state={state}
+                            handleReset={() => {
+                                remove('scanPageState')
+                                setState({hasScanResult: false})
+                            }}
+                        />
+                    }
+                </Box>
+            }
+            {state.hasScanResult && 
+                <ScanResultHandler
+                    resetHandler={() => setState(state => ({...state, hasScanResult: false}))}
+                    data={state.scanResult}
+                />
+            }
+    </Container>
 }
 
 export default ScanPage
