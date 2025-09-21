@@ -8,7 +8,9 @@ import { useState } from "react"
 import { Box } from "@mui/material"
 
 type AddScanImageButtonProps = {
-    label: string
+    label: string,
+    onSelectedImage: (imageFile : File) => unknown
+    selectedImage?: File
 }
 
 type AddScanImageButtonState = {
@@ -19,26 +21,26 @@ type AddScanImageButtonState = {
 const AddScanImageButton = (props: AddScanImageButtonProps) => {
     const [state, setState] = useState<AddScanImageButtonState>({
         modalOpen: false,
-        selectedImage: undefined 
+        selectedImage: undefined,
     })
-    
+    const selectedImage = props.selectedImage ?? state.selectedImage
     return <Box>
-        <Card onClick={() => setState(state => ({...state, modalOpen: true}))} >
-        <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: 400, maxWidth: 200}} >
-            {!state.selectedImage && 
+        <Card onClick={() => setState(state => ({...state, modalOpen: true}))} sx={{px: 4}} >
+        <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: 400, maxWidth: 200,  }} >
+            {!selectedImage && 
                 <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} component={'div'} >
                     <AddPhotoIcon sx={{fontSize: 150}} />
                     <Typography >{props.label ?? 'Add Image'}</Typography>
                 </Box>
             }
-            {state.selectedImage && 
-                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            {selectedImage && 
+                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: "space-between",  my: 2}}>
                     <img
-                        src={URL.createObjectURL(state.selectedImage)}
+                        src={URL.createObjectURL(selectedImage)}
                         style={{
                             inset: 0,
-                            width: '100%',
-                            height: '100%',
+                            width: 'auto',
+                            height: selectedImage ? 300 : 'auto',
                             objectFit: 'contain',
                         }}
                     />
@@ -54,7 +56,13 @@ const AddScanImageButton = (props: AddScanImageButtonProps) => {
         <Box>
             <ScanForm
                 onCropImage={(image) =>{
-                    setState(state => ({...state, selectedImage: image, modalOpen: false}))                     
+                    if (props.onSelectedImage){
+                        console.log('WERE ARE GERE')
+                        props.onSelectedImage(image)
+                        setState(state => ({...state, modalOpen: false}))                     
+                    } else {
+                        setState(state => ({...state, selectedImage: image, modalOpen: false}))                     
+                    }
                 }}
             />
         </Box>

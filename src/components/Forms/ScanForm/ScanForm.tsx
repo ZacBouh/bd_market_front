@@ -4,7 +4,7 @@ import { Stack } from "@mui/material"
 import StandardSelect from "../Fields/Select/StandardSelect/StandardSelect"
 import type { ComicBookScanPart } from "@/types/common"
 import { ComicBookScanPart as comicBookScanPartOptions } from "@/types/enums/BookScanPart"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 import objectToFormData from "@/utils/formData"
 import { scanPicture } from "@/backend/api/scan"
@@ -33,6 +33,12 @@ const ScanForm = (props : ScanFormProps) => {
     const [state, setState] = useState<ScanFormState>(defaultValue)
     const options : ScanPartOption[] = Object.keys(comicBookScanPartOptions).map(option => ({value : option as ComicBookScanPart, label: comicBookScanPartOptions[option as ComicBookScanPart]})) 
     const file = state[state.value]
+    const imageUrl = useMemo(() => file ? URL.createObjectURL(file) : null, [file])
+    useEffect(() => {
+        return () => {
+            if(imageUrl) URL.revokeObjectURL(imageUrl)
+        }
+    }, [imageUrl])
     return <Box component='form'
         onSubmit={event => {
             event.preventDefault()
@@ -76,15 +82,15 @@ const ScanForm = (props : ScanFormProps) => {
         </Stack>
         {file && 
             <ImageCrop 
-                imgUrl={URL.createObjectURL(file)}
+                imgUrl={imageUrl ?? ''}
                 clampInside={true}
                 onCrop={(croppedImage) => {
                     setState(state => {
                         const newState = {...state}
                         newState[state.value] = croppedImage.file
-                        props.onCropImage && props.onCropImage(croppedImage.file)
                         return newState
                     })
+                    props.onCropImage && props.onCropImage(croppedImage.file)
                 }}
             />
         }
