@@ -8,9 +8,11 @@ import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect
 import { createCopy, updateCopy } from "@/backend/api/copy"
 import objectToFormData from "@/utils/formData"
 import { API_BASE_URL } from "@/backend/api/api"
+import { title } from "process"
 
 type AddCopyFormProps = {
-    copyToEdit? : CreatedCopy
+    copyToEdit? : CreatedCopy,
+    title?: CreatedTitle
 }
 
 const AddCopyForm = (props : AddCopyFormProps) => {
@@ -18,12 +20,17 @@ const AddCopyForm = (props : AddCopyFormProps) => {
     const {user} = useUser()
     const initialState : NewCopy = {
         ...copyToEdit,
-        titleId: copyToEdit?.title?.id ,
+        titleId: copyToEdit?.title?.id ?? props?.title?.id ,
         ownerId: copyToEdit?.owner?.id  ?? user?.user.id ?? null,
         boughtForCurrency: copyToEdit?.boughtForCurrency ?? 'euro',
         currency: copyToEdit?.currency ?? 'euro',
     }
-    const [coverImagePreviewUrl, setCoverImagePreviewUrl] = useState(copyToEdit?.coverImage?.url ? API_BASE_URL+ copyToEdit?.coverImage?.url :  undefined) 
+    const prefilledCoverImageUrl = (() => {
+        if(copyToEdit?.coverImage?.url) return copyToEdit?.coverImage?.url
+        if(props.title?.coverImage?.url) return props.title?.coverImage?.url
+        return false
+    })()
+    const [coverImagePreviewUrl, setCoverImagePreviewUrl] = useState(prefilledCoverImageUrl ? API_BASE_URL+ prefilledCoverImageUrl :  undefined) 
     const [newCopy, setNewCopy] = useState<NewCopy>(initialState)
     return <Box component='form'
         onSubmit={(event) => {
@@ -41,8 +48,8 @@ const AddCopyForm = (props : AddCopyFormProps) => {
         
         <TitleAutocomplete 
             onChangeCallback={(_, title) => setNewCopy(newCopy => ({...newCopy, titleId: title?.id}))} 
-            title={copyToEdit?.title}
-            disabled={copyToEdit ? true : false}
+            title={copyToEdit?.title ?? props?.title}
+            disabled={(copyToEdit || props.title) ? true : false}
         />
         <CopyConditionSelect condition={copyToEdit?.copyCondition ?? ''} onChange={(condition) => setNewCopy(newCopy => ({...newCopy, copyCondition: condition.value})) }/>    
         <PriceInputSelect

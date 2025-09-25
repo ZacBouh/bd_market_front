@@ -11,6 +11,7 @@ import { API_BASE_URL } from '@/backend/api/api';
 
 type TitleGalleryProps = {
     titles: CreatedTitle[]
+    onTitleClick?: (title: CreatedTitle) => unknown  
 }
 
 const TitleGallery = (props : TitleGalleryProps) => {
@@ -34,7 +35,7 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 flexDirection: 'column',
               }}
             >
-              <CardActionArea sx={{ flexGrow: 1 }}>
+              <CardActionArea sx={{ flexGrow: 1 }} onClick={() => props.onTitleClick && props.onTitleClick(title) } >
                 <CardMedia
                   component="img"
                   height="300"

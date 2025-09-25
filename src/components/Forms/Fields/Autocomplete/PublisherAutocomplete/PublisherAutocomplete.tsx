@@ -9,6 +9,7 @@ type PublisherAutocompleteProps = Omit<AutocompleteProps<CreatedPublisher, false
 > & {
     required: boolean
     onChange?: (event: null | React.SyntheticEvent<Element, Event>, publisher: CreatedPublisher | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<CreatedPublisher> | undefined  ) => void
+    value?: CreatedPublisher
 }
 
 type CreatePublisherModalProps = Omit<ModalProps, 'children'> & {
@@ -31,14 +32,14 @@ const PublisherAutocomplete = (props : PublisherAutocompleteProps ) => {
     const label = "Publisher"
     const [modalOpen, setModalOpen] = useState(false)
     const createPublisherOption = {...publishers[0], id: 0, name: 'Add New Publisher'}
-    const [inputValue, setInputValue] = useState('') 
+    const [inputValue, setInputValue] = useState(props.value?.name ?? '') 
     const [prevInputValue, setPrevInputValue] = useState('') 
-    const [value, setValue] = useState<CreatedPublisher| null>(null)
+    const [value, setValue] = useState<CreatedPublisher| null>(props.value ?? null)
     useEffect(() => getPublishers() ,[])
     return <Box>
         <Autocomplete
         inputValue={inputValue}
-        value={value} 
+        value={props.value ?? value} 
         options={publishers}
         getOptionLabel={(option) => option.name}
         isOptionEqualToValue={(option, value) => option.id === value.id}

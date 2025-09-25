@@ -19,6 +19,7 @@ const ArtistSkillsSelect = (props : ArtistSkillsSelectProps) => {
             displayEmpty
             multiple={multiple}
             defaultValue={multiple ? [] : ''}
+            value={props.value}
             renderValue={(selected) => {
                 if(multiple && Array.isArray(selected) && selected.length > 0 ){
                   return (selected as unknown as Array<string>).join(', ')

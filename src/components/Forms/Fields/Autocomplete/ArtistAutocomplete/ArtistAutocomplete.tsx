@@ -17,6 +17,7 @@ export type ArtistAutocompleteProps = Omit<AutocompleteProps<CreatedArtist, fals
 > & {
     required?: boolean
     onChangeCallback?: (event: null | React.SyntheticEvent<Element, Event>, artist: CreatedArtist | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<CreatedArtist> | undefined  ) => void
+    value?: CreatedArtist
 }
 
 type CreateArtistModalProps = Omit<ModalProps, 'children'> & {
@@ -39,17 +40,18 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
     useEffect( () => getArtists() , [])
     const createArtistOption = {...artistsList[0], id: 0, pseudo: '', firstName: 'Add New Artist', lastName: ''}
     const [state, setState] = useState<ArtistAutoCompleteState>({
-        inputValue: '',
+        inputValue: props.value ?  getArtistOptionLabel(props.value) : '',
         prevInputValue: '',
-        value: null,
+        value: props.value ?? null,
         modalOpen: false
     })
    return <Box sx={sx}>
        <Autocomplete
             disableClearable={false}
-            inputValue={state.inputValue}
+            inputValue={ state.inputValue}
             value={state.value}
             options={artistsList}
+            getOptionKey={(option) => option.id}
             getOptionLabel={option => `${option?.firstName} ${option?.lastName}${option?.pseudo && ` aka ${option?.pseudo}`}`}
             renderInput={(params) => <TextField {...params} required={required} label={label}/>}
             renderOption={(props, option) => {
@@ -107,7 +109,7 @@ const ArtistAutocomplete = (props : ArtistAutocompleteProps) => {
 }
 
 const getArtistOptionLabel = (artistOption: CreatedArtist) => {
-    return `${artistOption?.firstName} ${artistOption?.lastName}${artistOption?.pseudo && ` aka ${artistOption.pseudo}`}`
+    return `${artistOption?.firstName} ${artistOption?.lastName}${artistOption?.pseudo ? ` aka ${artistOption.pseudo}` : ''}`
 }
 
 export default ArtistAutocomplete

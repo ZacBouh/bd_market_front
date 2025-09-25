@@ -13,15 +13,25 @@ export type MultiArtistAutocompleteEntry = {
 
 export type MultiArtistAutocompleteProps = BoxProps & ArtistSkillsSelectProps & ArtistAutocompleteProps & {
     onMultiArtistChange?: (value : MultiArtistAutocompleteEntry[]) => any
+    artistsContributions?: NewArtistContribution[]
+    artistsMap?: Record<number, {id: number, firstName: string, lastName: string}>
 }
 
 const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
     const {sx, onMultiArtistChange} = props
     const emptyArtistEntry = (() => ({ _id: crypto.randomUUID() , artist: null, skills: []}))()
-    const [artists, setArtists] = useState<MultiArtistAutocompleteEntry[]>([emptyArtistEntry])
+    const prePopulatedEntries : MultiArtistAutocompleteEntry[] | undefined = props.artistsContributions ? props.artistsContributions.map(contribution => ({
+        _id: crypto.randomUUID(),
+        artist: contribution.artist,
+        skills: contribution.skills
+    })) : undefined
+    const hasPrepolutedEntries = props.artistsContributions && !!props.artistsMap
+    const [artists, setArtists] = useState<MultiArtistAutocompleteEntry[]>(prePopulatedEntries ?? [emptyArtistEntry])
     const triggerOnMultiArtistChange = (value : MultiArtistAutocompleteEntry[]) =>  onMultiArtistChange &&  onMultiArtistChange(value) 
+    console.log(props.artistsMap)
     return <Box sx={sx ?? {width: '100%'}}>
         {artists.map( (entry, index) => {
+            console.log(entry)
             return  <Stack direction={'row'} key={entry._id} sx={{width: '100%'}} >
                 <ArtistAutocomplete 
                     sx={{flex: 1}}
@@ -30,6 +40,7 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
                         setArtists(updatedArtists)
                         triggerOnMultiArtistChange(updatedArtists)
                     }}
+                    value={(hasPrepolutedEntries && entry.artist) ? props?.artistsMap?.[entry?.artist] : undefined}
                  />
                 <ArtistSkillsSelect 
                     multiple 

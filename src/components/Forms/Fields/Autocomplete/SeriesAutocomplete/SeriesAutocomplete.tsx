@@ -39,7 +39,7 @@ const SeriesAutocomplete = (props : SeriesAutocompleteProps) => {
                options={series}
                getOptionLabel={getOptionLabel}
                getOptionKey={option => option.id}
-               renderInput={(params) => <TextField {...params} required label={label}/>}
+               renderInput={(params) => <TextField {...params} required={props.required} label={label}/>}
                renderOption={(liprops, option) =>{
                    const {key, ...restProps} = liprops
                    if(option.id === 0){
