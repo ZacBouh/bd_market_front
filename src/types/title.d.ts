@@ -5,6 +5,7 @@ type NewTitle = {
     artistsContributions : NewArtistContribution[],
     publisher: CreatedPublisher['id'] | null, 
     description: string
+    isbn?: string
 }
 type NewTitleFormState = NewTitle & {
   coverImageFile: File | undefined

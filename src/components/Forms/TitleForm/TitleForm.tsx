@@ -26,6 +26,7 @@ export type TitleFormProps = {
   language?: SupportedLanguage | undefined
   coverImageFile?: File 
   series?: string
+  isbn?: string
 }
 
 const TitleForm = (props : TitleFormProps) => {
@@ -38,7 +39,8 @@ const TitleForm = (props : TitleFormProps) => {
     description: props.description ?? '',
     releaseDate: '',
     language: props.language ?? 'fr', 
-    coverImageFile: undefined
+    coverImageFile: undefined,
+    isbn: props.isbn ?? ''
   }
 
   const [titleForm, setTitleForm] = useState(initialState)
@@ -63,6 +65,12 @@ const TitleForm = (props : TitleFormProps) => {
           value={titleForm.name}
           onChange={(event) => setTitleForm((title) => ({...title, name: event.target.value}))}
           required
+          fullWidth
+        />
+        <TextField 
+          label="Isbn"
+          value={titleForm.isbn}
+          onChange={(event) => setTitleForm((title) => ({...title, isbn: event.target.value}))}
           fullWidth
         />
         <SeriesAutocomplete 

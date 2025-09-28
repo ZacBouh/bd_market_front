@@ -81,6 +81,7 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
                 publisher={publishersCandidates?.[0]}
                 artistsContributions={artistsCandidatesContributions}
                 artistsMap={artistsCandidatesMap}
+                isbn={props.data?.result.isbn}
             />
         }
         <Button onClick={() => console.log(props)}>Log Result</Button>
