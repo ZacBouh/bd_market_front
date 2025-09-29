@@ -1,12 +1,13 @@
 import { copyAtom, store } from "@/store";
 import { api } from "./api";
 
-const createCopy = (newCopy : FormData) => {
+const createCopy = (newCopy : FormData, callback?: (copy: CreatedCopy) => unknown) => {
     const controller = new AbortController()
-    api.post('/copy', newCopy)
+    api.post<CreatedCopy>('/copy', newCopy)
     .then(response => {
         console.log("CreateCopy response", response.data)
         getCopies()
+        callback && callback(response.data)
     })
 
     return () => controller.abort()

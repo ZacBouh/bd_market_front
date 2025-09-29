@@ -3,9 +3,10 @@ import AddCopyForm from "@/components/Forms/AddCopyForm/AddCopyForm"
 import TitleForm from "@/components/Forms/TitleForm/TitleForm"
 import TitleGallery from "@/components/Gallery/TitleGallery/TitleGallery"
 import { SupportedLanguage } from "@/types/common"
-import { Button, Card, CardContent, Stack } from "@mui/material"
+import { Button, Stack } from "@mui/material"
 import Box from "@mui/material/Box/Box"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router"
 
 export type ScanResultHandlerProps = {
     resetHandler?: (...arg: any[]) => any
@@ -33,6 +34,7 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
     const {artistsCandidates, publishersCandidates, titleCandidates} = props.data?.existingData ?? {}
     const [matchingTitle, setMatchingTitle] = useState<CreatedTitle | undefined>()
     const [titleSkipped, setTitleSkipped] = useState(false)
+    const [createdTitle, setCreatedTitle] = useState<CreatedTitle | undefined>()
     useEffect(() => {
         if(titleCandidates && titleCandidates.length > 0){
             const abortFun = findTitles(titleCandidates.map(title => title.id), (titles) => setTitles(titles))
@@ -56,13 +58,14 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
     })() 
     console.log("Map",artistsCandidatesMap)
     console.log("New Contributions = ", artistsCandidatesContributions)
+    const navigate = useNavigate()
     return <Box>
         Scan Result Handler
         <Button onClick={() => props.resetHandler && props.resetHandler()}>Reset</Button>    
         {props.data && 
             <Button onClick={() => console.log(props.data)}>Data</Button>    
         }
-        { titles && <Stack direction='column'>
+        { titles && !createdTitle && <Stack direction='column'>
                 <TitleGallery titles={titles} onTitleClick={(title) =>{
                     setMatchingTitle(title)
                     setTitleSkipped(false)
@@ -73,7 +76,7 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
         { matchingTitle && !titleSkipped &&
             <AddCopyForm title={matchingTitle} />
         }
-        { (artistsCandidates || publishersCandidates) && titleSkipped &&
+        { (artistsCandidates || publishersCandidates || props.data?.result)  && titleSkipped && !createdTitle  &&
             <TitleForm
                 prePopulatedName={props.data?.result.name}
                 language={props.data?.result.language}
@@ -82,7 +85,14 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
                 artistsContributions={artistsCandidatesContributions}
                 artistsMap={artistsCandidatesMap}
                 isbn={props.data?.result.isbn}
+                onTitleCreated={(title) => setCreatedTitle(title)}
             />
+        }
+        {   createdTitle && 
+            <AddCopyForm title={createdTitle} onCopyCreated={(copy) => {
+                console.log('Created Copy ', copy)
+                navigate('/library')
+            }} />
         }
         <Button onClick={() => console.log(props)}>Log Result</Button>
     </Box>

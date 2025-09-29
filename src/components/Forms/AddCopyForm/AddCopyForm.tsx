@@ -8,11 +8,11 @@ import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect
 import { createCopy, updateCopy } from "@/backend/api/copy"
 import objectToFormData from "@/utils/formData"
 import { API_BASE_URL } from "@/backend/api/api"
-import { title } from "process"
 
 type AddCopyFormProps = {
     copyToEdit? : CreatedCopy,
     title?: CreatedTitle
+    onCopyCreated?: (copy: CreatedCopy) => unknown
 }
 
 const AddCopyForm = (props : AddCopyFormProps) => {
@@ -41,7 +41,7 @@ const AddCopyForm = (props : AddCopyFormProps) => {
                 updateCopy(objectToFormData(newCopy))
                 return 
             }
-            createCopy(objectToFormData(newCopy))
+            createCopy(objectToFormData(newCopy), props.onCopyCreated)
         }}
         sx={{width: '100%'}}
     >
