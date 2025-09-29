@@ -9,6 +9,7 @@ type NewCopy = {
     boughtForPrice?: string,
     boughtForCurrency?: AcceptedCurrency,    
     coverImageFile?: File,
+    forSale?: boolean
 }
 
 type CreatedCopy = Omit<NewCopy, 'ownerId' | 'titleId'>  & {

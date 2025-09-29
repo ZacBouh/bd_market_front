@@ -33,11 +33,12 @@ const removeCopy = (copyId : CreatedCopy['id'] , callback?: (arg?: DeleteRespons
     return () => controller.abort()
 }
 
-const updateCopy = (updatedCopy: FormData) => {
+const updateCopy = (updatedCopy: FormData, callback?: (copy: any) => unknown ) => {
     const controller = new AbortController()
     api.post<ApiResponse>('/copy/update', updatedCopy)
     .then(response => {
         console.log("Update copy response" , response.data)
+        callback && callback(response.data)
         getCopies()
     })
     return () => controller.abort()

@@ -10,9 +10,10 @@ import {
 import { API_BASE_URL } from '@/backend/api/api';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
-import { getCopies, removeCopy } from '@/backend/api/copy';
+import { getCopies, removeCopy, updateCopy } from '@/backend/api/copy';
 import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
 import { useState } from 'react';
+import objectToFormData from '@/utils/formData';
 
 type CopyGalleryProps = {
     copies: CreatedCopy[]
@@ -63,7 +64,14 @@ const CopyGallery = (props : CopyGalleryProps) => {
                   ButtonElement={IconButton} 
                   buttonProps={{children: <MoreVertIcon/>, sx: {ml: 'auto', borderRadius: 2}}} 
                   menuItems={[
+                    {label: 'Put For sale', handleClick: () => {
+                      copy.forSale = true
+                      const payload = objectToFormData({...copy, titleId: copy.title.id, ownerId: copy.owner.id})
+                      console.log("For sale payload: ", payload)
+                      updateCopy(payload, (data) =>  console.log("Successfully put copy for sale : ", data))
+                    }},
                     {label: 'Remove from library', handleClick: () => {
+                      console.log("removing copy with id: ", copy.id)
                        removeCopy(copy.id, (response) =>{
                        console.log(response?.message)
                        getCopies()
@@ -73,8 +81,8 @@ const CopyGallery = (props : CopyGalleryProps) => {
                       setEditedCopy(copy)
                     }}
                   ]}
-                >
-                </ButtonMenu>
+                />
+                
               </CardActions>
             </Card>
           </Grid2>
