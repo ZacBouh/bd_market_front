@@ -1,4 +1,4 @@
-import { Box, Button, CardActions, Chip, Grid2, IconButton } from '@mui/material';  // MUI's Grid v2
+import { Box, CardActions, Chip, Grid2, IconButton } from '@mui/material';  // MUI's Grid v2
 import {
   Card,
   CardActionArea,
@@ -20,15 +20,15 @@ type CopyGalleryProps = {
 }
 
 const CopyGallery = (props : CopyGalleryProps) => {
-  const {copies, ...restProps} = props
+  const {copies} = props
   const [editCopyModalOpen, setEditCopyModalOpen] = useState(false)
   const [editedCopy, setEditedCopy] = useState<CreatedCopy | undefined>(undefined)
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
-        {copies.map((copy, i) => (
+        {copies.map((copy) => (
           <Grid2
-            key={i}
+            key={copy.id}
             size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
           >
             <Card
@@ -64,11 +64,11 @@ const CopyGallery = (props : CopyGalleryProps) => {
                   ButtonElement={IconButton} 
                   buttonProps={{children: <MoreVertIcon/>, sx: {ml: 'auto', borderRadius: 2}}} 
                   menuItems={[
-                    {label: 'Put For sale', handleClick: () => {
-                      copy.forSale = true
+                    {label: copy.forSale ? 'Remove From Sale' : 'Put For sale', handleClick: () => {
+                      copy.forSale = !copy.forSale
                       const payload = objectToFormData({...copy, titleId: copy.title.id, ownerId: copy.owner.id})
                       console.log("For sale payload: ", payload)
-                      updateCopy(payload, (data) =>  console.log("Successfully put copy for sale : ", data))
+                      updateCopy(payload, (data) =>  console.log(`Successfully ${copy.forSale ? 'put copy for sale' : 'removed copy from sale'} : `, data))
                     }},
                     {label: 'Remove from library', handleClick: () => {
                       console.log("removing copy with id: ", copy.id)
@@ -81,8 +81,7 @@ const CopyGallery = (props : CopyGalleryProps) => {
                       setEditedCopy(copy)
                     }}
                   ]}
-                />
-                
+                />                
               </CardActions>
             </Card>
           </Grid2>

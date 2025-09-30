@@ -19,7 +19,6 @@ const ButtonMenu = <ButtonEl extends React.ComponentType<any>>(props : ButtonMen
     const [anchorElement, setAnchorElement] = useState<null|HTMLElement>(null)
     const open = Boolean(anchorElement)
     const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
-        console.log(event.currentTarget)
         setAnchorElement(event.currentTarget)
     }
     const handleClose = () => {

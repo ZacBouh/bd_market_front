@@ -35,7 +35,7 @@ const removeCopy = (copyId : CreatedCopy['id'] , callback?: (arg?: DeleteRespons
 
 const updateCopy = (updatedCopy: FormData, callback?: (copy: any) => unknown ) => {
     const controller = new AbortController()
-    api.post<ApiResponse>('/copy/update', updatedCopy)
+    api.post<ApiResponse>('/copy/update', updatedCopy, {signal: controller.signal})
     .then(response => {
         console.log("Update copy response" , response.data)
         callback && callback(response.data)
@@ -44,4 +44,20 @@ const updateCopy = (updatedCopy: FormData, callback?: (copy: any) => unknown ) =
     return () => controller.abort()
 }
 
-export {createCopy, getCopies, removeCopy, updateCopy}
+export type SearchCopyParams = {
+    query: string
+    forSale?: boolean
+    limit?: number
+    offset?: number
+}
+const searchCopy = ( params: SearchCopyParams, callback?: (copies?: CreatedCopy[]) => unknown ) => {
+    const controller = new AbortController()
+    api.get<CreatedCopy[]>('/copy/search', {
+        params,
+        signal: controller.signal
+    })
+    .then(result => callback && callback(result.data))
+    return () => controller.abort()
+}
+
+export {createCopy, getCopies, removeCopy, updateCopy, searchCopy}

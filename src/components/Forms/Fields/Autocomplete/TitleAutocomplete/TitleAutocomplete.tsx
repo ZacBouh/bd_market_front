@@ -46,7 +46,7 @@ const OptionCard =  forwardRef<HTMLLIElement, TitleAutoCompleteOptionCardProps>(
             >
             <CardMedia
                 component="img"
-                image={API_BASE_URL + option.coverImage.url}
+                image={API_BASE_URL + option?.coverImage?.url}
                 alt={option.name}
                 sx={{
                 width: 48,
@@ -61,7 +61,7 @@ const OptionCard =  forwardRef<HTMLLIElement, TitleAutoCompleteOptionCardProps>(
                 {option.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                by {option.artistsContributions[0].artist.fullName}
+                by {option?.artistsContributions?.[0]?.artist?.fullName}
                 </Typography>
             </Stack>
             </Box>

@@ -3,7 +3,7 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import HomeIcon from '@mui/icons-material/Home';
 import ScanIcon from '@mui/icons-material/Flip';
 import asyncComponentLoader from '@/utils/loader';
-import { store, userAtom } from '@/store';
+import StoreFront from '@mui/icons-material/Storefront'
 
 import { Routes } from './types';
 
@@ -26,6 +26,13 @@ const routes: Routes = [
     path: '/library',
     title: 'My Library',
     icon: AddTaskIcon,
+    isProtected: true
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/MarketPage')),
+    path: '/market',
+    title: 'Market',
+    icon: StoreFront,
     isProtected: true
   },
   {
