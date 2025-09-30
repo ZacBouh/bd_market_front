@@ -8,6 +8,10 @@ const MarketPage = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [copies, setCopies] = useState<CreatedCopy[]>([]) 
     const handleSearch = useMemo(() => debounce((text: string) =>{
+        if(text.trim() === ''){
+            setCopies([])
+            return 
+        }
         console.log(`searching : ${text}`)
         return searchCopy({query: text, forSale: true}, handleFoundCopies)
     }), []) 
@@ -16,11 +20,7 @@ const MarketPage = () => {
         setCopies(copies ?? [])
     }
     useEffect(() => {
-        if(searchQuery.trim() !== ''){
-            return handleSearch(searchQuery)
-        }
-        console.log("we are in this case")
-        setCopies([])
+        return handleSearch(searchQuery)
     },[searchQuery])
     return <Container>
         <Typography variant="h1" >Market</Typography>

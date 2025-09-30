@@ -1,15 +1,18 @@
-import { Button, Menu, MenuItem } from "@mui/material"
+import { Button, Menu, MenuItem, MenuProps } from "@mui/material"
 import Box from "@mui/material/Box"
 import React, { ComponentPropsWithRef, PropsWithChildren, ReactNode, useState } from "react"
 
 type ButtonMenuProps<ButtonEl extends React.ComponentType<any>> = {
     ButtonElement: ButtonEl
     buttonProps : Omit<ComponentPropsWithRef<ButtonEl>, 'onClick'>
-    menuItems : ButtonMenuItem[]
+    menuItems?: ButtonMenuItem[]
+    anchorOrigin ?: MenuProps['anchorOrigin']
+    tranformOrigin? : MenuProps['transformOrigin']
+    children?: ReactNode | ((context : {closeMenu : () => void}) => ReactNode)
 }
 
-type ButtonMenuItem = {
-    label: string, 
+export type ButtonMenuItem = {
+    label: ReactNode, 
     handleClick?: (...args : any) => any
     clickShouldClose?: boolean
 }
@@ -24,9 +27,10 @@ const ButtonMenu = <ButtonEl extends React.ComponentType<any>>(props : ButtonMen
     const handleClose = () => {
         setAnchorElement(null)
     }
-
+    const children = typeof props.children === 'function' ? props.children({closeMenu: handleClose}) : props.children
     return <Box>
         {React.createElement(ButtonElement, {
+            key: (ButtonElement as any)?.muiName ?? ButtonElement?.name ?? 'btn',
             ...buttonProps,
             onClick: handleOpen
         })}
@@ -34,11 +38,11 @@ const ButtonMenu = <ButtonEl extends React.ComponentType<any>>(props : ButtonMen
             open={open}
             onClose={handleClose}
             anchorEl={anchorElement}
-            anchorOrigin={{vertical: 'top', horizontal: 'left'}}
-            transformOrigin={{vertical:'bottom', horizontal: 'left'}}
+            anchorOrigin={props.anchorOrigin ?? {vertical: 'top', horizontal: 'left'}}
+            transformOrigin={props.tranformOrigin ?? {vertical:'bottom', horizontal: 'left'}}
         >
-            {menuItems.map(item => <MenuItem 
-                    key={item.label} 
+            {menuItems?.map((item, index)=> <MenuItem 
+                    key={index} 
                     onClick={() => {
                         item.handleClick && item.handleClick()
                         !(item.clickShouldClose === false) && handleClose()
@@ -46,6 +50,7 @@ const ButtonMenu = <ButtonEl extends React.ComponentType<any>>(props : ButtonMen
                 >
                 {item.label}
             </MenuItem>)}
+            {children}
         </Menu>
     </Box>
 }

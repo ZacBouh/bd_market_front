@@ -14,6 +14,7 @@ import { getRandomJoke } from './utils';
 import { useUser } from '@/hooks/useUser';
 import { routerNavigate } from '@/utils/routerNavigate';
 import { store, userAtom } from '@/store';
+import ShoppingCart from '@/components/Menu/ShoppingCart/ShoppingCart';
 
 function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
@@ -97,13 +98,8 @@ function Header() {
                 <DeleteForeverIcon />
               </IconButton>
             </Tooltip>
-            <Button
-              onClick={() => {
-                routerNavigate.setIntendedTo('/collections')
-                const redirectPath = routerNavigate.getIntendedTo()
-                typeof  redirectPath === 'string' && routerNavigate.navigate(redirectPath)
-              }}
-            >Try Navigate</Button>
+            <Divider orientation="vertical" flexItem />
+            <ShoppingCart/>
           </Stack>
         </Stack>
       </Toolbar>

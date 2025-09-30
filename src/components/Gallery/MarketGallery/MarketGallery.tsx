@@ -9,14 +9,15 @@ import {
 import { API_BASE_URL } from '@/backend/api/api';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
-import { updateCopy } from '@/backend/api/copy';
-import objectToFormData from '@/utils/formData';
+import { shoppingCartAtom } from '@/store/shoppingCart';
+import { useAtom } from 'jotai';
 
 export type MarketGalleryProps = {
     copies : CreatedCopy[]
 }
 
 const MarketGallery = ({copies} : MarketGalleryProps) => {
+    const [_, setShoppingCart] = useAtom(shoppingCartAtom)
     return <Container maxWidth="lg" sx={{ py: 4 }}>
         <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
             {copies.map((copy) => (
@@ -59,6 +60,7 @@ const MarketGallery = ({copies} : MarketGalleryProps) => {
                     menuItems={[
                         {label: 'Add to Cart', handleClick: () => {
                             console.log(`add copy ${copy.title.name} to Shopping cart`)
+                            setShoppingCart(state => ({copies: [...state.copies, copy]}))
                         }},
                     ]}
                     />                
