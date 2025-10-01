@@ -4,9 +4,10 @@ import CartIcon from "@mui/icons-material/ShoppingCart"
 import { API_BASE_URL } from "@/backend/api/api"
 import { useAtom } from "jotai"
 import { shoppingCartAtom } from "@/store/shoppingCart"
-import { useEffect, useMemo } from "react"
+import { Fragment, useEffect, useMemo } from "react"
 import DeleteIcon from "@mui/icons-material/Delete"
 import ClearIcon from "@mui/icons-material/HighlightOff"
+import { useNavigate } from "react-router"
 
 export type ShoppingCartProps = {
      
@@ -14,7 +15,11 @@ export type ShoppingCartProps = {
 
 const ShoppingCart = (props : ShoppingCartProps) => { 
     const [{copies}, setCartState] = useAtom(shoppingCartAtom)
-    console.log(copies)
+    const navigate = useNavigate()
+    const handleCheckout = (closeMenu : () => void) => {
+        closeMenu()
+        navigate('/shopping-cart')
+    } 
     const menuItems : ButtonMenuItem[] = useMemo(() => copies?.map(copy => ({
         label: <Stack direction={'row'} gap={2} padding={1}>
             <CardMedia
@@ -48,11 +53,11 @@ const ShoppingCart = (props : ShoppingCartProps) => {
     >
         {({closeMenu}) => {
             return <Stack direction={"column"}>
-                {menuItems.map(item => item.label)}
+                {menuItems.map((item, index )=> <Fragment key={index}>{item.label}</Fragment>)}
                 {menuItems.length > 0 && 
                     <Stack direction={"row"}  display={"flex"} justifyContent={"space-between"} sx={{px: 1}}>
                         <Button onClick={closeMenu} ><DeleteIcon/></Button>
-                        <Button>Go to Checkout</Button>
+                        <Button onClick={() => handleCheckout(closeMenu)} >Go to Checkout</Button>
                     </Stack>
                 }
                 {menuItems.length === 0 && <Typography width={'200px'} textAlign={'center'}>Empty</Typography>}

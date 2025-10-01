@@ -29,6 +29,11 @@ const routes: Routes = [
     isProtected: true
   },
   {
+    component: asyncComponentLoader(() => import('@/pages/CartPage')),
+    path: '/shopping-cart',
+    isProtected: true
+  },
+  {
     component: asyncComponentLoader(() => import('@/pages/MarketPage')),
     path: '/market',
     title: 'Market',

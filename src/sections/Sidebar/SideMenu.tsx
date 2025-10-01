@@ -19,7 +19,7 @@ export default function SideMenu(){
     <List>
         {routes.map(route => (
           <Fragment key={route.path}>
-            {(user || !route.isProtected) && 
+            {(user || !route.isProtected) && route.title && 
               <ListItem >
                 <ListItemButton component={Link} to={route.path ? route.path : "/404"}>
                   {route.icon ? <route.icon/> : null}
