@@ -9,7 +9,6 @@ const createCopy = (newCopy : FormData, callback?: (copy: CreatedCopy) => unknow
         getCopies()
         callback && callback(response.data)
     })
-
     return () => controller.abort()
 }
 
@@ -50,6 +49,7 @@ export type SearchCopyParams = {
     limit?: number
     offset?: number
 }
+
 const searchCopy = ( params: SearchCopyParams, callback?: (copies?: CreatedCopy[]) => unknown ) => {
     const controller = new AbortController()
     api.get<CreatedCopy[]>('/copy/search', {

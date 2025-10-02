@@ -2,6 +2,7 @@ import axios from 'axios'
 import { store, userAtom } from '@/store'
 import { oAuthAtom } from '@/store/auth'
 import { routerNavigate } from '@/utils/routerNavigate'
+import { api } from './api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const GOOGLE_OAUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
@@ -38,4 +39,18 @@ async function getGoogleOAuthOpenIdUrl(loginFromUrl?: string) : Promise<any>
     return `${response.data.authorization_endpoint}?${queryString}`
 }
 
-export { registerUser, loginUser, getGoogleOAuthOpenIdUrl }
+const getUser = (callback? : (user: LoggedInUser) => unknown) => {
+    const controller = new AbortController()
+    api.get<CreatedUser>('/user')
+    .then(response =>{
+        const token = store.get(userAtom)?.token
+        if(!token){
+            throw new Error("Logic error, token not defined in getUser callback at auth.ts line 48")
+        }
+        store.set(userAtom, {token, user: response.data}) 
+        callback && callback({token, user: response.data})
+    })
+    return () => controller.abort()
+} 
+
+export { registerUser, loginUser, getGoogleOAuthOpenIdUrl, getUser}

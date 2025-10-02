@@ -7,7 +7,7 @@ type NewUser = LoginCredentials & {
     pseudo: string
 }
 
-type CreatedUser = NewUser & {
+type CreatedUser = Omit<NewUser, 'password'> & {
     id: number,
     createdAt: string,
     updatedAt: string,

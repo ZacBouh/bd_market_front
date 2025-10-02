@@ -38,7 +38,7 @@ const ShoppingCartTable = () => {
                     </TableCell>
                     <TableCell>{totalPrice} {currency}</TableCell>
                     <TableCell sx={{width: 0, whiteSpace: 'nowrap', textAlign: "center"}} >
-                        <Button onClick={ () => pay()}>Pay</Button>
+                        <Button onClick={() => pay()}>Pay</Button>
                     </TableCell>
                 </TableRow >
             </TableBody>

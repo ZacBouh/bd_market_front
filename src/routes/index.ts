@@ -29,11 +29,6 @@ const routes: Routes = [
     isProtected: true
   },
   {
-    component: asyncComponentLoader(() => import('@/pages/CartPage')),
-    path: '/shopping-cart',
-    isProtected: true
-  },
-  {
     component: asyncComponentLoader(() => import('@/pages/MarketPage')),
     path: '/market',
     title: 'Market',
@@ -86,6 +81,16 @@ const routes: Routes = [
     path: '/subscribe',
     title: 'Subscribe',
     icon: BugReportIcon,
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/CartPage')),
+    path: '/shopping-cart',
+    isProtected: true
+  },
+  {
+    component: asyncComponentLoader(() => import('@/components/Redirects/OauthRedirect')),
+    path: '/oauth',
+    isProtected: false
   },
   {
     component: asyncComponentLoader(() => import('@/pages/NotFound')),
