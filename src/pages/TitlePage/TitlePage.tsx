@@ -1,4 +1,4 @@
-import { Centered, FullSizeCentered } from '@/components/styled';
+import { Centered } from '@/components/styled';
 import Typography from '@mui/material/Typography';
 import TitleForm from '@/components/Forms/TitleForm/TitleForm';
 import { getTitles } from '@/backend/api/title';

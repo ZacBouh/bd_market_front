@@ -1,7 +1,7 @@
 type NewArtist = {
-    "firstName": string | null,
-    "lastName": string | null,
-    "pseudo": string | null,
+    "firstName"?: string | null,
+    "lastName"?: string | null,
+    "pseudo"?: string | null,
     "birthDate"?: string | null,
     "deathDate"?: string | null,
     "skills"?: string[]

@@ -1,4 +1,3 @@
-import { initialState } from "@/components/Forms/PublisherForm/atom"
 import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectProps } from "@mui/material/Select"
 import Typography from "@mui/material/Typography"

@@ -3,7 +3,6 @@ import StandardAutocomplete, { StandardAutocompleteProps } from "../StandardAuto
 import AddPublisherCollectionForm from "@/components/Forms/AddPublisherCollectionForm/AddPublisherCollectionForm";
 import { useEffect } from "react";
 import { getPublisherCollections } from "@/backend/api/publisherCollection";
-import { SECTION_TYPE_GRANULARITY } from "node_modules/@mui/x-date-pickers/esm/internals/utils/getDefaultReferenceDate";
 
 type PublisherCollectionAutocompleteProps = 
     Omit<StandardAutocompleteProps<CreatedPublisherCollection>, 'options' | 'getOptionLabel' | 'isOptionEqualToValue'>

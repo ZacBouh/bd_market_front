@@ -13,7 +13,7 @@ export type ShoppingCartProps = {
      
 }
 
-const ShoppingCart = (props : ShoppingCartProps) => { 
+const ShoppingCart = () => { 
     const [{copies}, setCartState] = useAtom(shoppingCartAtom)
     const navigate = useNavigate()
     const handleCheckout = (closeMenu : () => void) => {

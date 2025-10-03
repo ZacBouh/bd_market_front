@@ -12,7 +12,6 @@ import { useThemeMode } from '@/theme';
 import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
 import { useUser } from '@/hooks/useUser';
-import { routerNavigate } from '@/utils/routerNavigate';
 import { store, userAtom } from '@/store';
 import ShoppingCart from '@/components/Menu/ShoppingCart/ShoppingCart';
 

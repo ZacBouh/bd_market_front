@@ -1,8 +1,6 @@
 import { Box, Button, FormControl, FormLabel, TextField } from '@mui/material';
-import { newTitleForm, newTitleFormInitialState } from './atom';
-import { useAtom } from 'jotai';
 import PublisherAutocomplete from '../Fields/Autocomplete/PublisherAutocomplete/PublisherAutocomplete';
-import MultiArtistAutocomplete, { MultiArtistAutocompleteEntry } from '../Fields/Autocomplete/MultiArtistAutocomplete/MultiArtistAutocomplete';
+import MultiArtistAutocomplete from '../Fields/Autocomplete/MultiArtistAutocomplete/MultiArtistAutocomplete';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { createTitle } from '@/backend/api/title';
@@ -19,7 +17,7 @@ export type TitleFormProps = {
   onTitleCreated?: (createdTitle: CreatedTitle) => any
   prePopulatedName?: string
   artistsContributions?: NewArtistContribution[] 
-  artistsMap?: Record<number, {id: number, firstName: string, lastName: string}>
+  artistsMap?: Record<number, {id: number, firstName: string, lastName: string, pseudo: string}>
   publisher?: {id: number, name: string}
   description?: string
   releaseDate?: string

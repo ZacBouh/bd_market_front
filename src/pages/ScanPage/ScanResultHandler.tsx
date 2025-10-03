@@ -12,7 +12,7 @@ export type ScanResultHandlerProps = {
     resetHandler?: (...arg: any[]) => any
     data?: {
         existingData?: {
-            artistsCandidates?: {id: number, firstName: string, lastName: string, skill: string}[]
+            artistsCandidates?: {id: number, firstName: string, lastName: string, pseudo:string, skill: string}[]
             publishersCandidates?: {id: number, name: string, }[]
             titleCandidates?: {id: number, name: string}[]
         }

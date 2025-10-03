@@ -14,7 +14,7 @@ type PublisherGalleryProps = {
 }
 
 const PublisherGallery = (props : PublisherGalleryProps) => {
-    const {publishers, ...restProps} = props
+    const {publishers} = props
     
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>

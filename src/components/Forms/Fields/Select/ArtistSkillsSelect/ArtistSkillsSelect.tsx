@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem"
 import Select, { SelectProps } from "@mui/material/Select"
 import Typography from "@mui/material/Typography"
 import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export type ArtistSkillsSelectProps = SelectProps & {
     value?: string[] | string

@@ -14,7 +14,7 @@ type TitleGalleryProps = {
 }
 
 const ArtistGallery = (props : TitleGalleryProps) => {
-    const {artists, ...restProps} = props
+    const {artists} = props
     
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>

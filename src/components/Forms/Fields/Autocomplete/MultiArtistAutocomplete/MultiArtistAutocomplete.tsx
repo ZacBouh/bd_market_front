@@ -14,7 +14,7 @@ export type MultiArtistAutocompleteEntry = {
 export type MultiArtistAutocompleteProps = BoxProps & ArtistSkillsSelectProps & ArtistAutocompleteProps & {
     onMultiArtistChange?: (value : MultiArtistAutocompleteEntry[]) => any
     artistsContributions?: NewArtistContribution[]
-    artistsMap?: Record<number, {id: number, firstName: string, lastName: string}>
+    artistsMap?: Record<number, {id: number, firstName: string, lastName: string, pseudo: string}>
 }
 
 const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
@@ -40,11 +40,12 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
                         setArtists(updatedArtists)
                         triggerOnMultiArtistChange(updatedArtists)
                     }}
-                    value={(hasPrepolutedEntries && entry.artist) ? props?.artistsMap?.[entry?.artist] : undefined}
+                    // @ts-ignore
+                    value={(hasPrepolutedEntries && entry.artist) ? {...props?.artistsMap?.[entry?.artist], coverImage: undefined }: undefined} 
                  />
                 <ArtistSkillsSelect 
                     multiple 
-                    value={entry.skills} 
+                    value={entry.skills}
                     sx={{flex: 1}}
                     onChange={(event) =>{
                         const updatedArtists = replaceInArrayAtIndex(artists, index, {...artists[index], skills: event.target.value as string[]}) 

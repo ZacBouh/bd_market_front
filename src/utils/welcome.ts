@@ -1,4 +1,3 @@
-import { title } from '@/config';
 
 // this utility is used to welcome users in the console
 function getRandomRGBNumber() {

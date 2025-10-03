@@ -10,7 +10,7 @@ export type FileInputProps = React.InputHTMLAttributes<HTMLInputElement> & Butto
 
 
 const FileInput = (props : FileInputProps) => {
-    const {id, variant, component, label, sx, direction, onFileChange, selectedFileNamePrefix, accept, ...restProps} = props
+    const {id, variant, component, label, sx, direction, onFileChange, selectedFileNamePrefix, accept} = props
     const [fileName, setFileName] = useState('')
     const inputId = (id ?? crypto.randomUUID()) + '_file_upload'
     const inputName = props.inputName ?? "coverImageFile"

@@ -1,9 +1,8 @@
-import { Box, Button,  MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Box, Button,  TextField } from '@mui/material';
 import { newPublisherForm, initialState } from './atom';
 import { useAtom } from 'jotai';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { usePublishers } from '@/hooks/usePublisher';
 import { createPublisher } from '@/backend/api/publisher';
 import { useEffect } from 'react';
 import objectToFormData from '@/utils/formData';
@@ -17,7 +16,6 @@ type PublisherFormProps = {
 const PublisherForm = (props : PublisherFormProps) => {
     const {prePopulatedName, onSuccess} = props
     const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
-    const {publishers} = usePublishers()
     useEffect(() => {
         prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
     } 

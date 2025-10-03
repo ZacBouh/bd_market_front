@@ -9,7 +9,6 @@ import rrLogo from './logos/rr.svg';
 import tsLogo from './logos/ts.svg';
 import viteLogo from './logos/vite.svg';
 import { Image } from './styled';
-import { getDefaultStore } from 'jotai';
 
 function Welcome() {
   const isPortrait = useOrientation();

@@ -52,7 +52,7 @@ const SeriesAutocomplete = (props : SeriesAutocompleteProps) => {
                    const inputExists = options.some((option) => `${option.name}`.toLowerCase() === state.inputValue.toLowerCase())
                    return !inputExists ? [...filtered, createTitleOption] : filtered
                }}
-               onChange={(_, option, ...args) => {
+               onChange={(_, option) => {
                    if(option?.id === 0){
                        setState(state => ({...state, modalOpen: true}))
                        return 

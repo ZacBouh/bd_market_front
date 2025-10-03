@@ -1,5 +1,4 @@
 import { Box, Button, Stack } from "@mui/material"
-import { resolve } from "path"
 import { useEffect, useMemo, useRef, useState, useLayoutEffect, useId } from "react"
 
 type Point = { x: number, y: number }

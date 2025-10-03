@@ -1,7 +1,7 @@
 import { Box, Stack, TextField } from "@mui/material"
 import { useState } from "react"
 import CurrencySelect from "../CurrencySelect/CurrencySelect"
-import { NumericFormat, NumericFormatProps } from 'react-number-format'
+import { NumericFormat } from 'react-number-format'
 
 type PriceInputSelectProps = {
     onChange?: (price: Price) => void

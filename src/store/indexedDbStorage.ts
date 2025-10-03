@@ -1,5 +1,5 @@
 import type { ScanPageState } from '@/pages/ScanPage/ScanPage'
-import {createStore, set, get, update, keys, del} from 'idb-keyval'
+import {createStore, set, get, keys, del} from 'idb-keyval'
 
 const scanStore = createStore('scanDB', 'scanStore')
 
@@ -14,10 +14,6 @@ const getScan = async (key: string, initialValue: ScanPageState) => {
 
 const deleteScan = async (key: string) => {
     await del(key, scanStore)
-}
-
-const updateScan = async <T extends ScanPageState,>(key: string, updater : (oldScanPageState?: T ) => T) => {
-    await update(key, updater, scanStore)
 }
 
 const scanKeys = async () => {
