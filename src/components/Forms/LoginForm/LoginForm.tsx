@@ -12,9 +12,9 @@ const LoginForm = () => {
     const notifications = useNotifications()
     return <Box component='form'  onSubmit={async (event) => {
             event.preventDefault()
-            notifications.show("Form submitted")
+            notifications.show(<h1>"Form submitted"</h1>, {autoHideDuration: 5000})
             const loginResponse = await loginUser(loginForm)
-            notifications.show(`Log In response : ${loginResponse.user.email}`)
+            notifications.show(<h2>Login Response {loginResponse.user.email}</h2>, {autoHideDuration: 5000})
         }}
           sx={{
             width:'100%',
