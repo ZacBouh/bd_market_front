@@ -3,6 +3,7 @@ import { store, userAtom } from '@/store'
 import { oAuthAtom } from '@/store/auth'
 import { routerNavigate } from '@/utils/routerNavigate'
 import { api } from './api'
+import { notification } from '@/utils/padNotification'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const GOOGLE_OAUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
@@ -14,13 +15,22 @@ async function registerUser(payload : NewUser) : Promise<CreatedUser>{
     return response.data
 }
 
-async function loginUser(payload : LoginCredentials) : Promise<LoggedInUser> {
-    const response = await axios.post<LoggedInUser>(`${API_BASE_URL}/api/login_check`, payload)
-    store.set(userAtom, response.data)
-    const redirectAfterLogin = routerNavigate.getIntendedTo()
-    console.log("Post login redirect path : ", redirectAfterLogin) 
-    routerNavigate.postLoginRedirect()
-    return response.data
+async function loginUser(payload : LoginCredentials) {
+    try {
+        const response = await axios.post<LoggedInUser>(`${API_BASE_URL}/api/login_check`, payload)
+        store.set(userAtom, response.data)
+        const redirectAfterLogin = routerNavigate.getIntendedTo()
+        console.log("Post login redirect path : ", redirectAfterLogin) 
+        routerNavigate.postLoginRedirect()
+        return response.data
+    } catch (err) {
+        if (err instanceof Error){
+            notification.show(`Login failed with error ${err.message}`)
+        } else {
+            notification.show(`Login Failed`)
+        }
+
+    }
 }
 
 async function getGoogleOAuthOpenIdUrl(loginFromUrl?: string) : Promise<any>
