@@ -18,9 +18,7 @@ const LoginForm = () => {
         }}
           sx={{
             width:'100%',
-            position: 'relative',
-            zIndex: 9999,
-            pointerEvents: 'auto'
+
         }}
         >
             <TextField 
@@ -39,7 +37,11 @@ const LoginForm = () => {
             />
             <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
                 <Button onClick={() => setLoginForm(initialState)} >Reset</Button>
-                <Button type='submit' >Ajouter</Button>
+                <Button type='submit' sx={{
+                    position: 'relative',
+                    zIndex: 9999,
+                    pointerEvents: 'auto'
+                }} >Ajouter</Button>
             </Box>
         </Box>
 }
