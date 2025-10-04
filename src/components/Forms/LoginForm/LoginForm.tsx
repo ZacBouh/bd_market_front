@@ -1,6 +1,7 @@
 import { Box, Button,  TextField } from '@mui/material';
 import { useState } from 'react';
 import { loginUser } from '@/backend/api/auth';
+import { useNotifications } from '@toolpad/core/useNotifications';
 
 const LoginForm = () => {
     const initialState = {
@@ -8,14 +9,19 @@ const LoginForm = () => {
         password: ''
     }
     const [loginForm, setLoginForm] = useState(initialState)
-    
+    const notifications = useNotifications()
     return <Box component='form'  onSubmit={async (event) => {
             event.preventDefault()
-            console.log("Form submitted", loginForm)
+            notifications.show("Form submitted")
             const loginResponse = await loginUser(loginForm)
-            console.log(loginResponse)
+            notifications.show(`Log In response : ${loginResponse.user.email}`)
         }}
-          sx={{width:'100%'}}
+          sx={{
+            width:'100%',
+            position: 'relative',
+            zIndex: 9999,
+            pointerEvents: 'auto'
+        }}
         >
             <TextField 
             label="email"
