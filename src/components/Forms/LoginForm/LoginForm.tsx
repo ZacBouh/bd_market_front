@@ -14,7 +14,7 @@ const LoginForm = () => {
             event.preventDefault()
             notifications.show(<h1>"Form submitted"</h1>, {autoHideDuration: 5000})
             const loginResponse = await loginUser(loginForm)
-            notifications.show(<h2>Login Response {loginResponse.user.email}</h2>, {autoHideDuration: 5000})
+            notifications.show(<h2>Login Response {loginResponse?.user.email}</h2>, {autoHideDuration: 5000})
         }}
           sx={{
             width:'100%',
