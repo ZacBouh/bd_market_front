@@ -1,6 +1,6 @@
-import { Button, Drawer,  List, ListItem, ListItemButton, useTheme } from "@mui/material";
+import { Button, Drawer,  List, ListItem, ListItemButton, useMediaQuery, useTheme } from "@mui/material";
 import { useSidebar } from "./hooks";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import routes from "@/routes";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { useUser } from "@/hooks/useUser";
@@ -8,9 +8,15 @@ import { Fragment } from "react/jsx-runtime";
 
 export default function SideMenu(){
 
-    const {isOpen} = useSidebar()
+    const {isOpen, close: closeMenu} = useSidebar()
+    const navigate = useNavigate()
     const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const {user, logout} = useUser()
+    const handleMenuItemClick = (path: string) => {
+      navigate(path)
+      isMobile && closeMenu()
+    }
     return <Drawer
     variant="persistent"
     open={isOpen}
@@ -21,7 +27,7 @@ export default function SideMenu(){
           <Fragment key={route.path}>
             {(user || !route.isProtected) && route.title && 
               <ListItem >
-                <ListItemButton component={Link} to={route.path ? route.path : "/404"}>
+                <ListItemButton onClick={() => handleMenuItemClick(route.path ?? '/404')}>
                   {route.icon ? <route.icon/> : null}
                   {route.title} 
                 </ListItemButton>
