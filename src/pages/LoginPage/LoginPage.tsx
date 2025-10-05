@@ -1,5 +1,4 @@
-import { Button, Typography } from '@mui/material';
-import { FullSizeCentered } from '@/components/styled';
+import { Button, Container, Typography } from '@mui/material';
 import LoginForm from '@/components/Forms/LoginForm/LoginForm';
 import { getGoogleOAuthOpenIdUrl } from '@/backend/api/auth';
 
@@ -13,12 +12,11 @@ function LoginPage() {
 
   return (
     <>
-      <meta name="title" content="Page 3" />
-      <FullSizeCentered>
+      <Container>
         <Typography variant="h3">Login</Typography>
         <LoginForm email={email} />
         <Button onClick={handleGoogleLogin}>Login with google</Button>
-      </FullSizeCentered>
+      </Container>
     </>
   );
 }

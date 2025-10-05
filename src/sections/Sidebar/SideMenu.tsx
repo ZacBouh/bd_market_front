@@ -8,7 +8,7 @@ import { Fragment } from "react/jsx-runtime";
 
 export default function SideMenu(){
 
-    const {isOpen, close: closeMenu} = useSidebar()
+    const {isOpen} = useSidebar()
     const theme = useTheme()
     const {user, logout} = useUser()
     return <Drawer
@@ -37,11 +37,6 @@ export default function SideMenu(){
             </ListItemButton>
           </ListItem>
         }
-      <Button
-        onClick={closeMenu}
-      >
-        Close
-      </Button>
     </List>
   </Drawer>
 }

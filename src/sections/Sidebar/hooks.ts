@@ -1,14 +1,26 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAtom } from 'jotai';
 
-import { useTheme } from '@mui/material';
+import { useMediaQuery, useTheme } from '@mui/material';
 import { isSidebarOpenState, sideMenuWidth } from './atoms';
 
 function useSidebar() {
   const [isOpen, setIsOpen] = useAtom(isSidebarOpenState);
   const [width, setWidth] = useAtom(sideMenuWidth)
   const theme = useTheme()
-
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  useEffect(() =>{
+    if(isMobile){
+      setIsOpen(false)
+      setWidth(0) 
+    } else {
+      setIsOpen(true)
+      setWidth(theme.custom.sideMenuWidth)
+    }
+    
+    console.log("Called with isMobile : ", isMobile)
+  },[isMobile])
+  
   const toggle = useCallback(() => {
       setWidth(width => width === 0 ? theme.custom.sideMenuWidth : 0 )
       setIsOpen((isOpen) =>!isOpen)
