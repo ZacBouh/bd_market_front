@@ -47,7 +47,7 @@ function Header() {
       enableColorOnDark
       sx={{maxWidth: '100vw', overflow: 'clip'}}
     >
-      <Toolbar sx={{transition: "margin-left 0.2s", marginLeft: `${sideBarWidth}px`, }} >
+      <Toolbar sx={{transition: "margin-left 0.2s", marginLeft: `${isMobile ? 0 : sideBarWidth}px`, }} >
         <Stack direction="row" justifyContent="space-between" alignItems="center" flex={1}>
           <Stack direction="row" gap={1} alignItems="center">
             <Button onClick={showNotification} color="info">
