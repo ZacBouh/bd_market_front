@@ -10,27 +10,50 @@ const GOOGLE_OAUTH_CLIENT_ID = import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID
 const GOOGLE_OAUTH_REDIRECT_URI = import.meta.env.VITE_GOOGLE_OAUTH_REDIRECT_URI
 
 
-async function registerUser(payload : NewUser) : Promise<CreatedUser>{
-    const response = await axios.post<CreatedUser>(`${API_BASE_URL}/auth/register`, payload)
-    return response.data
+async function registerUser(payload : NewUser, callback?: (user: CreatedUser) => unknown) {
+    const controller = new AbortController()
+    axios.post<CreatedUser>(`${API_BASE_URL}/auth/register`, payload, {signal: controller.signal})
+    .then(response => {
+        callback && callback(response.data)
+    })
+    .catch(error => {
+        if(error?.response?.data?.message){
+            notification.show(`Failed to register: ${error?.response?.data?.message}`, {
+                severity: 'error',
+                autoHideDuration: 4000
+            })
+            return
+        }
+        if(error instanceof Error){
+            notification.show(`Failed to register: ${error.message}`, {
+                severity: 'error',
+                autoHideDuration: 2500
+            })
+        }
+    } )
+    return () => controller.abort()
 }
 
-async function loginUser(payload : LoginCredentials) {
-    try {
-        const response = await axios.post<LoggedInUser>(`${API_BASE_URL}/api/login_check`, payload)
+function loginUser(payload : LoginCredentials, callback?: (user: LoggedInUser) => unknown) {
+    const controller = new AbortController()
+    axios.post<LoggedInUser>(`${API_BASE_URL}/api/login_check`, payload, {signal: controller.signal})
+    .then(response => {
         store.set(userAtom, response.data)
-        const redirectAfterLogin = routerNavigate.getIntendedTo()
-        console.log("Post login redirect path : ", redirectAfterLogin) 
         routerNavigate.postLoginRedirect()
-        return response.data
-    } catch (err) {
-        if (err instanceof Error){
-            notification.show(`Login failed with error ${err.message}`)
-        } else {
-            notification.show(`Login Failed`)
+        callback && callback(response.data)
+    })
+    .catch( error => {
+        let notif : Parameters<typeof notification.show> = [`Failed to login`,{autoHideDuration: 2500, severity: 'error'}] 
+        if(error?.response?.data?.message){
+            notif[0] = `Failed to login: ${error?.response?.data?.message}`
         }
-
-    }
+        if(error?.response?.status === 401) {
+            notif[0] = `Invalid Credentials`
+        }
+        notification.show(...notif)
+    })
+    return () => controller.abort()
+    
 }
 
 async function getGoogleOAuthOpenIdUrl(loginFromUrl?: string) : Promise<any>

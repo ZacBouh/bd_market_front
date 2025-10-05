@@ -20,9 +20,9 @@ class RouterNavigate {
         }
         this.#navigateFunction(to)
     }
-    postLoginRedirect(){
+    postLoginRedirect(defaultTo?: string){
         if(this.#intendedTo === undefined){
-            this.navigate('/collections')
+            this.navigate( defaultTo ?? '/library')
             return
         }
         this.navigate(this.#intendedTo)
