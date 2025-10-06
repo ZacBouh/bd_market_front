@@ -1,6 +1,6 @@
 import { Button, Drawer,  List, ListItem, ListItemButton, useMediaQuery, useTheme } from "@mui/material";
 import { useSidebar } from "./hooks";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import routes from "@/routes";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { useUser } from "@/hooks/useUser";

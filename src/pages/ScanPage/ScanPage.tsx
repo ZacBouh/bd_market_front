@@ -40,7 +40,7 @@ const ScanPage = () => {
     const hasFile = Object.keys(state).filter(key => state[key as keyof typeof state] instanceof File).length > 0
     console.log("has file : %s", hasFile)
   
-    return <Container>
+    return <Container sx={{maxWidth: '100vw'}}>
             {!state.hasScanResult && 
                 <Box component={'form'} onSubmit={(event) => {
                     event.preventDefault()
@@ -50,9 +50,9 @@ const ScanPage = () => {
                         console.log("Scan Picture response", data)
                         setState(state => ({...state, hasScanResult: true, scanResult: data}))
                     })
-                }} >
+                }}  sx={{maxWidth: '100%'}} >
                 
-                    <Stack direction="row" gap={4}>
+                    <Stack direction="row" gap={4} maxWidth={'100vw'} >
                         <AddScanImageButton 
                             label="Front Cover"
                             onSelectedImage={(imageFile) => setState(state => ({...state, FRONT_COVER: imageFile})) }
