@@ -2,6 +2,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import HomeIcon from '@mui/icons-material/Home';
 import ScanIcon from '@mui/icons-material/Flip';
+import LibraryIcon from '@mui/icons-material/Inventory'
 import asyncComponentLoader from '@/utils/loader';
 import StoreFront from '@mui/icons-material/Storefront'
 
@@ -25,7 +26,7 @@ const routes: Routes = [
     component: asyncComponentLoader(() => import('@/pages/UserLibraryPage')),
     path: '/library',
     title: 'My Library',
-    icon: AddTaskIcon,
+    icon: LibraryIcon,
     isProtected: true
   },
   {

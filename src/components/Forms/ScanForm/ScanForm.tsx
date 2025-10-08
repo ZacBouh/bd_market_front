@@ -47,12 +47,14 @@ const ScanForm = (props : ScanFormProps) => {
             console.log(state)
             console.log(payload)
             scanPicture(payload)
-        }}  
+        }}
+        sx={{width: '100%'}}  
     >
-        <Stack>
+        <Stack sx={{width: '100%', display: "flex", alignItems: 'center'}} >
         <FileInput
             label={"Select Picture File"}
             inputName={state.value}
+            accept="image/*"
             onFileChange={(event) =>{
                 const newState : ScanFormState = {...state}
                 const file =  event.target.files?.[0]
@@ -94,9 +96,9 @@ const ScanForm = (props : ScanFormProps) => {
                 }}
             />
         }
-        <FormSubmitAndResetButtons
+        {/* <FormSubmitAndResetButtons
           state={state}  
-        />
+        /> */}
     </Box>
 }
 export default ScanForm

@@ -27,7 +27,7 @@ function Pages() {
   }, [notificationFunc])
   console.log(sidebarWidth)
   return (
-    <Box sx={{ height: (theme) => getPageHeight(theme), pl: `${leftPadding}px`}}>
+    <Box sx={{ minHeight: (theme) => getPageHeight(theme), pl: `${leftPadding}px`, bgcolor: 'background.paper'}}>
       <Routes>{renderRoutes(routes)}</Routes>
     </Box>
   );

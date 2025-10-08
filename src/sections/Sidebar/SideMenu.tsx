@@ -1,4 +1,4 @@
-import { Button, Drawer,  List, ListItem, ListItemButton, useMediaQuery, useTheme } from "@mui/material";
+import { Button, Divider, Drawer,  List, ListItem, ListItemButton, useMediaQuery, useTheme } from "@mui/material";
 import { useSidebar } from "./hooks";
 import { useNavigate } from "react-router";
 import routes from "@/routes";
@@ -23,9 +23,9 @@ export default function SideMenu(){
     sx={{"& .MuiDrawer-paper ": { boxSizing: 'border-box', width: theme.custom.sideMenuWidth, backgroundColor: 'background.default'}}}
   >
     <List>
-        {routes.map(route => (
+        {routes.map((route, index)=> (
           <Fragment key={route.path}>
-            {(user || !route.isProtected) && route.title && 
+            {(user || !route.isProtected) && route.title &&  
               <ListItem >
                 <ListItemButton onClick={() => handleMenuItemClick(route.path ?? '/404')}>
                   {route.icon ? <route.icon/> : null}
@@ -36,12 +36,15 @@ export default function SideMenu(){
           </Fragment>
           ))}
         {user && 
+        <>
+          <Divider sx={{width: 0.8, ml: 3}}/>
           <ListItem key={'logout'} >
             <ListItemButton component={Button} onClick={logout} >
               <BugReportIcon/>
               Logout 
             </ListItemButton>
           </ListItem>
+        </>
         }
     </List>
   </Drawer>

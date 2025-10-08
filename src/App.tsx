@@ -23,7 +23,7 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <BrowserRouter>
           <SideMenu/>
-          <Box sx={{backgroundColor: 'background.paper', padding: 0}} >
+          <Box sx={{padding: 0}} >
             <Header/>
             <Pages/>
             <HotKeys/>

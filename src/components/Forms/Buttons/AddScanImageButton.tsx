@@ -24,11 +24,11 @@ const AddScanImageButton = (props: AddScanImageButtonProps) => {
         selectedImage: undefined,
     })
     const selectedImage = props.selectedImage ?? state.selectedImage
-    return <Box>
+    return <Box display={"flex"} justifyContent={'center'} >
         <Card onClick={() => setState(state => ({...state, modalOpen: true}))} sx={{px: 4}} >
-        <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: 400, maxWidth: 200,  }} >
+        <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', maxHeight: 400, maxWidth: 200, justifyContent: 'center' }} >
             {!selectedImage && 
-                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}} component={'div'} >
+                <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}} component={'div'} >
                     <AddPhotoIcon sx={{fontSize: 150}} />
                     <Typography >{props.label ?? 'Add Image'}</Typography>
                 </Box>
@@ -52,8 +52,9 @@ const AddScanImageButton = (props: AddScanImageButtonProps) => {
         <Modal 
             open={state.modalOpen}
             onClose={() => setState(state => ({...state, modalOpen: false}))}
+            sx={{display: "flex", justifyContent: 'center', alignItems: "center"}}
         >   
-        <Box>
+        <Box sx={{bgcolor: 'background.paper', height: 'fit-content', minHeight: '50%', minWidth: '80%', padding: 2, display: "flex", justifyContent: "center",alignItems : 'center'}} >            
             <ScanForm
                 onCropImage={(image) =>{
                     if (props.onSelectedImage){

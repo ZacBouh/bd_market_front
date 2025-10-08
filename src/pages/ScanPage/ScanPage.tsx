@@ -52,7 +52,7 @@ const ScanPage = () => {
                     })
                 }}  sx={{maxWidth: '100%'}} >
                 
-                    <Stack direction="row" gap={4} maxWidth={'100vw'} >
+                    <Stack direction={{sm: "column", md: 'row'}} gap={4} maxWidth={'100vw'} >
                         <AddScanImageButton 
                             label="Front Cover"
                             onSelectedImage={(imageFile) => setState(state => ({...state, FRONT_COVER: imageFile})) }

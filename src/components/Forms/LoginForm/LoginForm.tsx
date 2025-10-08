@@ -57,11 +57,7 @@ const LoginForm = ({email} : {email?:string}) => {
             />
             <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
                 <Button onClick={() => reset()} >Reset</Button>
-                <Button type='submit' sx={{
-                    position: 'relative',
-                    zIndex: 9999,
-                    pointerEvents: 'auto'
-                }} >Ajouter</Button>
+                <Button type='submit' >Ajouter</Button>
             </Box>
         </Box>
 }
