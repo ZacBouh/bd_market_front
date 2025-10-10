@@ -23,7 +23,7 @@ export default function SideMenu(){
     sx={{"& .MuiDrawer-paper ": { boxSizing: 'border-box', width: theme.custom.sideMenuWidth, backgroundColor: 'background.default'}}}
   >
     <List>
-        {routes.map((route, index)=> (
+        {routes.map((route)=> (
           <Fragment key={route.path}>
             {(user || !route.isProtected) && route.title &&  
               <ListItem >
