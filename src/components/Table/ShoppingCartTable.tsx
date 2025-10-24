@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
-import { pay } from "@/backend/api/payment"
+import { UnavailableCopiesError, pay } from "@/backend/api/payment"
 import { shoppingCartAtom } from "@/store/shoppingCart"
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { useAtom } from "jotai"
@@ -23,8 +23,17 @@ const ShoppingCartTable = () => {
             setIsBusy(true)
             await pay({requestId})
         } catch (error) {
-            const message = error instanceof Error ? error.message : "Unable to process payment"
-            notification.show(`Payment failed: ${message}`, {severity: "error", autoHideDuration: 4000})
+            let message: string
+
+            if (error instanceof UnavailableCopiesError) {
+                message = error.message
+            } else if (error instanceof Error) {
+                message = `Payment failed: ${error.message}`
+            } else {
+                message = "Payment failed: Unable to process payment"
+            }
+
+            notification.show(message, {severity: "error", autoHideDuration: 4000})
             setIsBusy(false)
         }
     }, [isBusy])
