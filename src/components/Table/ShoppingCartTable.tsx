@@ -1,24 +1,46 @@
+import { useCallback, useMemo, useState } from "react"
 import { pay } from "@/backend/api/payment"
 import { shoppingCartAtom } from "@/store/shoppingCart"
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { useAtom } from "jotai"
+import { notification } from "@/utils/padNotification"
 
 const ShoppingCartTable = () => {
     const [{copies}, setCartSate] = useAtom(shoppingCartAtom)
-    const totalPrice = copies.reduce((total, copy) => total + Number(copy?.price), 0)
-    const currency = 'eur'
+    const [isBusy, setIsBusy] = useState(false)
+
+    const totalPrice = useMemo(() => copies.reduce((total, copy) => total + Number(copy?.price), 0), [copies])
+    const currency = "eur"
+
+    const handlePay = useCallback(async () => {
+        if (isBusy) {
+            return
+        }
+
+        const requestId = crypto.randomUUID()
+
+        try {
+            setIsBusy(true)
+            await pay({requestId})
+        } catch (error) {
+            const message = error instanceof Error ? error.message : "Unable to process payment"
+            notification.show(`Payment failed: ${message}`, {severity: "error", autoHideDuration: 4000})
+            setIsBusy(false)
+        }
+    }, [isBusy])
+
     return <TableContainer component={Paper}>
         <Table>
             <TableHead>
                 <TableRow>
                     <TableCell>
-                       Name 
+                       Name
                     </TableCell>
                     <TableCell>
-                       Price 
+                       Price
                     </TableCell>
                     <TableCell sx={{whiteSpace: 'nowrap'}}>
-                       <Button onClick={() => setCartSate(state => ({...state, copies : []}))} >Empty Cart</Button> 
+                       <Button onClick={() => setCartSate(state => ({...state, copies : []}))} disabled={isBusy}>Empty Cart</Button>
                     </TableCell>
                 </TableRow>
             </TableHead>
@@ -28,7 +50,7 @@ const ShoppingCartTable = () => {
                         <TableCell>{copy.title.name}</TableCell>
                         <TableCell>{copy.price} {copy.currency}</TableCell>
                         <TableCell sx={{border: 'none', display: "flex", justifyContent: "center"}} >
-                            <Button onClick={() => setCartSate(state => ({...state, copies: state.copies.filter(item => item.id !== copy.id)}))} >Remove</Button>
+                            <Button onClick={() => setCartSate(state => ({...state, copies: state.copies.filter(item => item.id !== copy.id)}))} disabled={isBusy}>Remove</Button>
                         </TableCell>
                     </TableRow>
                 ))}
@@ -38,7 +60,9 @@ const ShoppingCartTable = () => {
                     </TableCell>
                     <TableCell>{totalPrice} {currency}</TableCell>
                     <TableCell sx={{width: 0, whiteSpace: 'nowrap', textAlign: "center"}} >
-                        <Button onClick={() => pay()}>Pay</Button>
+                        <Button onClick={handlePay} disabled={isBusy}>
+                            {isBusy ? "Redirecting…" : "Pay"}
+                        </Button>
                     </TableCell>
                 </TableRow >
             </TableBody>

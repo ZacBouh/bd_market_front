@@ -158,6 +158,12 @@ function MyComponent() {
 }
 ```
 
+## 📝 Paiement — Anti double-clic + requestId
+
+- Le bouton de paiement est désormais protégé contre les doubles clics en désactivant l’action pendant la requête et en affichant l’état "Redirecting…".
+- Chaque requête de paiement transporte un `requestId` (UUID) envoyé au backend pour servir de clé d’idempotence.
+- En cas d’erreur réseau, une notification d’échec est affichée et l’action de paiement redevient disponible.
+
 ### 🔑 Hotkeys
 - `Alt+s`: Toggle theme mode
 - `Alt+t`: Toggle sidebar
