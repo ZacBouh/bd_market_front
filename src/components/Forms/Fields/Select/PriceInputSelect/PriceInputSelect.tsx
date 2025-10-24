@@ -1,5 +1,5 @@
 import { Box, Stack, TextField } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CurrencySelect from "../CurrencySelect/CurrencySelect"
 import { NumericFormat } from 'react-number-format'
 
@@ -13,7 +13,10 @@ type PriceInputSelectProps = {
 
 const PriceInputSelect = (props : PriceInputSelectProps) => {
     const initialState : Price = props.price ?? {amount: '', currency: 'euro'}
-    const [price, setPrice]= useState<Price>(initialState)    
+    const [price, setPrice]= useState<Price>(initialState)
+    useEffect(() => {
+        setPrice(props.price ?? {amount: '', currency: 'euro'})
+    }, [props.price])
     const {onChange} = props
     const label = props.label ?? 'Price'
     return <Box>
