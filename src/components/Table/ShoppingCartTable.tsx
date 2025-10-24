@@ -6,11 +6,22 @@ import { useAtom } from "jotai"
 import { notification } from "@/utils/padNotification"
 
 const ShoppingCartTable = () => {
-    const [{copies}, setCartSate] = useAtom(shoppingCartAtom)
+    const [{copies}, setCartState] = useAtom(shoppingCartAtom)
     const [isBusy, setIsBusy] = useState(false)
+    const [unavailableCopyIds, setUnavailableCopyIds] = useState<number[]>([])
 
     const totalPrice = useMemo(() => copies.reduce((total, copy) => total + Number(copy?.price), 0), [copies])
     const currency = "eur"
+
+    const handleRemove = useCallback((copyId: number) => {
+        setCartState(state => ({...state, copies: state.copies.filter(item => item.id !== copyId)}))
+        setUnavailableCopyIds(ids => ids.filter(id => id !== copyId))
+    }, [setCartState])
+
+    const handleEmptyCart = useCallback(() => {
+        setCartState(state => ({...state, copies: []}))
+        setUnavailableCopyIds([])
+    }, [setCartState])
 
     const handlePay = useCallback(async () => {
         if (isBusy) {
@@ -20,12 +31,14 @@ const ShoppingCartTable = () => {
         const requestId = crypto.randomUUID()
 
         try {
+            setUnavailableCopyIds([])
             setIsBusy(true)
             await pay({requestId})
         } catch (error) {
             let message: string
 
             if (error instanceof UnavailableCopiesError) {
+                setUnavailableCopyIds(error.copyIds)
                 message = error.message
             } else if (error instanceof Error) {
                 message = `Payment failed: ${error.message}`
@@ -49,20 +62,28 @@ const ShoppingCartTable = () => {
                        Price
                     </TableCell>
                     <TableCell sx={{whiteSpace: 'nowrap'}}>
-                       <Button onClick={() => setCartSate(state => ({...state, copies : []}))} disabled={isBusy}>Empty Cart</Button>
+                       <Button onClick={handleEmptyCart} disabled={isBusy}>Empty Cart</Button>
                     </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {copies.map(copy => (
-                    <TableRow key={copy.id}>
-                        <TableCell>{copy.title.name}</TableCell>
-                        <TableCell>{copy.price} {copy.currency}</TableCell>
-                        <TableCell sx={{border: 'none', display: "flex", justifyContent: "center"}} >
-                            <Button onClick={() => setCartSate(state => ({...state, copies: state.copies.filter(item => item.id !== copy.id)}))} disabled={isBusy}>Remove</Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
+                {copies.map(copy => {
+                    const isUnavailable = unavailableCopyIds.includes(copy.id)
+
+                    return (
+                        <TableRow key={copy.id}>
+                            <TableCell sx={isUnavailable ? {textDecoration: "line-through", color: "text.secondary"} : undefined}>
+                                {copy.title.name}
+                            </TableCell>
+                            <TableCell sx={isUnavailable ? {textDecoration: "line-through", color: "text.secondary"} : undefined}>
+                                {copy.price} {copy.currency}
+                            </TableCell>
+                            <TableCell sx={{border: 'none', display: "flex", justifyContent: "center"}} >
+                                <Button onClick={() => handleRemove(copy.id)} disabled={isBusy}>Remove</Button>
+                            </TableCell>
+                        </TableRow>
+                    )
+                })}
                 <TableRow >
                     <TableCell sx={{textAlign: 'right', border: 'none'}} >
                         Total

@@ -163,6 +163,7 @@ function MyComponent() {
 - Le bouton de paiement est désormais protégé contre les doubles clics en désactivant l’action pendant la requête et en affichant l’état "Redirecting…".
 - Chaque requête de paiement transporte un `requestId` (UUID) envoyé au backend pour servir de clé d’idempotence.
 - En cas d’erreur réseau, une notification d’échec est affichée et l’action de paiement redevient disponible.
+- Si le backend signale que certaines copies ne sont plus en vente, une notification explicite apparaît et les lignes concernées du panier sont barrées.
 
 ### 🔑 Hotkeys
 - `Alt+s`: Toggle theme mode
