@@ -3,6 +3,7 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import HomeIcon from '@mui/icons-material/Home';
 import ScanIcon from '@mui/icons-material/Flip';
 import LibraryIcon from '@mui/icons-material/Inventory'
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary'
 import asyncComponentLoader from '@/utils/loader';
 import StoreFront from '@mui/icons-material/Storefront'
 
@@ -34,6 +35,13 @@ const routes: Routes = [
     path: '/market',
     title: 'Market',
     icon: StoreFront,
+    isProtected: true
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/StorageManagerPage')),
+    path: '/storage',
+    title: 'Media Library',
+    icon: PhotoLibraryIcon,
     isProtected: true
   },
   {
