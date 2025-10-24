@@ -15,6 +15,7 @@ import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
 import { useState } from 'react';
 import objectToFormData from '@/utils/formData';
 import PutCopyForSaleModal from './PutCopyForSaleModal';
+import { useNotifications } from '@toolpad/core/useNotifications';
 
 type CopyGalleryProps = {
     copies: CreatedCopy[]
@@ -25,6 +26,7 @@ const CopyGallery = (props : CopyGalleryProps) => {
   const [editCopyModalOpen, setEditCopyModalOpen] = useState(false)
   const [editedCopy, setEditedCopy] = useState<CreatedCopy | undefined>(undefined)
   const [forSaleModalState, setForSaleModalState] = useState<{open: boolean, copy?: CreatedCopy, loading: boolean}>({open: false, copy: undefined, loading: false})
+  const notifications = useNotifications()
 
   const closeForSaleModal = () => setForSaleModalState({open: false, copy: undefined, loading: false})
 
@@ -46,8 +48,11 @@ const CopyGallery = (props : CopyGalleryProps) => {
       titleId: targetCopy.title.id,
       ownerId: targetCopy.owner.id
     })
-    updateCopy(payload, (data) => {
-      console.log('Successfully put copy for sale: ', data)
+    updateCopy(payload, () => {
+      notifications.show('Copy listed for sale successfully.', {
+        severity: 'success',
+        autoHideDuration: 3000
+      })
       closeForSaleModal()
     })
   }
