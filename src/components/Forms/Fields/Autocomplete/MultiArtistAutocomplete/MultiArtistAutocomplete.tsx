@@ -11,7 +11,7 @@ export type MultiArtistAutocompleteEntry = {
     skills : string[]
 }
 
-export type MultiArtistAutocompleteProps = BoxProps & ArtistSkillsSelectProps & ArtistAutocompleteProps & {
+export type MultiArtistAutocompleteProps = BoxProps & Omit<ArtistSkillsSelectProps, 'multiple' | 'onChange' | 'value'> & ArtistAutocompleteProps & {
     onMultiArtistChange?: (value : MultiArtistAutocompleteEntry[]) => any
     artistsContributions?: NewArtistContribution[]
     artistsMap?: Record<number, {id: number, firstName: string, lastName: string, pseudo: string}>
@@ -27,11 +27,9 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
     })) : undefined
     const hasPrepolutedEntries = props.artistsContributions && !!props.artistsMap
     const [artists, setArtists] = useState<MultiArtistAutocompleteEntry[]>(prePopulatedEntries ?? [emptyArtistEntry])
-    const triggerOnMultiArtistChange = (value : MultiArtistAutocompleteEntry[]) =>  onMultiArtistChange &&  onMultiArtistChange(value) 
-    console.log(props.artistsMap)
+    const triggerOnMultiArtistChange = (value : MultiArtistAutocompleteEntry[]) =>  onMultiArtistChange &&  onMultiArtistChange(value)
     return <Box sx={sx ?? {width: '100%'}}>
         {artists.map( (entry, index) => {
-            console.log(entry)
             return  <Stack direction={'row'} key={entry._id} sx={{width: '100%'}} >
                 <ArtistAutocomplete 
                     sx={{flex: 1}}
@@ -43,15 +41,15 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
                     // @ts-ignore
                     value={(hasPrepolutedEntries && entry.artist) ? {...props?.artistsMap?.[entry?.artist], coverImage: undefined }: undefined} 
                  />
-                <ArtistSkillsSelect 
-                    multiple 
+                <ArtistSkillsSelect
+                    multiple
                     value={entry.skills}
                     sx={{flex: 1}}
-                    onChange={(event) =>{
-                        const updatedArtists = replaceInArrayAtIndex(artists, index, {...artists[index], skills: event.target.value as string[]}) 
+                    onChange={(skills) =>{
+                        const updatedArtists = replaceInArrayAtIndex(artists, index, {...artists[index], skills })
                         setArtists(updatedArtists)
                         triggerOnMultiArtistChange(updatedArtists)
-                    }} 
+                    }}
                 />
                 <Button 
                     onClick={() => setArtists(artists => removeFromArrayAtIndex(artists, index))}
@@ -67,8 +65,8 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
 }
 
 function removeFromArrayAtIndex<T>( array : T[], index: number): T[]  {
-     return [...array.slice(0, index), ...array.slice(index+1)]
-    }  
+    return [...array.slice(0, index), ...array.slice(index+1)]
+}
 function replaceInArrayAtIndex<T>(array : T[], index: number, element: T): T[]{
     return [...array.slice(0, index), element, ...array.slice(index+1)]
 }

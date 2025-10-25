@@ -1,10 +1,8 @@
-import { Box, MenuItem, TextField, } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import {DatePicker} from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
 import { createArtist } from '@/backend/api/artist';
-import { useAtom } from 'jotai';
-import { artistsSkillsAtom } from '@/store';
 import { getArtistsSkills } from '@/backend/api/artist';
 import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkillsSelect';
 import FileInput from '../Fields/FileUpload/FileInput';
@@ -18,7 +16,6 @@ export type ArtistFormProps = {
 
 const ArtistForm = (props : ArtistFormProps) => {
     const {prePopulatedName, onSuccess} = props
-    const [skills] =  useAtom(artistsSkillsAtom)
     const initialState : ArtistForm = {
       firstName: '',
       lastName: '',
@@ -89,18 +86,9 @@ const ArtistForm = (props : ArtistFormProps) => {
         />
         <ArtistSkillsSelect
           multiple
-          displayEmpty
           value={authorForm.skills}
-          onChange={(event) => setAuthorForm(author => ({...author, skills: Array.isArray(event?.target.value) ? event?.target.value : [event?.target.value] })) }
-        >
-          <MenuItem disabled value="">Skills</MenuItem>
-          {skills.map(skill => <MenuItem
-            key={skill}
-            value={skill}
-          >
-            {skill}
-          </MenuItem>)}
-        </ArtistSkillsSelect>
+          onChange={(skills) => setAuthorForm(author => ({...author, skills })) }
+        />
         <FileInput 
           label={"Choose a picture"}  
           accept='image/*'
