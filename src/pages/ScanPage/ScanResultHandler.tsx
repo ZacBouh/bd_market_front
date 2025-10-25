@@ -3,7 +3,7 @@ import AddCopyForm from "@/components/Forms/AddCopyForm/AddCopyForm"
 import TitleForm from "@/components/Forms/TitleForm/TitleForm"
 import TitleGallery from "@/components/Gallery/TitleGallery/TitleGallery"
 import { SupportedLanguage } from "@/types/common"
-import { Button, Stack } from "@mui/material"
+import { Button, Stack, Typography } from "@mui/material"
 import Box from "@mui/material/Box/Box"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
@@ -56,34 +56,56 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
         artistsCandidates?.map(artist => map[artist.id] = artist )
         return map
     })() 
-    console.log("Map",artistsCandidatesMap)
-    console.log("New Contributions = ", artistsCandidatesContributions)
     const navigate = useNavigate()
-    return <Box>
-        Scan Result Handler
-        <Button onClick={() => props.resetHandler && props.resetHandler()}>Reset</Button>    
-        {props.data && 
-            <Button onClick={() => console.log(props.data)}>Data</Button>    
-        }
-        { titles && !createdTitle && <Stack direction='column' spacing={{ xs: 3, sm: 4 }} alignItems='center'>
+    return <Stack spacing={{ xs: 4, md: 5 }} sx={{ width: '100%' }}>
+        <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            justifyContent="space-between"
+            spacing={2}
+        >
+            <Box sx={{ maxWidth: 520 }}>
+                <Typography variant="h5" component="h2" gutterBottom>
+                    Review Scan Results
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                    Select the matching title below or create a new one if you cannot find a match.
+                </Typography>
+            </Box>
+            <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => props.resetHandler && props.resetHandler()}
+                sx={{ fontWeight: 600 }}
+            >
+                Start Over
+            </Button>
+        </Stack>
+        { titles && !createdTitle && <Stack direction='column' spacing={{ xs: 4, sm: 5 }} alignItems='center' sx={{ width: '100%' }}>
                 <TitleGallery titles={titles} onTitleClick={(title) =>{
                     setMatchingTitle(title)
                     setTitleSkipped(false)
                 }}/>
-                <Button
-                    onClick={() => setTitleSkipped(true)}
-                    variant="contained"
-                    color="secondary"
-                    size="large"
-                    sx={(theme) => ({
-                        alignSelf: 'stretch',
-                        maxWidth: 320,
-                        fontWeight: 700,
-                        boxShadow: theme.shadows[8],
-                    })}
-                >
-                    No Title Match
-                </Button>
+                <Stack spacing={1.5} alignItems='center' sx={{ width: '100%' }}>
+                    <Typography variant="subtitle1" color="text.secondary">
+                        Not seeing the right title?
+                    </Typography>
+                    <Button
+                        onClick={() => setTitleSkipped(true)}
+                        variant="contained"
+                        color="secondary"
+                        size="large"
+                        sx={(theme) => ({
+                            px: 5,
+                            py: 1.5,
+                            fontWeight: 700,
+                            borderRadius: theme.shape.borderRadius * 1.5,
+                            boxShadow: theme.shadows[6],
+                        })}
+                    >
+                        No Title Match
+                    </Button>
+                </Stack>
             </Stack>
         }
         { matchingTitle && !titleSkipped &&
@@ -107,8 +129,7 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
                 navigate('/library')
             }} />
         }
-        <Button onClick={() => console.log(props)}>Log Result</Button>
-    </Box>
+    </Stack>
 }
 
 export default ScanResultHandler
