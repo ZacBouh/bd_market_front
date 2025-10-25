@@ -10,6 +10,20 @@ const sharedTheme: ThemeOptions = {
         disableRipple: true,
       },
     },
+    MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius * 1.5,
+          fontWeight: 600,
+          textTransform: 'none',
+          paddingLeft: theme.spacing(2.5),
+          paddingRight: theme.spacing(2.5),
+        }),
+      },
+    },
     MuiModal: {
       defaultProps: {
         closeAfterTransition: true,
@@ -77,6 +91,78 @@ const sharedTheme: ThemeOptions = {
           marginRight: 10,
           marginLeft: 10,
         },
+      },
+    },
+    MuiFormControl: {
+      defaultProps: {
+        fullWidth: true,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          gap: theme.spacing(1),
+        }),
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          marginLeft: 0,
+          marginRight: 0,
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          fontWeight: 600,
+        }),
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          fontWeight: 600,
+        }),
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: theme.shape.borderRadius * 1.5,
+          backgroundColor:
+            theme.palette.mode === 'dark'
+              ? alpha(theme.palette.common.white, 0.04)
+              : alpha(theme.palette.text.primary, 0.04),
+          transition: theme.transitions.create(['background-color', 'box-shadow', 'border-color']),
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.primary.main,
+          },
+          '&.Mui-focused': {
+            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.16)}`,
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.primary.main,
+          },
+        }),
+        input: ({ theme }) => ({
+          padding: theme.spacing(1.5, 2),
+        }),
+        notchedOutline: ({ theme }) => ({
+          borderColor: alpha(theme.palette.text.primary, 0.16),
+        }),
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
+        fullWidth: true,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiInputAdornment-root': {
+            color: alpha(theme.palette.text.primary, 0.64),
+          },
+        }),
       },
     },
   },

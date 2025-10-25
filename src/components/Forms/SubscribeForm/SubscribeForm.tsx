@@ -1,10 +1,12 @@
-import { Box, Button,  TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { registerUser } from '@/backend/api/auth';
 import {z} from "zod"
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { useNavigate } from 'react-router';
+import FormLayout from '../FormLayout/FormLayout';
+import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 
 export const subscribeFormSchema = z.object({
     email: z.email({error: "Invalid email"}),
@@ -19,7 +21,7 @@ export const subscribeFormSchema = z.object({
     pseudo: z.string()
         .nonempty("Required")
         .min(3, "Min 3 characters")
-}) 
+})
 
 type SubscribeFormData = z.infer<typeof subscribeFormSchema>
 const env = import.meta.env.VITE_ENV
@@ -27,7 +29,7 @@ const env = import.meta.env.VITE_ENV
 const SubscribeForm = () => {
     const notifications = useNotifications()
     const navigate = useNavigate()
-    const {handleSubmit, register, formState: {errors}, reset} = useForm({
+    const {handleSubmit, register, formState: {errors}, reset, watch} = useForm({
         resolver: zodResolver(subscribeFormSchema),
         defaultValues: { email: '', password: '', pseudo: '' },
         mode: 'onChange'
@@ -45,39 +47,37 @@ const SubscribeForm = () => {
                 })
             })
     }
-    return <Box component='form'  onSubmit={handleSubmit(onSubmit)}
-          sx={{width:'100%'}}
-        >
-            <TextField 
+    const values = watch()
+    return <FormLayout  onSubmit={handleSubmit(onSubmit)}
+          >
+            <TextField
             label="email"
             {...register('email')}
             required
-            fullWidth
             error={!!errors?.email}
             helperText={errors.email?.message}
             />
-            <TextField 
+            <TextField
             label="pseudo"
             {...register('pseudo')}
             required
-            fullWidth
             error={!!errors?.pseudo}
             helperText={errors?.pseudo?.message}
             />
-            <TextField 
+            <TextField
             label="password"
             type={env === 'dev' ? 'text' : 'password'}
             {...register('password')}
             required
-            fullWidth
             error={!!errors?.password}
             helperText={errors.password?.message}
             />
-            <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-                <Button onClick={() => reset()} >Reset</Button>
-                <Button type='submit' >Ajouter</Button>
-            </Box>
-        </Box>
+            <FormSubmitAndResetButtons
+                state={values}
+                handleReset={() => reset()}
+                submitLabel="Créer mon compte"
+            />
+        </FormLayout>
 }
 
 export default SubscribeForm

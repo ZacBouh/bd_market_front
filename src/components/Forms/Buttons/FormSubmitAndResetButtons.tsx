@@ -1,23 +1,43 @@
-import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
+import Stack from "@mui/material/Stack"
 
 export type FormSubmitAndResetButtonsProps = {
-    handleReset?: (...args: unknown[]) =>  unknown
+    handleReset?: (...args: unknown[]) => unknown
     logLabel?: string
+    logButtonLabel?: string
+    resetLabel?: string
+    submitLabel?: string
     state: unknown
 }
 
-const FormSubmitAndResetButtons = (props : FormSubmitAndResetButtonsProps) => {
+const FormSubmitAndResetButtons = (props: FormSubmitAndResetButtonsProps) => {
     const handleReset = props.handleReset ?? (() => console.log("Reset not handled"))
     const env = import.meta.env.VITE_ENV
-    const logLabel = props.logLabel ?? "Content of the Form "
-    return <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-        <Button onClick={handleReset} >Reset</Button>
-        <Button type='submit' >Ajouter</Button>
-        {env === 'dev' && 
-            <Button onClick={() => console.info(logLabel, props.state)} >Log Content</Button>
-        }
-    </Box>
+    const logLabel = props.logLabel ?? "Contenu du formulaire"
+    const resetLabel = props.resetLabel ?? "Réinitialiser"
+    const submitLabel = props.submitLabel ?? "Enregistrer"
+    const logButtonLabel = props.logButtonLabel ?? "Afficher le log"
+
+    return (
+        <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            justifyContent={{ sm: 'flex-end' }}
+            sx={{ alignSelf: { xs: 'stretch', sm: 'flex-end' }, width: '100%' }}
+        >
+            <Button variant="outlined" color="secondary" onClick={handleReset}>
+                {resetLabel}
+            </Button>
+            <Button type='submit' variant="contained">
+                {submitLabel}
+            </Button>
+            {env === 'dev' && (
+                <Button variant="text" color="inherit" onClick={() => console.info(logLabel, props.state)}>
+                    {logButtonLabel}
+                </Button>
+            )}
+        </Stack>
+    )
 }
 
 export default FormSubmitAndResetButtons

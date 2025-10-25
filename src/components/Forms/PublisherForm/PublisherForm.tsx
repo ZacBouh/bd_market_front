@@ -1,4 +1,4 @@
-import { Box, Button,  TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { newPublisherForm, initialState } from './atom';
 import { useAtom } from 'jotai';
 import dayjs from 'dayjs';
@@ -7,6 +7,8 @@ import { createPublisher } from '@/backend/api/publisher';
 import { useEffect } from 'react';
 import objectToFormData from '@/utils/formData';
 import FileInput from '../Fields/FileUpload/FileInput';
+import FormLayout from '../FormLayout/FormLayout';
+import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 
 type PublisherFormProps = {
     prePopulatedName?: string,
@@ -18,10 +20,10 @@ const PublisherForm = (props : PublisherFormProps) => {
     const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
     useEffect(() => {
         prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
-    } 
-     ,[prePopulatedName])
-    
-    return <Box component='form'  onSubmit={async (event) => {
+    }
+     ,[prePopulatedName, setPublisherForm])
+
+    return <FormLayout onSubmit={async (event) => {
             event.stopPropagation()
             event.preventDefault()
             console.log("Form submitted", publisherForm)
@@ -29,41 +31,45 @@ const PublisherForm = (props : PublisherFormProps) => {
             console.log("Publisher Form Response", createdPublisher)
             onSuccess && onSuccess(createdPublisher)
         }}
-          sx={{width:'100%'}}
         >
-            <TextField 
+            <TextField
             label="Name"
             value={publisherForm.name}
             onChange={(event) => setPublisherForm((publisher) => ({...publisher, name: event.target.value}))}
             required
-            fullWidth
             />
-            <TextField 
+            <TextField
             label="Description"
             value={publisherForm.description}
             onChange={(event) => setPublisherForm((publisher) => ({...publisher, description: event.target.value}))}
-            fullWidth
+            multiline
+            rows={3}
             />
-            <DatePicker 
+            <DatePicker
             label="Creation Date"
             value={publisherForm.birthDate ? dayjs(publisherForm.birthDate) : null}
             onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, birthDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            slotProps={{ textField: { fullWidth: true } }}
             />
-            <DatePicker 
+            <DatePicker
             label="Death Date"
             value={publisherForm.deathDate ? dayjs(publisherForm.deathDate) : null}
             onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, deathDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            slotProps={{ textField: { fullWidth: true } }}
             />
             <FileInput
                 label={"Choose a logo"}
                 accept='image/*'
+                direction="column"
+                spacing={1}
                 onFileChange={(event) => setPublisherForm(publisherForm => ({...publisherForm, coverImageFile: event.target.files?.[0]})) }
             />
-            <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-            <Button onClick={() => setPublisherForm(initialState)} >Reset</Button>
-            <Button type='submit' >Ajouter</Button>
-            </Box>
-        </Box>
+            <FormSubmitAndResetButtons
+                state={publisherForm}
+                handleReset={() => setPublisherForm(() => ({ ...initialState }))}
+                submitLabel="Enregistrer l'éditeur"
+            />
+        </FormLayout>
 }
 
 export default PublisherForm

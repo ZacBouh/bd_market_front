@@ -1,5 +1,3 @@
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 import { useState } from "react"
 import PublisherAutocomplete from "../Fields/Autocomplete/PublisherAutocomplete/PublisherAutocomplete"
@@ -9,6 +7,8 @@ import FileInput from "../Fields/FileUpload/FileInput"
 import objectToFormData from "@/utils/formData"
 import { createPublisherCollection } from "@/backend/api/publisherCollection"
 import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
+import FormLayout from "../FormLayout/FormLayout"
+import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 
 const AddPublisherCollectionForm = () => {
     const initialState : Partial<NewPublisherCollection> = {
@@ -16,7 +16,7 @@ const AddPublisherCollectionForm = () => {
         language: 'fr'
     }
     const [collection, setCollection] = useState<Partial<NewPublisherCollection>>(initialState)
-    return <Box component='form'
+    return <FormLayout
         onSubmit={(event) =>{
             event.stopPropagation()
             event.preventDefault()
@@ -29,7 +29,6 @@ const AddPublisherCollectionForm = () => {
             label='Name'
             value={collection?.name}
             onChange={(event) => setCollection(collection => ({...collection, name: event.target.value }))}
-            fullWidth
             required
         />
         <PublisherAutocomplete
@@ -40,33 +39,37 @@ const AddPublisherCollectionForm = () => {
             label='Description'
             value={collection?.description}
             onChange={(event) => setCollection(collection => ({...collection, description: event.target.value }))}
-            fullWidth
             multiline
             rows={3}
         />
-        <DatePicker 
+        <DatePicker
             label="Creation Date"
             value={collection.birthDate ? dayjs(collection.birthDate) : null}
             onChange={(newDate) => setCollection((publisher) => ({...publisher, birthDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            slotProps={{ textField: { fullWidth: true } }}
         />
-        <DatePicker 
+        <DatePicker
             label="End Date"
             value={collection.deathDate ? dayjs(collection.deathDate) : null}
             onChange={(newDate) => setCollection((publisher) => ({...publisher, deathDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            slotProps={{ textField: { fullWidth: true } }}
         />
         <FileInput
                 label={"Choose a logo"}
                 accept='image/*'
+                direction="column"
+                spacing={1}
                 onFileChange={(event) => setCollection(collection => ({...collection, coverImageFile: event.target.files?.[0]})) }
         />
         <LanguageSelect
             onChange={(lang) => setCollection(collection => ({...collection, language: lang.value}))}
         />
-        <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-            <Button onClick={() => console.log("clicked reset, not implemented")} >Reset</Button>
-            <Button type='submit' >Ajouter</Button>
-        </Box>
-    </Box>
+        <FormSubmitAndResetButtons
+            state={collection}
+            handleReset={() => setCollection(() => ({ ...initialState }))}
+            submitLabel="Créer la collection"
+        />
+    </FormLayout>
 }
 
 export default AddPublisherCollectionForm
