@@ -1,30 +1,29 @@
-import Modal from "@mui/material/Modal"
-import AddCopyForm from "./AddCopyForm"
-import { Button, Container, Stack, Typography } from "@mui/material"
+import AppModal from '@/components/Common/AppModal'
+import { Button, Stack, Typography } from '@mui/material'
+import AddCopyForm from './AddCopyForm'
 
-type EditCopyModal = {
-    open: boolean
-    handleClose : (...args : any) => void
-    copy : CreatedCopy | undefined
+type EditCopyModalProps = {
+  open: boolean
+  handleClose: (...args: any[]) => void
+  copy: CreatedCopy | undefined
 }
 
-const EditCopyModal = (props : EditCopyModal) => {
-    const { open, copy, handleClose } = props
-    
-    return <Modal 
-        open={open}
-        onClose={handleClose}
-    >   
-        <Container sx={{mt: 'auto'}}>
-            <Stack>
-                <Typography variant="h3" >Edit {copy?.title.name}</Typography>
-                <Button onClick={() => handleClose()} >Close</Button>
-            </Stack>
-            <AddCopyForm
-                copyToEdit={copy}
-            />
-        </Container>
-    </Modal>
+const EditCopyModal = (props: EditCopyModalProps) => {
+  const { open, copy, handleClose } = props
+
+  return (
+    <AppModal open={open} onClose={handleClose}>
+      <Stack spacing={2}>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+          <Typography variant="h5">Edit {copy?.title.name}</Typography>
+          <Button color="inherit" onClick={() => handleClose()}>
+            Close
+          </Button>
+        </Stack>
+        <AddCopyForm copyToEdit={copy} />
+      </Stack>
+    </AppModal>
+  )
 }
 
 export default EditCopyModal
