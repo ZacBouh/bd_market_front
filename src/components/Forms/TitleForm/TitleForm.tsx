@@ -135,7 +135,7 @@ const TitleForm = (props : TitleFormProps) => {
         <FormSubmitAndResetButtons
           state={titleForm}
           handleReset={() => setTitleForm(createInitialState())}
-          submitLabel="Enregistrer l'œuvre"
+          submitLabel="Save title"
         />
       </FormLayout>
 }

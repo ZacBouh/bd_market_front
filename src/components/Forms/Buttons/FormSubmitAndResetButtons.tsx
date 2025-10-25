@@ -13,10 +13,10 @@ export type FormSubmitAndResetButtonsProps = {
 const FormSubmitAndResetButtons = (props: FormSubmitAndResetButtonsProps) => {
     const handleReset = props.handleReset ?? (() => console.log("Reset not handled"))
     const env = import.meta.env.VITE_ENV
-    const logLabel = props.logLabel ?? "Contenu du formulaire"
-    const resetLabel = props.resetLabel ?? "Réinitialiser"
-    const submitLabel = props.submitLabel ?? "Enregistrer"
-    const logButtonLabel = props.logButtonLabel ?? "Afficher le log"
+    const logLabel = props.logLabel ?? "Form values"
+    const resetLabel = props.resetLabel ?? "Reset"
+    const submitLabel = props.submitLabel ?? "Save"
+    const logButtonLabel = props.logButtonLabel ?? "Show log"
 
     return (
         <Stack

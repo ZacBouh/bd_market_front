@@ -100,7 +100,7 @@ const ArtistForm = (props : ArtistFormProps) => {
         <FormSubmitAndResetButtons
           state={authorForm}
           handleReset={() => setAuthorForm(() => ({ ...initialState }))}
-          submitLabel="Enregistrer l'artiste"
+          submitLabel="Save artist"
         />
     </FormLayout>
 }

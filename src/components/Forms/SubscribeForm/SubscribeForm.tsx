@@ -75,7 +75,7 @@ const SubscribeForm = () => {
             <FormSubmitAndResetButtons
                 state={values}
                 handleReset={() => reset()}
-                submitLabel="Créer mon compte"
+                submitLabel="Create account"
             />
         </FormLayout>
 }

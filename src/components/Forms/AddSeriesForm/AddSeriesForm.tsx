@@ -64,7 +64,7 @@ const AddSeriesForm = (props: AddSeriesFormProps) => {
         <FormSubmitAndResetButtons
             state={newSeries}
             handleReset={() => setNewSeries(() => ({ ...initialState }))}
-            submitLabel="Créer la série"
+            submitLabel="Create series"
         />
     </FormLayout>
 }

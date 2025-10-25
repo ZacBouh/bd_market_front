@@ -26,6 +26,8 @@ type AddCopyFormProps = {
 const AddCopyForm = (props: AddCopyFormProps) => {
     const { copyToEdit, title, onCopyCreated, surface = "card" } = props
     const { user } = useUser()
+    const isEditing = Boolean(copyToEdit)
+    const showSurfaceHeader = surface !== "plain"
 
     const computeInitialState = useCallback((): NewCopy => ({
         ownerId: copyToEdit?.owner?.id ?? user?.user.id ?? null,
@@ -65,6 +67,18 @@ const AddCopyForm = (props: AddCopyFormProps) => {
         <FormLayout
             surface={surface}
             contentSpacing={2.5}
+            title={
+                showSurfaceHeader
+                    ? isEditing
+                        ? "Update copy"
+                        : "Add a new copy"
+                    : undefined
+            }
+            description={
+                showSurfaceHeader
+                    ? "Upload artwork, set sale details, and keep your collection up to date."
+                    : undefined
+            }
             onSubmit={(event) => {
                 event.stopPropagation()
                 event.preventDefault()
@@ -158,7 +172,7 @@ const AddCopyForm = (props: AddCopyFormProps) => {
             />
             <FormSubmitAndResetButtons
                 state={newCopy}
-                submitLabel={copyToEdit ? "Mettre à jour" : "Ajouter"}
+                submitLabel={isEditing ? "Update copy" : "Add copy"}
                 handleReset={() => {
                     setNewCopy(computeInitialState())
                     setCoverImagePreviewUrl(baseCoverImageUrl)

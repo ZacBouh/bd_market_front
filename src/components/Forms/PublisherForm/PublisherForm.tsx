@@ -69,7 +69,7 @@ const PublisherForm = (props : PublisherFormProps) => {
             <FormSubmitAndResetButtons
                 state={publisherForm}
                 handleReset={() => setPublisherForm(() => ({ ...initialState }))}
-                submitLabel="Enregistrer l'éditeur"
+                submitLabel="Save publisher"
             />
         </FormLayout>
 }

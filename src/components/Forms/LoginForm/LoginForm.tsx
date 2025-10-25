@@ -58,7 +58,7 @@ const LoginForm = ({email} : {email?:string}) => {
             <FormSubmitAndResetButtons
                 state={values}
                 handleReset={() => reset()}
-                submitLabel="Se connecter"
+                submitLabel="Sign in"
             />
         </FormLayout>
 }

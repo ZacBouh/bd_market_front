@@ -84,7 +84,7 @@ const AddPublisherCollectionForm = (props: AddPublisherCollectionFormProps) => {
         <FormSubmitAndResetButtons
             state={collection}
             handleReset={() => setCollection(() => ({ ...initialState }))}
-            submitLabel="Créer la collection"
+            submitLabel="Create collection"
         />
     </FormLayout>
 }
