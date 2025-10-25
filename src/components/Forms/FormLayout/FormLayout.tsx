@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import Paper, { PaperProps } from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { alpha } from '@mui/material/styles';
+import { alpha, lighten } from '@mui/material/styles';
 
 type FormLayoutProps = PaperProps<'form'> & {
   title?: ReactNode;
@@ -21,7 +21,7 @@ const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLay
     description,
     actions,
     children,
-    contentSpacing = 2.5,
+    contentSpacing = 3,
     component,
     sx,
     ...rest
@@ -41,15 +41,22 @@ const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLay
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
-          gap: theme.spacing(contentSpacing),
-          padding: theme.spacing(3),
+          gap: theme.spacing(contentSpacing + 0.5),
+          padding: theme.spacing(3.5, 3, 4),
           [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(4),
+            padding: theme.spacing(4, 5),
           },
           borderRadius: theme.shape.borderRadius * 2,
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${alpha(theme.palette.divider, 0.24)}`,
-          boxShadow: theme.shadows[8],
+          backgroundColor:
+            theme.palette.mode === 'dark'
+              ? alpha(theme.palette.background.paper, 0.88)
+              : lighten(theme.palette.background.paper, 0.02),
+          boxShadow: theme.shadows[16],
+          backgroundImage:
+            theme.palette.mode === 'dark'
+              ? 'radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 55%)'
+              : 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75))',
+          backdropFilter: 'blur(6px)',
         }),
         ...resolvedSx,
       ]}
@@ -71,11 +78,11 @@ const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLay
           )}
         </Stack>
       )}
-      <Stack spacing={contentSpacing}>{children}</Stack>
+        <Stack spacing={contentSpacing + 0.5}>{children}</Stack>
       {actions && (
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          spacing={2}
+          spacing={2.5}
           justifyContent={{ sm: 'flex-end' }}
         >
           {actions}
