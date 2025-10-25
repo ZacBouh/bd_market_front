@@ -14,6 +14,44 @@ type TitleGalleryProps = {
     onTitleClick?: (title: CreatedTitle) => unknown  
 }
 
+const getArtistDisplayName = (contribution: CreatedContribution) => {
+  const { artist } = contribution ?? {}
+  if (!artist) {
+    return undefined
+  }
+
+  const fullName = artist.fullName ?? artist.name
+  if (fullName && fullName.trim().length > 0) {
+    return fullName
+  }
+
+  const composedName = [artist.firstName, artist.lastName]
+    .filter((part): part is string => !!part && part.trim().length > 0)
+    .join(' ')
+
+  if (composedName.length > 0) {
+    return composedName
+  }
+
+  return artist.pseudo?.trim().length ? artist.pseudo : undefined
+}
+
+const getContributorsLabel = (contributions?: CreatedContribution[]) => {
+  if (!contributions || contributions.length === 0) {
+    return '?'
+  }
+
+  const names = contributions
+    .map((contribution) => getArtistDisplayName(contribution))
+    .filter((name): name is string => !!name && name.trim().length > 0)
+
+  if (names.length === 0) {
+    return '?'
+  }
+
+  return names.join(', ')
+}
+
 const TitleGallery = (props : TitleGalleryProps) => {
     const {titles} = props
     
@@ -45,7 +83,7 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 <CardContent>
                   <Typography variant="h6">{title.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    by {title?.artistsContributions[0]?.artist?.fullName ?? '?'}
+                    by {getContributorsLabel(title?.artistsContributions)}
                   </Typography>
                 </CardContent>
               </CardActionArea>

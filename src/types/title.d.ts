@@ -30,8 +30,14 @@ type CreatedArtistContribution = NewArtistContribution & {
     title: CreatedTitle['id']
 }
 
+type ContributionArtist = {
+    id: CreatedArtist['id']
+    fullName?: string | null
+    name?: string | null
+} & Partial<Pick<CreatedArtist, 'firstName' | 'lastName' | 'pseudo'>>
+
 type CreatedContribution = {
-    artist: {id: CreatedArtist['id'], fullName: string}
+    artist: ContributionArtist
     skills: string[]
     title: number
 }
