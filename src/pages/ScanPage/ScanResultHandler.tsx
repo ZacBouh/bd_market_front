@@ -65,12 +65,25 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
         {props.data && 
             <Button onClick={() => console.log(props.data)}>Data</Button>    
         }
-        { titles && !createdTitle && <Stack direction='column'>
+        { titles && !createdTitle && <Stack direction='column' spacing={{ xs: 3, sm: 4 }} alignItems='center'>
                 <TitleGallery titles={titles} onTitleClick={(title) =>{
                     setMatchingTitle(title)
                     setTitleSkipped(false)
                 }}/>
-                <Button onClick={() => setTitleSkipped(true)} >No Title Match</Button>
+                <Button
+                    onClick={() => setTitleSkipped(true)}
+                    variant="contained"
+                    color="secondary"
+                    size="large"
+                    sx={(theme) => ({
+                        alignSelf: 'stretch',
+                        maxWidth: 320,
+                        fontWeight: 700,
+                        boxShadow: theme.shadows[8],
+                    })}
+                >
+                    No Title Match
+                </Button>
             </Stack>
         }
         { matchingTitle && !titleSkipped &&
