@@ -13,11 +13,11 @@ type NewTitleFormState = NewTitle & {
 
 type CreatedTitle = NewTitle & {
     id: number,
-    createdAt: string, 
+    createdAt: string,
     updatedAt: string,
     coverImage: UploadedImage
     uploadedImages: UploadedImage[]
-    artistsContributions : CreatedContribution[]
+    artistsContributions : CreatedContribution[] | Record<string | number, CreatedContribution>
 }
 
 type NewArtistContribution = {

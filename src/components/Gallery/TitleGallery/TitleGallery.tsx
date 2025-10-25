@@ -36,28 +36,20 @@ const getArtistDisplayName = (contribution: CreatedContribution) => {
   return artist.pseudo?.trim().length ? artist.pseudo : undefined
 }
 
-const normaliseContributions = (
-  contributions?: CreatedContribution[] | Record<string | number, CreatedContribution>,
-) => {
-  if (!contributions) {
-    return []
-  }
-
-  if (Array.isArray(contributions)) {
-    return contributions
-  }
-
-  return Object.values(contributions)
-}
-
 const getContributorsLabel = (contributions?: CreatedContribution[] | Record<string | number, CreatedContribution>) => {
-  const normalised = normaliseContributions(contributions)
-
-  if (normalised.length === 0) {
+  if (!contributions) {
     return '?'
   }
 
-  const names = normalised
+  const contributionsList = Array.isArray(contributions)
+    ? contributions
+    : Object.values(contributions)
+
+  if (contributionsList.length === 0) {
+    return '?'
+  }
+
+  const names = contributionsList
     .map((contribution) => getArtistDisplayName(contribution))
     .filter((name): name is string => !!name && name.trim().length > 0)
 
