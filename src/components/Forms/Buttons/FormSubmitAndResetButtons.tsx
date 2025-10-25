@@ -2,6 +2,7 @@ import Button from "@mui/material/Button"
 import Stack from "@mui/material/Stack"
 
 export type FormSubmitAndResetButtonsProps = {
+    alignment?: 'start' | 'center' | 'end'
     handleReset?: (...args: unknown[]) => unknown
     logLabel?: string
     logButtonLabel?: string
@@ -17,13 +18,21 @@ const FormSubmitAndResetButtons = (props: FormSubmitAndResetButtonsProps) => {
     const resetLabel = props.resetLabel ?? "Reset"
     const submitLabel = props.submitLabel ?? "Save"
     const logButtonLabel = props.logButtonLabel ?? "Show log"
+    const alignment = props.alignment ?? 'end'
+    const justifyContent = alignment === 'start' ? 'flex-start' : alignment === 'center' ? 'center' : 'flex-end'
+    const alignSelf = {
+        xs: 'stretch',
+        sm: alignment === 'end' ? 'flex-end' : alignment === 'start' ? 'flex-start' : 'center',
+    }
+    const width = alignment === 'end' ? '100%' : { xs: '100%', sm: 'auto' }
 
     return (
         <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
-            justifyContent={{ sm: 'flex-end' }}
-            sx={{ alignSelf: { xs: 'stretch', sm: 'flex-end' }, width: '100%' }}
+            justifyContent={{ sm: justifyContent }}
+            alignItems={alignment === 'center' ? { xs: 'stretch', sm: 'center' } : undefined}
+            sx={{ alignSelf, width }}
         >
             <Button variant="outlined" color="secondary" onClick={handleReset}>
                 {resetLabel}

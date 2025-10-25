@@ -43,10 +43,11 @@ const ScanPage = () => {
 
   return (
     <Container maxWidth={false} sx={{ py: { xs: 6, md: 8 } }}>
-      <Stack spacing={{ xs: 4, md: 5 }}>
+      <Stack spacing={{ xs: 4, md: 5 }} alignItems="center">
         <PageHero
           title="Scan"
           description="Upload cover photos to let BD Market automatically recognize and prepare title information."
+          align="center"
         />
         {!state.hasScanResult && (
           <Box
@@ -60,34 +61,45 @@ const ScanPage = () => {
                 setState((prevState) => ({ ...prevState, hasScanResult: true, scanResult: data }));
               });
             }}
-            sx={{ maxWidth: '100%' }}
+            sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}
           >
-            <Stack direction={{ sm: 'column', md: 'row' }} gap={4} maxWidth="100vw">
-              <AddScanImageButton
-                label="Front Cover"
-                onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, FRONT_COVER: imageFile }))}
-                selectedImage={state.FRONT_COVER}
-              />
-              <AddScanImageButton
-                label="Back Cover"
-                onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, BACK_COVER: imageFile }))}
-                selectedImage={state.BACK_COVER}
-              />
-              <AddScanImageButton
-                label="Spine"
-                onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, SPINE: imageFile }))}
-                selectedImage={state.SPINE}
-              />
+            <Stack spacing={{ xs: 4, md: 5 }} alignItems="center" sx={{ width: '100%', maxWidth: 1040 }}>
+              <Stack
+                direction={{ xs: 'column', md: 'row' }}
+                spacing={{ xs: 3, md: 4 }}
+                justifyContent="center"
+                alignItems="stretch"
+                flexWrap="wrap"
+                sx={{ width: '100%' }}
+              >
+                <AddScanImageButton
+                  label="Front Cover"
+                  onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, FRONT_COVER: imageFile }))}
+                  selectedImage={state.FRONT_COVER}
+                />
+                <AddScanImageButton
+                  label="Back Cover"
+                  onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, BACK_COVER: imageFile }))}
+                  selectedImage={state.BACK_COVER}
+                />
+                <AddScanImageButton
+                  label="Spine"
+                  onSelectedImage={(imageFile) => setState((prevState) => ({ ...prevState, SPINE: imageFile }))}
+                  selectedImage={state.SPINE}
+                />
+              </Stack>
+              {hasFile && (
+                <FormSubmitAndResetButtons
+                  state={state}
+                  alignment="center"
+                  submitLabel="Analyze"
+                  handleReset={() => {
+                    remove('scanPageState');
+                    setState({ hasScanResult: false });
+                  }}
+                />
+              )}
             </Stack>
-            {hasFile && (
-              <FormSubmitAndResetButtons
-                state={state}
-                handleReset={() => {
-                  remove('scanPageState');
-                  setState({ hasScanResult: false });
-                }}
-              />
-            )}
           </Box>
         )}
         {state.hasScanResult && (
