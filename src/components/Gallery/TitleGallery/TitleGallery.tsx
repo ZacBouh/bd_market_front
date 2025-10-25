@@ -57,6 +57,12 @@ const getContributorsLabel = (contributions?: CreatedContribution[] | Record<str
     return '?'
   }
 
+  if (names.length > 3) {
+    const visibleNames = names.slice(0, 2)
+    const remainingCount = names.length - visibleNames.length
+    return `${visibleNames.join(', ')} and ${remainingCount} more`
+  }
+
   return names.join(', ')
 }
 
