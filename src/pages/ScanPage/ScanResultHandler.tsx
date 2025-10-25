@@ -109,25 +109,31 @@ const ScanResultHandler = (props : ScanResultHandlerProps) => {
             </Stack>
         }
         { matchingTitle && !titleSkipped &&
-            <AddCopyForm title={matchingTitle} />
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <AddCopyForm title={matchingTitle} />
+            </Box>
         }
         { (artistsCandidates || publishersCandidates || props.data?.result)  && titleSkipped && !createdTitle  &&
-            <TitleForm
-                prePopulatedName={props.data?.result.name}
-                language={props.data?.result.language}
-                description={props.data?.result.description}
-                publisher={publishersCandidates?.[0]}
-                artistsContributions={artistsCandidatesContributions}
-                artistsMap={artistsCandidatesMap}
-                isbn={props.data?.result.isbn}
-                onTitleCreated={(title) => setCreatedTitle(title)}
-            />
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <TitleForm
+                    prePopulatedName={props.data?.result.name}
+                    language={props.data?.result.language}
+                    description={props.data?.result.description}
+                    publisher={publishersCandidates?.[0]}
+                    artistsContributions={artistsCandidatesContributions}
+                    artistsMap={artistsCandidatesMap}
+                    isbn={props.data?.result.isbn}
+                    onTitleCreated={(title) => setCreatedTitle(title)}
+                />
+            </Box>
         }
-        {   createdTitle && 
-            <AddCopyForm title={createdTitle} onCopyCreated={(copy) => {
-                console.log('Created Copy ', copy)
-                navigate('/library')
-            }} />
+        {   createdTitle &&
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <AddCopyForm title={createdTitle} onCopyCreated={(copy) => {
+                    console.log('Created Copy ', copy)
+                    navigate('/library')
+                }} />
+            </Box>
         }
     </Stack>
 }
