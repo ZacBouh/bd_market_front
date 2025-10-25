@@ -20,7 +20,7 @@ const EditCopyModal = (props: EditCopyModalProps) => {
             Close
           </Button>
         </Stack>
-        <AddCopyForm copyToEdit={copy} />
+        <AddCopyForm surface="plain" copyToEdit={copy} />
       </Stack>
     </AppModal>
   )

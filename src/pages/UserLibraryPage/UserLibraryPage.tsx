@@ -1,4 +1,4 @@
-import {  Container, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 
 import { Centered } from '@/components/styled';
 import AddCopyForm from '@/components/Forms/AddCopyForm/AddCopyForm';
@@ -16,8 +16,8 @@ function UserLibraryPage() {
   return (
     <>
       <meta name="title" content="Page 4" />
-      <Container>
-        <Centered>
+      <Container sx={{ py: { xs: 4, md: 6 } }}>
+        <Centered spacing={4} sx={{ width: '100%' }}>
           <Typography variant="h3">My Library</Typography>
           <AddCopyForm/>
           <CopyGallery copies={copies} />

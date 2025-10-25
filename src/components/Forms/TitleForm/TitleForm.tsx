@@ -12,7 +12,7 @@ import SeriesAutocomplete from '../Fields/Autocomplete/SeriesAutocomplete/Series
 import PublisherCollectionAutocomplete from '../Fields/Autocomplete/PublisherCollectionAutocomplete.tsx/PublisherCollectionAutocomplete';
 import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 import { SupportedLanguage } from '@/types/common';
-import FormLayout from '../FormLayout/FormLayout';
+import FormLayout, { FormLayoutSurface } from '../FormLayout/FormLayout';
 
 export type TitleFormProps = {
   onTitleCreated?: (createdTitle: CreatedTitle) => any
@@ -26,6 +26,7 @@ export type TitleFormProps = {
   coverImageFile?: File
   series?: string
   isbn?: string
+  surface?: FormLayoutSurface
 }
 
 const TitleForm = (props : TitleFormProps) => {
@@ -41,6 +42,7 @@ const TitleForm = (props : TitleFormProps) => {
     coverImageFile,
     series,
     isbn,
+    surface = 'card',
   } = props
   const createInitialState = useCallback((): NewTitleFormState => ({
     name: prePopulatedName ?? '',
@@ -69,6 +71,7 @@ const TitleForm = (props : TitleFormProps) => {
         console.log("response from createTitle", createdTitle)
         onTitleCreated && onTitleCreated(createdTitle)
       }}
+      surface={surface}
       >
         <TextField
           label="Title"

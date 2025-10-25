@@ -8,15 +8,16 @@ import ArtistSkillsSelect from '../Fields/Select/ArtistSkillsSelect/ArtistSkills
 import FileInput from '../Fields/FileUpload/FileInput';
 import objectToFormData from '@/utils/formData';
 import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
-import FormLayout from '../FormLayout/FormLayout';
+import FormLayout, { FormLayoutSurface } from '../FormLayout/FormLayout';
 
 export type ArtistFormProps = {
   prePopulatedName?: string,
   onSuccess?: (createdArtist?: CreatedArtist) => void
+  surface?: FormLayoutSurface
 }
 
 const ArtistForm = (props : ArtistFormProps) => {
-    const {prePopulatedName, onSuccess} = props
+    const {prePopulatedName, onSuccess, surface = 'card'} = props
     const initialState : ArtistForm = {
       firstName: '',
       lastName: '',
@@ -53,6 +54,7 @@ const ArtistForm = (props : ArtistFormProps) => {
     }
 
     return <FormLayout onSubmit={handleSubmit}
+        surface={surface}
           >
         <TextField
           label="First Name"

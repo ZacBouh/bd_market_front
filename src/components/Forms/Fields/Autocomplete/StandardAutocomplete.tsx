@@ -120,6 +120,7 @@ const StandardAutocomplete = <T, P = void>(props: StandardAutocompleteProps<T, P
             <CreateOptionForm
               prePopulatedInputs={getPrepopulatedInput && getPrepopulatedInput(state)}
               handleClose={handleClose}
+              surface="plain"
             />
           </Box>
         </AppModal>

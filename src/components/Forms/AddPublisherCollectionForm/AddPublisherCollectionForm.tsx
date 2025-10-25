@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import PublisherAutocomplete from "../Fields/Autocomplete/PublisherAutocomplete/PublisherAutocomplete"
 import dayjs from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
@@ -7,16 +7,32 @@ import FileInput from "../Fields/FileUpload/FileInput"
 import objectToFormData from "@/utils/formData"
 import { createPublisherCollection } from "@/backend/api/publisherCollection"
 import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
-import FormLayout from "../FormLayout/FormLayout"
+import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 
-const AddPublisherCollectionForm = () => {
-    const initialState : Partial<NewPublisherCollection> = {
-        name: '',
-        language: 'fr'
-    }
+type AddPublisherCollectionFormProps = {
+    prePopulatedInputs?: Partial<NewPublisherCollection> & { publisher?: CreatedPublisher }
+    surface?: FormLayoutSurface
+}
+
+const AddPublisherCollectionForm = (props: AddPublisherCollectionFormProps) => {
+    const { prePopulatedInputs, surface = 'card' } = props
+    const initialState = useMemo<Partial<NewPublisherCollection>>(() => ({
+        name: prePopulatedInputs?.name ?? '',
+        description: prePopulatedInputs?.description ?? '',
+        language: prePopulatedInputs?.language ?? 'fr',
+        publisherId: prePopulatedInputs?.publisherId,
+        birthDate: prePopulatedInputs?.birthDate,
+        deathDate: prePopulatedInputs?.deathDate,
+    }), [prePopulatedInputs])
     const [collection, setCollection] = useState<Partial<NewPublisherCollection>>(initialState)
+
+    useEffect(() => {
+        setCollection(initialState)
+    }, [initialState])
+
     return <FormLayout
+        surface={surface}
         onSubmit={(event) =>{
             event.stopPropagation()
             event.preventDefault()
@@ -34,6 +50,7 @@ const AddPublisherCollectionForm = () => {
         <PublisherAutocomplete
             onChange={(_, publisher) => setCollection(collection => ({...collection, publisherId: publisher?.id})) }
             required
+            value={prePopulatedInputs?.publisher ?? undefined}
         />
         <TextField
             label='Description'

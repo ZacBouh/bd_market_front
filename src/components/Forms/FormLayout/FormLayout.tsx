@@ -5,11 +5,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha, lighten } from '@mui/material/styles';
 
-type FormLayoutProps = PaperProps<'form'> & {
+export type FormLayoutSurface = 'card' | 'plain';
+
+export type FormLayoutProps = PaperProps<'form'> & {
   title?: ReactNode;
   description?: ReactNode;
   actions?: ReactNode;
   contentSpacing?: number;
+  surface?: FormLayoutSurface;
 };
 
 const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLayout(
@@ -22,6 +25,7 @@ const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLay
     actions,
     children,
     contentSpacing = 3,
+    surface = 'card',
     component,
     sx,
     ...rest
@@ -35,29 +39,46 @@ const FormLayout = forwardRef<HTMLFormElement, FormLayoutProps>(function FormLay
       component={component ?? 'form'}
       elevation={0}
       sx={[
-        (theme) => ({
-          width: '100%',
-          maxWidth: 640,
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: theme.spacing(contentSpacing + 0.5),
-          padding: theme.spacing(3.5, 3, 4),
-          [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(4, 5),
-          },
-          borderRadius: theme.shape.borderRadius * 2,
-          backgroundColor:
-            theme.palette.mode === 'dark'
-              ? alpha(theme.palette.background.paper, 0.88)
-              : lighten(theme.palette.background.paper, 0.02),
-          boxShadow: theme.shadows[16],
-          backgroundImage:
-            theme.palette.mode === 'dark'
-              ? 'radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 55%)'
-              : 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75))',
-          backdropFilter: 'blur(6px)',
-        }),
+        (theme) => {
+          const baseStyles = {
+            width: '100%',
+            maxWidth: 640,
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing(contentSpacing + 0.5),
+            padding: theme.spacing(3.5, 3, 4),
+            [theme.breakpoints.up('sm')]: {
+              padding: theme.spacing(4, 5),
+            },
+            borderRadius: theme.shape.borderRadius * 2,
+          } as const;
+
+          const cardSurfaceStyles = {
+            backgroundColor:
+              theme.palette.mode === 'dark'
+                ? alpha(theme.palette.background.paper, 0.88)
+                : lighten(theme.palette.background.paper, 0.02),
+            boxShadow: theme.shadows[16],
+            backgroundImage:
+              theme.palette.mode === 'dark'
+                ? 'radial-gradient(circle at top, rgba(255,255,255,0.04), transparent 55%)'
+                : 'linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75))',
+            backdropFilter: 'blur(6px)',
+          } as const;
+
+          const plainSurfaceStyles = {
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            backgroundImage: 'none',
+            backdropFilter: 'none',
+          } as const;
+
+          return {
+            ...baseStyles,
+            ...(surface === 'plain' ? plainSurfaceStyles : cardSurfaceStyles),
+          };
+        },
         ...resolvedSx,
       ]}
       {...rest}

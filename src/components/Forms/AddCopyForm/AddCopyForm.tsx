@@ -1,106 +1,171 @@
-import { Box, Button, Card, CardMedia } from "@mui/material"
-import TitleAutocomplete from "../Fields/Autocomplete/TitleAutocomplete/TitleAutocomplete"
-import { useUser } from "@/hooks/useUser"
-import { useState } from "react"
-import CopyConditionSelect from "../Fields/Select/CopyConditionSelect/CopyConditionSelect"
-import FileInput from "../Fields/FileUpload/FileInput"
-import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect"
-import { createCopy, updateCopy } from "@/backend/api/copy"
-import objectToFormData from "@/utils/formData"
+import Box from "@mui/material/Box"
+import Card from "@mui/material/Card"
+import CardMedia from "@mui/material/CardMedia"
+import Stack from "@mui/material/Stack"
+import { useCallback, useEffect, useMemo, useState } from "react"
+
 import { API_BASE_URL } from "@/backend/api/api"
+import { createCopy, updateCopy } from "@/backend/api/copy"
+import { useUser } from "@/hooks/useUser"
+import objectToFormData from "@/utils/formData"
+
+import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
+import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
+import TitleAutocomplete from "../Fields/Autocomplete/TitleAutocomplete/TitleAutocomplete"
+import CopyConditionSelect from "../Fields/Select/CopyConditionSelect/CopyConditionSelect"
+import PriceInputSelect from "../Fields/Select/PriceInputSelect/PriceInputSelect"
+import FileInput from "../Fields/FileUpload/FileInput"
 
 type AddCopyFormProps = {
-    copyToEdit? : CreatedCopy,
+    copyToEdit?: CreatedCopy
     title?: CreatedTitle
     onCopyCreated?: (copy: CreatedCopy) => unknown
+    surface?: FormLayoutSurface
 }
 
-const AddCopyForm = (props : AddCopyFormProps) => {
-    const {copyToEdit} = props
-    const {user} = useUser()
-    const initialState : NewCopy = {
-        ...copyToEdit,
-        titleId: copyToEdit?.title?.id ?? props?.title?.id ,
-        ownerId: copyToEdit?.owner?.id  ?? user?.user.id ?? null,
-        boughtForCurrency: copyToEdit?.boughtForCurrency ?? 'euro',
-        currency: copyToEdit?.currency ?? 'euro',
-    }
-    const prefilledCoverImageUrl = (() => {
-        if(copyToEdit?.coverImage?.url) return copyToEdit?.coverImage?.url
-        if(props.title?.coverImage?.url) return props.title?.coverImage?.url
-        return false
-    })()
-    const [coverImagePreviewUrl, setCoverImagePreviewUrl] = useState(prefilledCoverImageUrl ? API_BASE_URL+ prefilledCoverImageUrl :  undefined) 
-    const [newCopy, setNewCopy] = useState<NewCopy>(initialState)
-    return <Box component='form'
-        onSubmit={(event) => {
-            event.stopPropagation()
-            event.preventDefault()
-            console.log("Add Copy Form Submitted", newCopy)
-            if(copyToEdit) {
-                updateCopy(objectToFormData(newCopy))
-                return 
-            }
-            createCopy(objectToFormData(newCopy), props.onCopyCreated)
-        }}
-        sx={{width: '100%'}}
-    >
-        
-        <TitleAutocomplete 
-            onChangeCallback={(_, title) => setNewCopy(newCopy => ({...newCopy, titleId: title?.id}))} 
-            title={copyToEdit?.title ?? props?.title}
-            disabled={(copyToEdit || props.title) ? true : false}
-        />
-        <CopyConditionSelect condition={copyToEdit?.copyCondition ?? ''} onChange={(condition) => setNewCopy(newCopy => ({...newCopy, copyCondition: condition.value})) }/>    
-        <PriceInputSelect
-            price={copyToEdit ? {amount: copyToEdit?.price ?? '', currency: (copyToEdit?.currency as AcceptedCurrency) ?? 'euro'} : undefined}
-            label="Sell Price"
-            onChange={(price) => {
-                const updatedCopy = {...newCopy, price: price.amount, currency: price.currency }
-                setNewCopy(updatedCopy)
+const AddCopyForm = (props: AddCopyFormProps) => {
+    const { copyToEdit, title, onCopyCreated, surface = "card" } = props
+    const { user } = useUser()
+
+    const computeInitialState = useCallback((): NewCopy => ({
+        ownerId: copyToEdit?.owner?.id ?? user?.user.id ?? null,
+        titleId: copyToEdit?.title?.id ?? title?.id,
+        copyCondition: copyToEdit?.copyCondition,
+        price: copyToEdit?.price,
+        currency: (copyToEdit?.currency as AcceptedCurrency) ?? "euro",
+        boughtForPrice: copyToEdit?.boughtForPrice,
+        boughtForCurrency: (copyToEdit?.boughtForCurrency as AcceptedCurrency) ?? "euro",
+        coverImageFile: undefined,
+        forSale: copyToEdit?.forSale,
+    }), [copyToEdit, title?.id, user?.user.id])
+
+    const [newCopy, setNewCopy] = useState<NewCopy>(() => computeInitialState())
+
+    useEffect(() => {
+        setNewCopy(computeInitialState())
+    }, [computeInitialState])
+
+    const baseCoverImageUrl = useMemo(() => {
+        if (copyToEdit?.coverImage?.url) {
+            return `${API_BASE_URL}${copyToEdit.coverImage.url}`
+        }
+        if (title?.coverImage?.url) {
+            return `${API_BASE_URL}${title.coverImage.url}`
+        }
+        return undefined
+    }, [copyToEdit?.coverImage?.url, title?.coverImage?.url])
+
+    const [coverImagePreviewUrl, setCoverImagePreviewUrl] = useState<string | undefined>(baseCoverImageUrl)
+
+    useEffect(() => {
+        setCoverImagePreviewUrl(baseCoverImageUrl)
+    }, [baseCoverImageUrl])
+
+    return (
+        <FormLayout
+            surface={surface}
+            contentSpacing={2.5}
+            onSubmit={(event) => {
+                event.stopPropagation()
+                event.preventDefault()
+                console.log("Add Copy Form Submitted", newCopy)
+                if (copyToEdit) {
+                    updateCopy(objectToFormData({ ...newCopy, id: copyToEdit.id }))
+                    return
+                }
+                createCopy(objectToFormData(newCopy), onCopyCreated)
             }}
-        />
-        <PriceInputSelect
-            price={copyToEdit ? {amount: copyToEdit?.boughtForPrice ?? '', currency: (copyToEdit?.boughtForCurrency as AcceptedCurrency) ?? 'euro'} : undefined}
-            label="Bought for"
-            onChange={(price) => {
-                const updatedCopy : NewCopy = {...newCopy, boughtForPrice: price.amount, boughtForCurrency: price.currency  }
-                setNewCopy(updatedCopy)
-            } }
-        />
-        { coverImagePreviewUrl && 
-            <Box sx={{width: {xs: '100%', sm: '50%', md: '33.33%', lg: '25%'}, bgcolor: 'red'}}  >
+        >
+            <TitleAutocomplete
+                onChangeCallback={(_, selectedTitle) =>
+                    setNewCopy((previousCopy) => ({ ...previousCopy, titleId: selectedTitle?.id }))
+                }
+                title={copyToEdit?.title ?? title}
+                disabled={Boolean(copyToEdit || title)}
+            />
+            <CopyConditionSelect
+                condition={newCopy.copyCondition ?? ""}
+                onChange={(condition) =>
+                    setNewCopy((previousCopy) => ({ ...previousCopy, copyCondition: condition.value }))
+                }
+            />
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "flex-end" }}>
+                <Box flex={1}>
+                    <PriceInputSelect
+                        price={
+                            newCopy.price
+                                ? { amount: newCopy.price, currency: newCopy.currency ?? "euro" }
+                                : undefined
+                        }
+                        label="Sell Price"
+                        onChange={(price) => {
+                            setNewCopy((previousCopy) => ({
+                                ...previousCopy,
+                                price: price.amount,
+                                currency: price.currency,
+                            }))
+                        }}
+                    />
+                </Box>
+                <Box flex={1}>
+                    <PriceInputSelect
+                        price={
+                            newCopy.boughtForPrice
+                                ? { amount: newCopy.boughtForPrice, currency: newCopy.boughtForCurrency ?? "euro" }
+                                : undefined
+                        }
+                        label="Bought for"
+                        onChange={(price) => {
+                            setNewCopy((previousCopy) => ({
+                                ...previousCopy,
+                                boughtForPrice: price.amount,
+                                boughtForCurrency: price.currency,
+                            }))
+                        }}
+                    />
+                </Box>
+            </Stack>
+            {coverImagePreviewUrl && (
                 <Card
-                sx={{
-                    height: '100%',
-                    borderRadius: 2,
-                    transition: 'transform 0.2s, box-shadow 0.3s',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
+                    sx={{
+                        alignSelf: { sm: "flex-start" },
+                        maxWidth: { xs: "100%", sm: 260 },
+                        borderRadius: 3,
+                        overflow: "hidden",
+                        boxShadow: (theme) => theme.shadows[8],
+                    }}
                 >
                     <CardMedia
                         component="img"
-                        height="300"
                         image={coverImagePreviewUrl}
-                        alt={copyToEdit?.coverImage?.imageName}
+                        alt={copyToEdit?.coverImage?.imageName ?? title?.name ?? "Preview"}
+                        sx={{ height: 320, objectFit: "cover" }}
                     />
                 </Card>
-            </Box>
-        }
-        <FileInput
-            label={copyToEdit?.coverImage? "Change cover image" : "Choose an Image"}
-            accept="image/*"
-            onFileChange={(event) => {
-                setNewCopy(newCopy => ({...newCopy, coverImageFile: event.target.files?.[0]}))
-                event.target.files?.[0] && setCoverImagePreviewUrl(URL.createObjectURL(event.target.files?.[0])) 
-            }}
-        />
-        <Box sx={{display: 'grid', gridTemplateColumns:'1fr 1fr', gap: 1}} >
-            <Button onClick={() => console.log("clicked reset, not implemented")} >Reset</Button>
-            <Button type='submit' >Ajouter</Button>
-        </Box>
-    </Box>
+            )}
+            <FileInput
+                label={copyToEdit?.coverImage ? "Change cover image" : "Choose an Image"}
+                accept="image/*"
+                direction="column"
+                spacing={1.5}
+                onFileChange={(event) => {
+                    const file = event.target.files?.[0]
+                    setNewCopy((previousCopy) => ({ ...previousCopy, coverImageFile: file }))
+                    if (file) {
+                        setCoverImagePreviewUrl(URL.createObjectURL(file))
+                    }
+                }}
+            />
+            <FormSubmitAndResetButtons
+                state={newCopy}
+                submitLabel={copyToEdit ? "Mettre à jour" : "Ajouter"}
+                handleReset={() => {
+                    setNewCopy(computeInitialState())
+                    setCoverImagePreviewUrl(baseCoverImageUrl)
+                }}
+            />
+        </FormLayout>
+    )
 }
 
 export default AddCopyForm

@@ -118,6 +118,7 @@ const CreateSeriesModal = (props: CreateSeriesModalProps) => {
           Close
         </Button>
         <AddSeriesForm
+          surface="plain"
           onSeriesCreated={(createdSeries) => {
             onSeriesCreated && onSeriesCreated(createdSeries)
           }}

@@ -36,7 +36,7 @@ const CreatePublisherModal = (props: CreatePublisherModalProps) => {
   const { prePopulatedName, onPublisherCreated, ...modalProps } = props
   return (
     <AppModal {...modalProps}>
-      <PublisherForm prePopulatedName={prePopulatedName} onSuccess={onPublisherCreated} />
+      <PublisherForm surface="plain" prePopulatedName={prePopulatedName} onSuccess={onPublisherCreated} />
     </AppModal>
   )
 }

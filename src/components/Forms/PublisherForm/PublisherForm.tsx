@@ -7,16 +7,17 @@ import { createPublisher } from '@/backend/api/publisher';
 import { useEffect } from 'react';
 import objectToFormData from '@/utils/formData';
 import FileInput from '../Fields/FileUpload/FileInput';
-import FormLayout from '../FormLayout/FormLayout';
+import FormLayout, { FormLayoutSurface } from '../FormLayout/FormLayout';
 import FormSubmitAndResetButtons from '../Buttons/FormSubmitAndResetButtons';
 
 type PublisherFormProps = {
     prePopulatedName?: string,
     onSuccess?: (createdPublisher? : CreatedPublisher) => void
+    surface?: FormLayoutSurface
 }
 
 const PublisherForm = (props : PublisherFormProps) => {
-    const {prePopulatedName, onSuccess} = props
+    const {prePopulatedName, onSuccess, surface = 'card'} = props
     const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
     useEffect(() => {
         prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
@@ -31,6 +32,7 @@ const PublisherForm = (props : PublisherFormProps) => {
             console.log("Publisher Form Response", createdPublisher)
             onSuccess && onSuccess(createdPublisher)
         }}
+        surface={surface}
         >
             <TextField
             label="Name"

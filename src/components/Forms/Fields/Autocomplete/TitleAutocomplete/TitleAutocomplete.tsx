@@ -75,7 +75,7 @@ const CreateTitleModal = (props: CreateTitleModalProps) => {
   const { prePopulatedName, onTitleCreated, ...modalProps } = props
   return (
     <AppModal {...modalProps}>
-      <TitleForm prePopulatedName={prePopulatedName} onTitleCreated={onTitleCreated} />
+      <TitleForm surface="plain" prePopulatedName={prePopulatedName} onTitleCreated={onTitleCreated} />
     </AppModal>
   )
 }

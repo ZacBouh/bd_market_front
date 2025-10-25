@@ -43,7 +43,7 @@ const CreateArtistModal = (props: CreateArtistModalProps) => {
   const { prePopulatedName, onArtistCreated, ...modalProps } = props
   return (
     <AppModal {...modalProps}>
-      <ArtistForm prePopulatedName={prePopulatedName} onSuccess={onArtistCreated} />
+      <ArtistForm surface="plain" prePopulatedName={prePopulatedName} onSuccess={onArtistCreated} />
     </AppModal>
   )
 }

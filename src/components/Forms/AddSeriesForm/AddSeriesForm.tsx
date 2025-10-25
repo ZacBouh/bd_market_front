@@ -7,22 +7,25 @@ import OnGoingStatusSelect from "../Fields/Select/OnGoingStatusSelect/OnGoingSta
 import objectToFormData from "@/utils/formData"
 import { createSeries } from "@/backend/api/series"
 import { SupportedLanguage } from "@/types/common"
-import FormLayout from "../FormLayout/FormLayout"
+import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 
 export type AddSeriesFormProps = {
     prePopulatedName?:string,
     prePolutatedLanguage?: SupportedLanguage,
     onSeriesCreated?: (series: CreatedSeries) => any
+    surface?: FormLayoutSurface
 }
 
 const AddSeriesForm = (props: AddSeriesFormProps) => {
+    const { prePopulatedName, prePolutatedLanguage, onSeriesCreated, surface = 'card' } = props
     const initialState : Partial<NewSeries> = {
-        name: props.prePopulatedName ?? '',
-        language: props.prePolutatedLanguage ?? 'fr',
+        name: prePopulatedName ?? '',
+        language: prePolutatedLanguage ?? 'fr',
     }
     const [newSeries, setNewSeries] = useState<Partial<NewSeries>>(initialState)
     return <FormLayout
+        surface={surface}
         onSubmit={async (event) =>{
             event.preventDefault()
             event.stopPropagation()
@@ -30,7 +33,7 @@ const AddSeriesForm = (props: AddSeriesFormProps) => {
             const formdata = objectToFormData(newSeries)
             console.log(formdata)
             const createdSeries = await createSeries(formdata)
-            props.onSeriesCreated && props.onSeriesCreated(createdSeries)
+            onSeriesCreated && onSeriesCreated(createdSeries)
         }}
     >
         <TextField
