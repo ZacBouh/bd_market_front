@@ -27,7 +27,14 @@ function Pages() {
   }, [notificationFunc])
   console.log(sidebarWidth)
   return (
-    <Box sx={{ minHeight: (theme) => getPageHeight(theme), pl: `${leftPadding}px`, bgcolor: 'background.paper'}}>
+    <Box
+      component="main"
+      sx={{
+        minHeight: (theme) => getPageHeight(theme),
+        pl: `${leftPadding}px`,
+        width: '100%',
+      }}
+    >
       <Routes>{renderRoutes(routes)}</Routes>
     </Box>
   );

@@ -37,7 +37,19 @@ function App() {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
           <BrowserRouter>
             <SideMenu/>
-            <Box sx={{padding: 0}} >
+            <Box
+              sx={(theme) => ({
+                padding: 0,
+                minHeight: '100vh',
+                backgroundColor: theme.palette.background.default,
+                backgroundImage:
+                  theme.palette.mode === 'dark'
+                    ? 'radial-gradient(120% 120% at 15% 10%, rgba(120,144,255,0.18), transparent 60%), radial-gradient(120% 120% at 85% 90%, rgba(0,200,170,0.12), transparent 65%)'
+                    : 'linear-gradient(135deg, rgba(33,150,243,0.14), rgba(0,188,212,0.08))',
+                backgroundAttachment: 'fixed',
+                backgroundRepeat: 'no-repeat',
+              })}
+            >
               <Header/>
               <Pages/>
               <HotKeys/>
