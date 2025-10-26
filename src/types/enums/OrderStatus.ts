@@ -1,14 +1,10 @@
 export const OrderStatus = {
-  CREATED: 'Created',
-  PENDING_PAYMENT: 'Pending Payment',
+  PENDING: 'Pending',
   PAID_PENDING_HANDOVER: 'Paid — Pending handover',
-  PAID_HANDOVER_PENDING_CONFIRMATION: 'Paid — Pending confirmation',
-  PAID_HANDOVER_CONFIRMED: 'Paid — Handover confirmed',
+  IN_PROGRESS_PARTIAL: 'In progress — Partial handover',
   COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled',
+  CANCELED: 'Canceled',
   REFUNDED: 'Refunded',
-  FAILED: 'Failed',
-  EXPIRED: 'Expired',
 } as const;
 
 export type OrderStatus = keyof typeof OrderStatus;
