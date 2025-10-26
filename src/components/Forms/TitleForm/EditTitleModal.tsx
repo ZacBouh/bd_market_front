@@ -29,18 +29,29 @@ const normalizeContributions = (title?: CreatedTitle) => {
     if (typeof artistId !== 'number') {
       return acc;
     }
-    const artistData =
-      typeof artist === 'object'
-        ? {
-            id: artist.id,
-            firstName: artist.firstName ?? '',
-            lastName: artist.lastName ?? '',
-            pseudo: artist.pseudo ?? '',
-            fullName: artist.fullName ?? undefined,
-            name: artist.name ?? undefined,
-          }
-        : { id: artistId, firstName: '', lastName: '', pseudo: '' };
-    return { ...acc, [artistId]: artistData };
+
+    if (typeof artist !== 'object') {
+      return { ...acc, [artistId]: { id: artistId, firstName: '', lastName: '', pseudo: '' } };
+    }
+
+    const fallbackName = artist.fullName ?? artist.name ?? '';
+    const fallbackNameParts = fallbackName.trim().split(' ').filter(Boolean);
+    const [fallbackFirstName, ...fallbackLastName] = fallbackNameParts;
+
+    const firstName = artist.firstName ?? fallbackFirstName ?? fallbackName ?? '';
+    const lastName = artist.lastName ?? (fallbackLastName.length ? fallbackLastName.join(' ') : '');
+
+    return {
+      ...acc,
+      [artistId]: {
+        id: artist.id,
+        firstName,
+        lastName,
+        pseudo: artist.pseudo ?? '',
+        fullName: artist.fullName ?? undefined,
+        name: artist.name ?? undefined,
+      },
+    };
   }, {});
 
   return { contributions, artistsMap } as const;
