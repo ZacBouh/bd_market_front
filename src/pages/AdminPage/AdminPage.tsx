@@ -63,7 +63,13 @@ function AdminPage() {
   return (
     <>
       <meta name="title" content="Admin" />
-      <Stack spacing={{ xs: 4, md: 6 }} sx={{ px: { xs: 2.5, sm: 4 }, py: { xs: 6, md: 8 } }}>
+      <Stack
+        spacing={{ xs: 4, md: 6 }}
+        sx={{
+          px: { xs: 3, sm: 5, lg: 8 },
+          py: { xs: 6, md: 8 },
+        }}
+      >
         <PageHero
           title="Administration"
           description="Monitor payouts and maintain user accounts from a single dashboard."

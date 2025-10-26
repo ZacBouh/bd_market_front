@@ -36,7 +36,6 @@ type UserFormValues = {
   email: string;
   pseudo: string;
   roles: string[];
-  status: string;
 };
 
 function UserManagementTab() {
@@ -55,7 +54,6 @@ function UserManagementTab() {
       email: '',
       pseudo: '',
       roles: [],
-      status: '',
     },
   });
 
@@ -78,10 +76,9 @@ function UserManagementTab() {
         email: selectedUser.email,
         pseudo: selectedUser.pseudo,
         roles: Array.from(new Set(selectedUser.roles)),
-        status: selectedUser.status ?? '',
       });
     } else {
-      reset({ email: '', pseudo: '', roles: [], status: '' });
+      reset({ email: '', pseudo: '', roles: [] });
     }
     setHardDelete(false);
   }, [reset, selectedUser]);
@@ -141,7 +138,6 @@ function UserManagementTab() {
         email: values.email.trim(),
         pseudo: values.pseudo.trim(),
         roles: values.roles.map((role) => role.trim()).filter(Boolean),
-        status: values.status.trim() || null,
       });
       notification.show(`User #${selectedUser.id} updated`, {
         severity: 'success',
@@ -241,20 +237,39 @@ function UserManagementTab() {
                   </Box>
                 ) : null}
                 {filteredUsers.map((user) => {
-                  const summary = [
-                    user.email,
-                    user.status ? `Status: ${user.status}` : null,
-                    user.roles.length > 0 ? `Roles: ${user.roles.join(', ')}` : null,
-                  ]
-                    .filter((value): value is string => Boolean(value))
-                    .join(' · ');
+                  const emailText = user.email || null;
+                  const rolesText = user.roles.length > 0 ? user.roles.join(', ') : null;
+
+                  const emailVerifiedLabel =
+                    user.emailVerified === true
+                      ? 'Email verified'
+                      : user.emailVerified === false
+                      ? 'Email not verified'
+                      : null;
 
                   return (
                     <ListItem key={user.id} disablePadding>
                       <ListItemButton selected={user.id === selectedUserId} onClick={() => setSelectedUserId(user.id)}>
                         <ListItemText
                           primary={user.pseudo || user.email}
-                          secondary={summary || '—'}
+                          secondary={
+                            <Stack spacing={0.25}>
+                              <Typography variant="body2" color="text.primary">
+                                {emailText || '—'}
+                              </Typography>
+                              {rolesText ? (
+                                <Typography variant="caption" color="text.secondary">
+                                  Roles: {rolesText}
+                                </Typography>
+                              ) : null}
+                              {emailVerifiedLabel ? (
+                                <Typography variant="caption" color="text.secondary">
+                                  {emailVerifiedLabel}
+                                </Typography>
+                              ) : null}
+                            </Stack>
+                          }
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItemButton>
                     </ListItem>
@@ -328,17 +343,6 @@ function UserManagementTab() {
                   />
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Status
-                  </Typography>
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => <TextField {...field} label="Status" fullWidth />}
-                  />
-                </Stack>
-                <Divider />
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2" color="text.secondary">
@@ -353,6 +357,21 @@ function UserManagementTab() {
                       Account ID
                     </Typography>
                     <Typography variant="body2">{selectedUser.id}</Typography>
+                  </Box>
+                </Stack>
+                <Divider />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Email verified
+                    </Typography>
+                    <Typography variant="body2">
+                      {selectedUser.emailVerified === true
+                        ? 'Yes'
+                        : selectedUser.emailVerified === false
+                        ? 'No'
+                        : '—'}
+                    </Typography>
                   </Box>
                 </Stack>
                 <Divider />

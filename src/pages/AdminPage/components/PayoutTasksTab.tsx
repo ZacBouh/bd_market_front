@@ -78,16 +78,16 @@ function PayoutTasksTab() {
 
       const haystacks = [
         task.seller?.pseudo,
-        task.seller?.id != null ? String(task.seller.id) : '',
-        task.sellerId != null ? String(task.sellerId) : '',
+        task.seller?.id,
+        task.sellerId,
         task.orderRef,
         task.orderItemId,
         task.orderItemName,
-      ];
+      ]
+        .filter((value): value is string | number => value !== null && value !== undefined)
+        .map((value) => String(value).toLowerCase());
 
-      return haystacks
-        .filter((value): value is string => Boolean(value))
-        .some((value) => value.toLowerCase().includes(normalizedQuery));
+      return haystacks.some((value) => value.includes(normalizedQuery));
     });
   }, [paymentTypeFilter, searchQuery, tasks]);
 
@@ -228,11 +228,15 @@ function PayoutTasksTab() {
                   </Box>
                 ) : null}
                 {filteredTasks.map((task) => {
-                  const summary = [
+                  const sellerLabel =
+                    task.seller?.pseudo ||
+                    (task.seller?.id != null ? `Seller #${task.seller.id}` : null) ||
+                    (task.sellerId != null ? `Seller #${task.sellerId}` : null);
+
+                  const secondaryLine = [
                     formatCurrency(task.amount),
-                    task.seller?.pseudo || (task.seller?.id != null ? `Seller #${task.seller.id}` : null) ||
-                      (task.sellerId != null ? `Seller #${task.sellerId}` : null),
-                    task.orderItemName || task.orderItemId || task.orderRef,
+                    sellerLabel,
+                    task.orderItemName || task.orderItemId,
                   ]
                     .filter((value): value is string => Boolean(value))
                     .join(' · ');
@@ -241,8 +245,22 @@ function PayoutTasksTab() {
                     <ListItem key={task.id} disablePadding>
                       <ListItemButton selected={task.id === selectedTaskId} onClick={() => setSelectedTaskId(task.id)}>
                         <ListItemText
-                          primary={`Task #${task.id} · ${task.paymentType}${task.status ? ` · ${task.status}` : ''}`}
-                          secondary={summary || '—'}
+                          primary={`Task #${task.id} · ${task.paymentType}${
+                            task.orderRef ? ` · ${task.orderRef}` : ''
+                          }`}
+                          secondary={
+                            <Stack spacing={0.25}>
+                              <Typography variant="body2" color="text.primary">
+                                {secondaryLine || '—'}
+                              </Typography>
+                              {task.status ? (
+                                <Typography variant="caption" color="text.secondary">
+                                  Status: {task.status}
+                                </Typography>
+                              ) : null}
+                            </Stack>
+                          }
+                          secondaryTypographyProps={{ component: 'div' }}
                         />
                       </ListItemButton>
                     </ListItem>

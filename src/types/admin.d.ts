@@ -28,7 +28,7 @@ declare global {
     pseudo: string;
     email: string;
     roles: string[];
-    status?: string | null;
+    emailVerified?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
   };
@@ -38,7 +38,6 @@ declare global {
     email?: string;
     pseudo?: string;
     roles?: string[];
-    status?: string | null;
   };
 
   type PayoutTaskPaymentType = 'ORDER' | 'REFUND';
