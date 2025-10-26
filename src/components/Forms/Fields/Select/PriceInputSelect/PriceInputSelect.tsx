@@ -52,9 +52,20 @@ const PriceInputSelect = (props: PriceInputSelectProps) => {
                     defaultValue="euro"
                     sx={{
                         width: { xs: 1, sm: "auto" },
-                        minWidth: { sm: "110px" },
+                        minWidth: { sm: "calc(1ch + 32px)" },
                         flex: { xs: "1 1 auto", sm: "0 0 auto" },
+                        flexShrink: { sm: 0 },
                         alignSelf: { xs: "stretch", sm: "flex-start" },
+                        "& .MuiInputBase-root": {
+                            width: { xs: 1, sm: "auto" },
+                            minWidth: 0,
+                        },
+                        "& .MuiSelect-select": {
+                            px: 1,
+                            display: "flex",
+                            justifyContent: "center",
+                            minWidth: 0,
+                        },
                     }}
                 />
             </Stack>
