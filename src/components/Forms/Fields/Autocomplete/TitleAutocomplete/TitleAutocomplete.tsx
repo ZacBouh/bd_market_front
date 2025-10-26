@@ -1,4 +1,3 @@
-import { API_BASE_URL } from '@/backend/api/api'
 import { getTitles } from '@/backend/api/title'
 import TitleForm, { TitleFormProps } from '@/components/Forms/TitleForm/TitleForm'
 import AppModal from '@/components/Common/AppModal'
@@ -11,6 +10,7 @@ import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import React, { forwardRef, useState } from 'react'
+import { getImageUrl } from '@/utils/image'
 
 type TitleAutocompleteProps = {
   sx?: BoxProps['sx']
@@ -46,7 +46,7 @@ const OptionCard = forwardRef<HTMLLIElement, TitleAutoCompleteOptionCardProps>((
       >
         <CardMedia
           component="img"
-          image={API_BASE_URL + option?.coverImage?.url}
+          image={getImageUrl(option?.coverImage?.url)}
           alt={option.name}
           sx={{
             width: 48,

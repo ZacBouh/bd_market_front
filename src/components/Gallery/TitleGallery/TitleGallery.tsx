@@ -13,7 +13,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { API_BASE_URL } from '@/backend/api/api';
+import { getImageUrl } from '@/utils/image';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getTitles, removeTitle } from '@/backend/api/title';
 import EditTitleModal from '@/components/Forms/TitleForm/EditTitleModal';
@@ -127,8 +127,8 @@ const TitleGallery = (props : TitleGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={API_BASE_URL + title?.coverImage?.url}
-                  alt={title?.coverImage?.imageName}
+                  image={getImageUrl(title?.coverImage?.url)}
+                  alt={title?.coverImage?.imageName ?? title.name}
                 />
                 <CardContent>
                   <Typography variant="h6">{title.name}</Typography>

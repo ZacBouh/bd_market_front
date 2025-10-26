@@ -11,7 +11,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { API_BASE_URL } from '@/backend/api/api';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getCopies, removeCopy, updateCopy } from '@/backend/api/copy';
 import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
@@ -20,6 +19,7 @@ import PutCopyForSaleModal from './PutCopyForSaleModal';
 import { convertPriceToApi, formatCurrencyAmount } from '@/utils/price';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
+import { getImageUrl } from '@/utils/image';
 
 interface CopyGalleryProps {
   copies: CreatedCopy[];
@@ -111,8 +111,8 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={API_BASE_URL + copy?.coverImage?.url}
-                  alt={copy?.coverImage?.imageName}
+                  image={getImageUrl(copy?.coverImage?.url)}
+                  alt={copy?.coverImage?.imageName ?? copy.title.name}
                 />
                 <CardContent>
                   <Typography variant="h6">{copy.title.name}</Typography>

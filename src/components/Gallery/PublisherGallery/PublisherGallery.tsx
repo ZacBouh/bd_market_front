@@ -13,12 +13,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { API_BASE_URL } from '@/backend/api/api';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getPublishers, removePublisher } from '@/backend/api/publisher';
 import EditPublisherModal from '@/components/Forms/PublisherForm/EditPublisherModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
+import { getImageUrl } from '@/utils/image';
 
 type PublisherGalleryProps = {
     publishers: CreatedPublisher[]
@@ -74,8 +74,8 @@ const PublisherGallery = (props : PublisherGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={API_BASE_URL + "" + publisher?.coverImage?.url}
-                  alt={publisher?.coverImage?.imageName}
+                  image={getImageUrl(publisher?.coverImage?.url)}
+                  alt={publisher?.coverImage?.imageName ?? publisher.name}
                 />
                 <CardContent>
                   <Typography variant="h6">{publisher.name}</Typography>

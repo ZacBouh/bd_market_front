@@ -4,11 +4,11 @@ import CardMedia from "@mui/material/CardMedia"
 import Stack from "@mui/material/Stack"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { API_BASE_URL } from "@/backend/api/api"
 import { createCopy, updateCopy } from "@/backend/api/copy"
 import { useUser } from "@/hooks/useUser"
 import objectToFormData from "@/utils/formData"
 import { convertPriceToApi } from "@/utils/price"
+import { getDefaultCoverImageUrl, getImageUrl } from "@/utils/image"
 
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
@@ -50,12 +50,12 @@ const AddCopyForm = (props: AddCopyFormProps) => {
 
     const baseCoverImageUrl = useMemo(() => {
         if (copyToEdit?.coverImage?.url) {
-            return `${API_BASE_URL}${copyToEdit.coverImage.url}`
+            return getImageUrl(copyToEdit.coverImage.url)
         }
         if (title?.coverImage?.url) {
-            return `${API_BASE_URL}${title.coverImage.url}`
+            return getImageUrl(title.coverImage.url)
         }
-        return undefined
+        return getDefaultCoverImageUrl()
     }, [copyToEdit?.coverImage?.url, title?.coverImage?.url])
 
     const [coverImagePreviewUrl, setCoverImagePreviewUrl] = useState<string | undefined>(baseCoverImageUrl)

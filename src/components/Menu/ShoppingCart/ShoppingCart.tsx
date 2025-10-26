@@ -1,7 +1,6 @@
 import { Button, CardMedia, IconButton, Stack, Typography } from "@mui/material"
 import ButtonMenu, { ButtonMenuItem } from "../ButtonMenu/ButtonMenu"
 import CartIcon from "@mui/icons-material/ShoppingCart"
-import { API_BASE_URL } from "@/backend/api/api"
 import { useAtom } from "jotai"
 import { shoppingCartAtom } from "@/store/shoppingCart"
 import { Fragment, useMemo } from "react"
@@ -9,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ClearIcon from "@mui/icons-material/HighlightOff"
 import { useNavigate } from "react-router"
 import { formatCurrencyAmount } from "@/utils/price"
+import { getImageUrl } from "@/utils/image"
 
 export type ShoppingCartProps = {
      
@@ -25,7 +25,7 @@ const ShoppingCart = () => {
         label: <Stack direction={'row'} gap={2} padding={1}>
             <CardMedia
                 component="img"
-                image={API_BASE_URL + copy?.coverImage?.url}
+                image={getImageUrl(copy?.coverImage?.url)}
                 alt={copy.title.name}
                 sx={{
                     width: 48,

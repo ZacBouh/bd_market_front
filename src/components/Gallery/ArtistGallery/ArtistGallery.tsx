@@ -13,12 +13,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { API_BASE_URL } from '@/backend/api/api';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getArtists, removeArtist } from '@/backend/api/artist';
 import EditArtistModal from '@/components/Forms/ArtistForm/EditArtistModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
+import { getImageUrl } from '@/utils/image';
 
 type ArtistGalleryProps = {
     artists: CreatedArtist[]
@@ -82,7 +82,7 @@ const ArtistGallery = ({ artists }: ArtistGalleryProps) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={artist?.coverImage?.url ? `${API_BASE_URL}${artist.coverImage.url}` : undefined}
+                  image={getImageUrl(artist?.coverImage?.url)}
                   alt={artist?.coverImage?.imageName ?? getArtistFullName(artist)}
                   sx={{ backgroundColor: artist?.coverImage?.url ? undefined : 'grey.100' }}
                 />

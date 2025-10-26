@@ -6,12 +6,12 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
-import { API_BASE_URL } from '@/backend/api/api';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { shoppingCartAtom } from '@/store/shoppingCart';
 import { useAtom } from 'jotai';
 import { formatCurrencyAmount } from '@/utils/price';
+import { getImageUrl } from '@/utils/image';
 
 export type MarketGalleryProps = {
     copies : CreatedCopy[]
@@ -42,8 +42,8 @@ const MarketGallery = ({ copies }: MarketGalleryProps) => {
                   <CardMedia
                     component="img"
                     height="300"
-                    image={API_BASE_URL + copy?.coverImage?.url}
-                    alt={copy?.coverImage?.imageName}
+                    image={getImageUrl(copy?.coverImage?.url)}
+                    alt={copy?.coverImage?.imageName ?? copy.title.name}
                   />
                   <CardContent>
                     <Typography variant="h6">{copy.title.name}</Typography>

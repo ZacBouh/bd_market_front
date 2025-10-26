@@ -14,13 +14,13 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { useState } from 'react';
 
-import { API_BASE_URL } from '@/backend/api/api';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getSeries, removeSeries } from '@/backend/api/series';
 import EditSeriesModal from '@/components/Forms/AddSeriesForm/EditSeriesModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 import { onGoingStatusLabel, type SupportedOnGoingStatus } from '@/types/enums/onGoingStatus';
+import { getImageUrl } from '@/utils/image';
 
 const SeriesGallery = ({ series }: { series: CreatedSeries[] }) => {
   const notifications = useNotifications();
@@ -68,7 +68,7 @@ const SeriesGallery = ({ series }: { series: CreatedSeries[] }) => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={item.coverImage?.url ? `${API_BASE_URL}${item.coverImage.url}` : undefined}
+                  image={getImageUrl(item.coverImage?.url)}
                   alt={item.coverImage?.imageName ?? item.name}
                   sx={{ backgroundColor: item.coverImage?.url ? undefined : 'grey.100' }}
                 />

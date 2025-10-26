@@ -13,12 +13,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { useState } from 'react';
 
-import { API_BASE_URL } from '@/backend/api/api';
 import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
 import { getPublisherCollections, removePublisherCollection } from '@/backend/api/publisherCollection';
 import EditPublisherCollectionModal from '@/components/Forms/AddPublisherCollectionForm/EditPublisherCollectionModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
+import { getImageUrl } from '@/utils/image';
 
 const PublisherCollectionGallery = ({ collections }: { collections: CreatedPublisherCollection[] }) => {
   const notifications = useNotifications();
@@ -67,7 +67,7 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
                 <CardMedia
                   component="img"
                   height="300"
-                  image={collection.coverImage?.url ? `${API_BASE_URL}${collection.coverImage.url}` : undefined}
+                  image={getImageUrl(collection.coverImage?.url)}
                   alt={collection.coverImage?.imageName ?? collection.name}
                   sx={{
                     width: '100%',
