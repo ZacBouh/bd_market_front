@@ -19,6 +19,7 @@ import { getOrders } from '@/backend/api/orders';
 import PageHero from '@/components/PageHero';
 import { useOrders } from '@/hooks/useOrders';
 import { useUser } from '@/hooks/useUser';
+import { OrderStatus as OrderStatusLabel } from '@/types/enums/OrderStatus';
 
 const currencyToIso = (currency: string) => {
   if (!currency) {
@@ -38,19 +39,51 @@ const formatCurrency = (amount: number, currency: string) =>
     currency: currencyToIso(currency),
   }).format(amount / 100);
 
-const formatDate = (value: string | null) => {
+const parseDate = (value: string | null) => {
   if (!value) {
-    return '-';
+    return null;
   }
 
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return value;
+    return null;
+  }
+
+  return date;
+};
+
+const formatDateOnly = (value: string | null) => {
+  const date = parseDate(value);
+
+  if (!date) {
+    return value ?? '-';
+  }
+
+  return date.toLocaleDateString();
+};
+
+const formatDateTime = (value: string | null) => {
+  const date = parseDate(value);
+
+  if (!date) {
+    return value ?? '-';
   }
 
   return date.toLocaleString();
 };
+
+const humanizeStatus = (status: string) =>
+  status
+    ? status
+        .toLowerCase()
+        .split('_')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ')
+    : '-';
+
+const formatOrderStatus = (status: string) =>
+  OrderStatusLabel[status as keyof typeof OrderStatusLabel] ?? humanizeStatus(status);
 
 const OrdersPage = () => {
   const { user } = useUser();
@@ -97,6 +130,14 @@ const OrdersPage = () => {
             <Stack spacing={2}>
               {ordersByDate.map((order) => {
                 const itemNames = order.items.map((item) => item.copy.name).join(', ');
+                const createdAtDate = parseDate(order.createdAt);
+                const updatedAtDate = parseDate(order.updatedAt);
+                const showUpdatedMetadata =
+                  !!order.updatedAt &&
+                  ((createdAtDate && updatedAtDate
+                    ? createdAtDate.getTime() !== updatedAtDate.getTime()
+                    : order.updatedAt !== order.createdAt));
+                const orderStatusLabel = formatOrderStatus(order.status);
 
                 return (
                   <Accordion key={order.orderRef} disableGutters>
@@ -126,23 +167,25 @@ const OrdersPage = () => {
                           {`Order ${order.orderRef}${itemNames ? ` — ${itemNames}` : ''}`}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Placed on {formatDate(order.createdAt)}
+                          Placed on {formatDateOnly(order.createdAt)}
                         </Typography>
                       </Stack>
                       <Stack direction="row" spacing={2} alignItems="center" sx={{ mr: 1 }}>
                         <Typography variant="subtitle1" fontWeight={600}>
                           {formatCurrency(order.amountTotal, order.currency)}
                         </Typography>
-                        <Chip label={order.status.replaceAll('_', ' ')} color="primary" variant="outlined" />
+                        <Chip label={orderStatusLabel} color="primary" variant="outlined" />
                       </Stack>
                     </Stack>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Stack spacing={2}>
                       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 3 }}>
-                        <Typography variant="body2" color="text.secondary">
-                          Updated on {formatDate(order.updatedAt)}
-                        </Typography>
+                        {showUpdatedMetadata ? (
+                          <Typography variant="body2" color="text.secondary">
+                            Updated on {formatDateTime(order.updatedAt)}
+                          </Typography>
+                        ) : null}
                         <Typography variant="body2" color="text.secondary">
                           {order.items.length} item{order.items.length > 1 ? 's' : ''}
                         </Typography>
@@ -169,11 +212,11 @@ const OrdersPage = () => {
                                   </Stack>
                                 </TableCell>
                                 <TableCell>{item.seller.pseudo}</TableCell>
-                                <TableCell>{item.status.replaceAll('_', ' ')}</TableCell>
+                                <TableCell>{humanizeStatus(item.status)}</TableCell>
                                 <TableCell align="right">
                                   {formatCurrency(item.price, item.currency)}
                                 </TableCell>
-                                <TableCell>{formatDate(item.buyerConfirmedAt)}</TableCell>
+                                <TableCell>{formatDateTime(item.buyerConfirmedAt)}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>

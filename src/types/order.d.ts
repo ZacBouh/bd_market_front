@@ -32,7 +32,7 @@ interface OrderPayoutTask {
 
 interface Order {
   orderRef: string;
-  status: string;
+  status: keyof typeof import('./enums/OrderStatus').OrderStatus;
   amountTotal: number;
   currency: string;
   items: OrderItem[];
