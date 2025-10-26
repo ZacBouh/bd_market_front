@@ -20,18 +20,6 @@ import EditPublisherCollectionModal from '@/components/Forms/AddPublisherCollect
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 
-const truncate = (text: string | undefined, maxLength = 120) => {
-  if (!text) {
-    return '';
-  }
-
-  if (text.length <= maxLength) {
-    return text;
-  }
-
-  return `${text.slice(0, maxLength)}...`;
-};
-
 const PublisherCollectionGallery = ({ collections }: { collections: CreatedPublisherCollection[] }) => {
   const notifications = useNotifications();
   const { user } = useUser();
@@ -91,9 +79,6 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
                   <Typography variant="h6">{collection.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Publisher: {collection.publisher?.name ?? 'Unknown'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {truncate(collection.description)}
                   </Typography>
                 </CardContent>
               </CardActionArea>
