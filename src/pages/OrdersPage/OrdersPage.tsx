@@ -2,6 +2,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
+import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
@@ -13,9 +14,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { getOrders } from '@/backend/api/orders';
+import { confirmOrderItem, getOrders } from '@/backend/api/orders';
 import PageHero from '@/components/PageHero';
 import { useOrders } from '@/hooks/useOrders';
 import { useUser } from '@/hooks/useUser';
@@ -90,6 +91,7 @@ const OrdersPage = () => {
   const { orders, setOrders } = useOrders();
 
   const userId = user?.user?.id;
+  const [confirmingItemKey, setConfirmingItemKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) {
@@ -106,6 +108,27 @@ const OrdersPage = () => {
         (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
       ),
     [orders],
+  );
+
+  const handleConfirm = useCallback(
+    async (orderRef: string, itemId: number) => {
+      if (!userId) {
+        return;
+      }
+
+      const itemKey = `${orderRef}:${itemId}`;
+      setConfirmingItemKey(itemKey);
+
+      try {
+        await confirmOrderItem(orderRef, itemId);
+        getOrders(userId);
+      } catch (error) {
+        console.error('Failed to confirm order item', error);
+      } finally {
+        setConfirmingItemKey((current) => (current === itemKey ? null : current));
+      }
+    },
+    [userId],
   );
 
   return (
@@ -198,7 +221,7 @@ const OrdersPage = () => {
                               <TableCell>Seller</TableCell>
                               <TableCell>Status</TableCell>
                               <TableCell align="right">Price</TableCell>
-                              <TableCell>Buyer confirmation</TableCell>
+                              <TableCell>Action</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -216,7 +239,40 @@ const OrdersPage = () => {
                                 <TableCell align="right">
                                   {formatCurrency(item.price, item.currency)}
                                 </TableCell>
-                                <TableCell>{formatDateTime(item.buyerConfirmedAt)}</TableCell>
+                                <TableCell>
+                                  <Stack spacing={0.5} alignItems="flex-start">
+                                    <Stack direction="row" spacing={1}>
+                                      <Button
+                                        size="small"
+                                        variant="contained"
+                                        disabled={
+                                          !!item.buyerConfirmedAt ||
+                                          confirmingItemKey === `${order.orderRef}:${item.id}`
+                                        }
+                                        onClick={() => handleConfirm(order.orderRef, item.id)}
+                                      >
+                                        Confirm
+                                      </Button>
+                                      <Button
+                                        size="small"
+                                        variant="outlined"
+                                        color="inherit"
+                                        onClick={() =>
+                                          console.log(
+                                            `Cancel confirmation for order ${order.orderRef}, item ${item.id}`,
+                                          )
+                                        }
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </Stack>
+                                    {item.buyerConfirmedAt ? (
+                                      <Typography variant="caption" color="text.secondary">
+                                        Confirmed on {formatDateTime(item.buyerConfirmedAt)}
+                                      </Typography>
+                                    ) : null}
+                                  </Stack>
+                                </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>

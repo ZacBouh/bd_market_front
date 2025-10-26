@@ -18,4 +18,12 @@ const getOrders = (userId: number, callback?: (orders: Order[]) => unknown) => {
   return () => controller.abort();
 };
 
-export { getOrders };
+const confirmOrderItem = (orderRef: string, itemId: number) =>
+  api.post<void>('/orders/confirm', undefined, {
+    params: {
+      orderRef,
+      itemId,
+    },
+  });
+
+export { confirmOrderItem, getOrders };
