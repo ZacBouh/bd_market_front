@@ -14,7 +14,7 @@ interface OrderItem {
   seller: OrderSeller;
   price: number;
   currency: string;
-  status: string;
+  status: keyof typeof import('./enums/OrderItemStatus').OrderItemStatus;
   buyerConfirmedAt: string | null;
 }
 

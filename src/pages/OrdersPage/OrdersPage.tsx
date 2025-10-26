@@ -23,6 +23,7 @@ import PageHero from '@/components/PageHero';
 import { useOrders } from '@/hooks/useOrders';
 import { useUser } from '@/hooks/useUser';
 import { OrderStatus as OrderStatusLabel } from '@/types/enums/OrderStatus';
+import { OrderItemStatus as OrderItemStatusLabel } from '@/types/enums/OrderItemStatus';
 
 const currencyToIso = (currency: string) => {
   if (!currency) {
@@ -87,6 +88,9 @@ const humanizeStatus = (status: string) =>
 
 const formatOrderStatus = (status: string) =>
   OrderStatusLabel[status as keyof typeof OrderStatusLabel] ?? humanizeStatus(status);
+
+const formatOrderItemStatus = (status: string) =>
+  OrderItemStatusLabel[status as keyof typeof OrderItemStatusLabel] ?? humanizeStatus(status);
 
 const OrdersPage = () => {
   const { user } = useUser();
@@ -250,7 +254,7 @@ const OrdersPage = () => {
                                   </Stack>
                                 </TableCell>
                                 <TableCell>{item.seller.pseudo}</TableCell>
-                                <TableCell>{humanizeStatus(item.status)}</TableCell>
+                                <TableCell>{formatOrderItemStatus(item.status)}</TableCell>
                                 <TableCell align="right">
                                   {formatCurrency(item.price, item.currency)}
                                 </TableCell>
