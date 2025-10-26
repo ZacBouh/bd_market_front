@@ -1,20 +1,6 @@
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -22,75 +8,7 @@ import { confirmOrderItem, getOrders } from '@/backend/api/orders';
 import PageHero from '@/components/PageHero';
 import { useOrders } from '@/hooks/useOrders';
 import { useUser } from '@/hooks/useUser';
-import { OrderStatus as OrderStatusLabel } from '@/types/enums/OrderStatus';
-import { OrderItemStatus as OrderItemStatusLabel } from '@/types/enums/OrderItemStatus';
-
-const currencyToIso = (currency: string) => {
-  if (!currency) {
-    return 'EUR';
-  }
-
-  if (currency.toLowerCase() === 'euro') {
-    return 'EUR';
-  }
-
-  return currency.toUpperCase();
-};
-
-const formatCurrency = (amount: number, currency: string) =>
-  new Intl.NumberFormat('fr-FR', {
-    style: 'currency',
-    currency: currencyToIso(currency),
-  }).format(amount / 100);
-
-const parseDate = (value: string | null) => {
-  if (!value) {
-    return null;
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return date;
-};
-
-const formatDateOnly = (value: string | null) => {
-  const date = parseDate(value);
-
-  if (!date) {
-    return value ?? '-';
-  }
-
-  return date.toLocaleDateString();
-};
-
-const formatDateTime = (value: string | null) => {
-  const date = parseDate(value);
-
-  if (!date) {
-    return value ?? '-';
-  }
-
-  return date.toLocaleString();
-};
-
-const humanizeStatus = (status: string) =>
-  status
-    ? status
-        .toLowerCase()
-        .split('_')
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ')
-    : '-';
-
-const formatOrderStatus = (status: string) =>
-  OrderStatusLabel[status as keyof typeof OrderStatusLabel] ?? humanizeStatus(status);
-
-const formatOrderItemStatus = (status: string) =>
-  OrderItemStatusLabel[status as keyof typeof OrderItemStatusLabel] ?? humanizeStatus(status);
+import OrderAccordion from './components/OrderAccordion';
 
 const OrdersPage = () => {
   const { user } = useUser();
@@ -157,153 +75,14 @@ const OrdersPage = () => {
             </Paper>
           ) : (
             <Stack spacing={2}>
-              {ordersByDate.map((order) => {
-                const itemNames = order.items.map((item) => item.copy.name).join(', ');
-                const createdAtDate = parseDate(order.createdAt);
-                const updatedAtDate = parseDate(order.updatedAt);
-                const showUpdatedMetadata =
-                  !!order.updatedAt &&
-                  ((createdAtDate && updatedAtDate
-                    ? createdAtDate.getTime() !== updatedAtDate.getTime()
-                    : order.updatedAt !== order.createdAt));
-                const orderStatusLabel = formatOrderStatus(order.status);
-
-                return (
-                  <Accordion key={order.orderRef} disableGutters>
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls={`order-${order.orderRef}`}
-                      id={`order-${order.orderRef}`}
-                      sx={{
-                        '& .MuiAccordionSummary-expandIconWrapper': {
-                          ml: 2,
-                        },
-                      }}
-                    >
-                    <Stack
-                      direction={{ xs: 'column', sm: 'row' }}
-                      spacing={{ xs: 1, sm: 2 }}
-                      alignItems={{ xs: 'flex-start', sm: 'center' }}
-                      justifyContent="space-between"
-                      sx={{ width: '100%' }}
-                    >
-                      <Stack spacing={0.5}>
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight={600}
-                          noWrap
-                          sx={{
-                            maxWidth: { xs: '100%', sm: '60ch' },
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
-                        >
-                          {`Order ${order.orderRef}${itemNames ? ` — ${itemNames}` : ''}`}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Placed on {formatDateOnly(order.createdAt)}
-                        </Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={2} alignItems="center" sx={{ mr: 1 }}>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                          {formatCurrency(order.amountTotal, order.currency)}
-                        </Typography>
-                        <Chip label={orderStatusLabel} color="primary" variant="outlined" />
-                      </Stack>
-                    </Stack>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Stack spacing={2}>
-                      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 3 }}>
-                        {showUpdatedMetadata ? (
-                          <Typography variant="body2" color="text.secondary">
-                            Updated on {formatDateTime(order.updatedAt)}
-                          </Typography>
-                        ) : null}
-                        <Typography variant="body2" color="text.secondary">
-                          {order.items.length} item{order.items.length > 1 ? 's' : ''}
-                        </Typography>
-                      </Stack>
-                      <TableContainer component={Paper} variant="outlined">
-                        <Table
-                          size="small"
-                          sx={{
-                            '& .MuiTableCell-root': {
-                              px: 2.5,
-                              py: 1.5,
-                            },
-                          }}
-                        >
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Item</TableCell>
-                              <TableCell>Seller</TableCell>
-                              <TableCell>Status</TableCell>
-                              <TableCell align="right">Price</TableCell>
-                              <TableCell align="center" sx={{ width: 200 }} />
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {order.items.map((item) => (
-                              <TableRow key={item.id}>
-                                <TableCell>
-                                  <Stack spacing={0.5}>
-                                    <Typography variant="body2" fontWeight={600}>
-                                      {item.copy.name}
-                                    </Typography>
-                                  </Stack>
-                                </TableCell>
-                                <TableCell>{item.seller.pseudo}</TableCell>
-                                <TableCell>{formatOrderItemStatus(item.status)}</TableCell>
-                                <TableCell align="right">
-                                  {formatCurrency(item.price, item.currency)}
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Stack spacing={0.5} alignItems="center">
-                                    <Stack direction="row" spacing={1} justifyContent="center">
-                                      <Button
-                                        size="small"
-                                        variant="contained"
-                                        disabled={
-                                          !!item.buyerConfirmedAt ||
-                                          confirmingItemKey === `${order.orderRef}:${item.id}`
-                                        }
-                                        onClick={() => handleConfirm(order.orderRef, item.id)}
-                                        startIcon={<CheckIcon fontSize="small" />}
-                                      >
-                                        Confirm
-                                      </Button>
-                                      <Button
-                                        size="small"
-                                        variant="outlined"
-                                        color="inherit"
-                                        onClick={() =>
-                                          console.log(
-                                            `Cancel confirmation for order ${order.orderRef}, item ${item.id}`,
-                                          )
-                                        }
-                                        startIcon={<CloseIcon fontSize="small" />}
-                                      >
-                                        Cancel
-                                      </Button>
-                                    </Stack>
-                                    {item.buyerConfirmedAt ? (
-                                      <Typography variant="caption" color="text.secondary">
-                                        Confirmed on {formatDateTime(item.buyerConfirmedAt)}
-                                      </Typography>
-                                    ) : null}
-                                  </Stack>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Stack>
-                  </AccordionDetails>
-                  </Accordion>
-                );
-              })}
+              {ordersByDate.map((order) => (
+                <OrderAccordion
+                  key={order.orderRef}
+                  order={order}
+                  confirmingItemKey={confirmingItemKey}
+                  onConfirm={handleConfirm}
+                />
+              ))}
             </Stack>
           )}
         </Stack>
