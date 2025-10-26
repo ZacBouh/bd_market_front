@@ -67,6 +67,7 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
             <Card
               sx={{
                 height: '100%',
+                width: '100%',
                 borderRadius: 2,
                 transition: 'transform 0.2s, box-shadow 0.3s',
                 '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
@@ -80,7 +81,11 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
                   height="300"
                   image={collection.coverImage?.url ? `${API_BASE_URL}${collection.coverImage.url}` : undefined}
                   alt={collection.coverImage?.imageName ?? collection.name}
-                  sx={{ backgroundColor: collection.coverImage?.url ? undefined : 'grey.100' }}
+                  sx={{
+                    width: '100%',
+                    objectFit: 'cover',
+                    backgroundColor: collection.coverImage?.url ? undefined : 'grey.100',
+                  }}
                 />
                 <CardContent>
                   <Typography variant="h6">{collection.name}</Typography>
