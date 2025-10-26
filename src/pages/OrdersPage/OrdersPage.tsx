@@ -95,13 +95,16 @@ const OrdersPage = () => {
             </Paper>
           ) : (
             <Stack spacing={2}>
-              {ordersByDate.map((order) => (
-                <Accordion key={order.orderRef} disableGutters>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`order-${order.orderRef}`}
-                    id={`order-${order.orderRef}`}
-                  >
+              {ordersByDate.map((order) => {
+                const itemNames = order.items.map((item) => item.copy.name).join(', ');
+
+                return (
+                  <Accordion key={order.orderRef} disableGutters>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`order-${order.orderRef}`}
+                      id={`order-${order.orderRef}`}
+                    >
                     <Stack
                       direction={{ xs: 'column', sm: 'row' }}
                       spacing={{ xs: 1, sm: 2 }}
@@ -110,14 +113,23 @@ const OrdersPage = () => {
                       sx={{ width: '100%' }}
                     >
                       <Stack spacing={0.5}>
-                        <Typography variant="subtitle1" fontWeight={600}>
-                          Order {order.orderRef}
+                        <Typography
+                          variant="subtitle1"
+                          fontWeight={600}
+                          noWrap
+                          sx={{
+                            maxWidth: { xs: '100%', sm: '60ch' },
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {`Order ${order.orderRef}${itemNames ? ` — ${itemNames}` : ''}`}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           Placed on {formatDate(order.createdAt)}
                         </Typography>
                       </Stack>
-                      <Stack direction="row" spacing={2} alignItems="center">
+                      <Stack direction="row" spacing={2} alignItems="center" sx={{ mr: 1 }}>
                         <Typography variant="subtitle1" fontWeight={600}>
                           {formatCurrency(order.amountTotal, order.currency)}
                         </Typography>
@@ -154,9 +166,6 @@ const OrdersPage = () => {
                                     <Typography variant="body2" fontWeight={600}>
                                       {item.copy.name}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
-                                      Copy #{item.copy.id}
-                                    </Typography>
                                   </Stack>
                                 </TableCell>
                                 <TableCell>{item.seller.pseudo}</TableCell>
@@ -172,8 +181,9 @@ const OrdersPage = () => {
                       </TableContainer>
                     </Stack>
                   </AccordionDetails>
-                </Accordion>
-              ))}
+                  </Accordion>
+                );
+              })}
             </Stack>
           )}
         </Stack>
