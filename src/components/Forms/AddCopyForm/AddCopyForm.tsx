@@ -8,6 +8,7 @@ import { API_BASE_URL } from "@/backend/api/api"
 import { createCopy, updateCopy } from "@/backend/api/copy"
 import { useUser } from "@/hooks/useUser"
 import objectToFormData from "@/utils/formData"
+import { convertPriceToApi } from "@/utils/price"
 
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
@@ -83,11 +84,16 @@ const AddCopyForm = (props: AddCopyFormProps) => {
                 event.stopPropagation()
                 event.preventDefault()
                 console.log("Add Copy Form Submitted", newCopy)
+                const payload = {
+                    ...newCopy,
+                    price: convertPriceToApi(newCopy.price),
+                    boughtForPrice: convertPriceToApi(newCopy.boughtForPrice),
+                }
                 if (copyToEdit) {
-                    updateCopy(objectToFormData({ ...newCopy, id: copyToEdit.id }))
+                    updateCopy(objectToFormData({ ...payload, id: copyToEdit.id }))
                     return
                 }
-                createCopy(objectToFormData(newCopy), onCopyCreated)
+                createCopy(objectToFormData(payload), onCopyCreated)
             }}
         >
             <TitleAutocomplete

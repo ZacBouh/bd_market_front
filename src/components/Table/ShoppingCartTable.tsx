@@ -4,14 +4,18 @@ import { shoppingCartAtom } from "@/store/shoppingCart"
 import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
 import { useAtom } from "jotai"
 import { notification } from "@/utils/padNotification"
+import { convertPriceToApi, formatCurrencyAmount, formatCurrencyFromCents } from "@/utils/price"
 
 const ShoppingCartTable = () => {
     const [{copies}, setCartState] = useAtom(shoppingCartAtom)
     const [isBusy, setIsBusy] = useState(false)
     const [unavailableCopyIds, setUnavailableCopyIds] = useState<number[]>([])
 
-    const totalPrice = useMemo(() => copies.reduce((total, copy) => total + Number(copy?.price), 0), [copies])
-    const currency = "eur"
+    const totalPriceInCents = useMemo(
+        () => copies.reduce((total, copy) => total + (convertPriceToApi(copy?.price) ?? 0), 0),
+        [copies]
+    )
+    const currency = copies[0]?.currency
 
     const handleRemove = useCallback((copyId: number) => {
         setCartState(state => ({...state, copies: state.copies.filter(item => item.id !== copyId)}))
@@ -76,7 +80,7 @@ const ShoppingCartTable = () => {
                                 {copy.title.name}
                             </TableCell>
                             <TableCell sx={isUnavailable ? {textDecoration: "line-through", color: "text.secondary"} : undefined}>
-                                {copy.price} {copy.currency}
+                                {formatCurrencyAmount(copy.price, copy.currency) ?? '-'}
                             </TableCell>
                             <TableCell sx={{border: 'none', display: "flex", justifyContent: "center"}} >
                                 <Button onClick={() => handleRemove(copy.id)} disabled={isBusy}>Remove</Button>
@@ -88,7 +92,7 @@ const ShoppingCartTable = () => {
                     <TableCell sx={{textAlign: 'right', border: 'none'}} >
                         Total
                     </TableCell>
-                    <TableCell>{totalPrice} {currency}</TableCell>
+                    <TableCell>{formatCurrencyFromCents(totalPriceInCents, currency)}</TableCell>
                     <TableCell sx={{width: 0, whiteSpace: 'nowrap', textAlign: "center"}} >
                         <Button onClick={handlePay} disabled={isBusy}>
                             {isBusy ? "Redirecting…" : "Pay"}

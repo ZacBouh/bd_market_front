@@ -8,6 +8,7 @@ import { Fragment, useMemo } from "react"
 import DeleteIcon from "@mui/icons-material/Delete"
 import ClearIcon from "@mui/icons-material/HighlightOff"
 import { useNavigate } from "react-router"
+import { formatCurrencyAmount } from "@/utils/price"
 
 export type ShoppingCartProps = {
      
@@ -38,7 +39,9 @@ const ShoppingCart = () => {
             <Stack direction={'column'} flex={1}>
                 <Typography>{copy.title.name}</Typography>
                 <Stack direction={"row"} display={'flex'} justifyContent={'space-between'} width={'100%'} mt={1}>
-                    <Typography variant="caption" sx={{width: '100%'}} >{copy.price} {copy.currency}</Typography>
+                    <Typography variant="caption" sx={{width: '100%'}} >
+                        {formatCurrencyAmount(copy.price, copy.currency) ?? '-'}
+                    </Typography>
                     <ClearIcon sx={{opacity: 0.3, "&:hover" : {opacity: 1, cursor: 'pointer'}}}
                         onClick={() => setCartState(state => ({...state, copies: state.copies.filter(item => item.id !== copy.id)}))}
                     />

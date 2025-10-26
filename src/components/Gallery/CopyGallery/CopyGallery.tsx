@@ -17,6 +17,7 @@ import { getCopies, removeCopy, updateCopy } from '@/backend/api/copy';
 import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
 import objectToFormData from '@/utils/formData';
 import PutCopyForSaleModal from './PutCopyForSaleModal';
+import { convertPriceToApi, formatCurrencyAmount } from '@/utils/price';
 
 interface CopyGalleryProps {
   copies: CreatedCopy[];
@@ -47,7 +48,8 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
     const payload = objectToFormData({
       ...targetCopy,
       forSale: true,
-      price: price.amount,
+      price: convertPriceToApi(price.amount),
+      boughtForPrice: convertPriceToApi(targetCopy.boughtForPrice),
       currency: price.currency,
       titleId: targetCopy.title.id,
       ownerId: targetCopy.owner.id,
@@ -64,9 +66,12 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
-        {copies.map((copy) => (
-          <Grid2 key={copy.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <Card
+        {copies.map((copy) => {
+          const priceLabel = formatCurrencyAmount(copy.price, copy.currency);
+
+          return (
+            <Grid2 key={copy.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <Card
               sx={{
                 height: '100%',
                 borderRadius: 2,
@@ -92,7 +97,14 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
               </CardActionArea>
               <CardActions sx={{ mt: 'auto', display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
-                  {copy.price && <Chip label={`${copy.price} ${copy.currency}`} size="small" color="default" variant="filled" />}
+                  {priceLabel && (
+                    <Chip
+                      label={priceLabel}
+                      size="small"
+                      color="default"
+                      variant="filled"
+                    />
+                  )}
                   <Chip label={copy.copyCondition} size="small" color="default" variant="filled" />
                 </Box>
                 <ButtonMenu
@@ -106,6 +118,8 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
                           const payload = objectToFormData({
                             ...copy,
                             forSale: false,
+                            price: convertPriceToApi(copy.price),
+                            boughtForPrice: convertPriceToApi(copy.boughtForPrice),
                             titleId: copy.title.id,
                             ownerId: copy.owner.id,
                           });
@@ -137,7 +151,8 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
               </CardActions>
             </Card>
           </Grid2>
-        ))}
+          );
+        })}
       </Grid2>
       <EditCopyModal open={editCopyModalOpen} handleClose={() => setEditCopyModalOpen(false)} copy={editedCopy} />
       <PutCopyForSaleModal
