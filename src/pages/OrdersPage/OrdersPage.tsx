@@ -1,3 +1,5 @@
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -168,6 +170,11 @@ const OrdersPage = () => {
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls={`order-${order.orderRef}`}
                       id={`order-${order.orderRef}`}
+                      sx={{
+                        '& .MuiAccordionSummary-expandIconWrapper': {
+                          ml: 2,
+                        },
+                      }}
                     >
                     <Stack
                       direction={{ xs: 'column', sm: 'row' }}
@@ -221,7 +228,7 @@ const OrdersPage = () => {
                               <TableCell>Seller</TableCell>
                               <TableCell>Status</TableCell>
                               <TableCell align="right">Price</TableCell>
-                              <TableCell>Action</TableCell>
+                              <TableCell align="center" sx={{ width: 200 }} />
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -239,9 +246,9 @@ const OrdersPage = () => {
                                 <TableCell align="right">
                                   {formatCurrency(item.price, item.currency)}
                                 </TableCell>
-                                <TableCell>
-                                  <Stack spacing={0.5} alignItems="flex-start">
-                                    <Stack direction="row" spacing={1}>
+                                <TableCell align="center">
+                                  <Stack spacing={0.5} alignItems="center">
+                                    <Stack direction="row" spacing={1} justifyContent="center">
                                       <Button
                                         size="small"
                                         variant="contained"
@@ -250,6 +257,7 @@ const OrdersPage = () => {
                                           confirmingItemKey === `${order.orderRef}:${item.id}`
                                         }
                                         onClick={() => handleConfirm(order.orderRef, item.id)}
+                                        startIcon={<CheckIcon fontSize="small" />}
                                       >
                                         Confirm
                                       </Button>
@@ -262,6 +270,7 @@ const OrdersPage = () => {
                                             `Cancel confirmation for order ${order.orderRef}, item ${item.id}`,
                                           )
                                         }
+                                        startIcon={<CloseIcon fontSize="small" />}
                                       >
                                         Cancel
                                       </Button>
