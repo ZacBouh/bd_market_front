@@ -221,7 +221,15 @@ const OrdersPage = () => {
                         </Typography>
                       </Stack>
                       <TableContainer component={Paper} variant="outlined">
-                        <Table size="small">
+                        <Table
+                          size="small"
+                          sx={{
+                            '& .MuiTableCell-root': {
+                              px: 2.5,
+                              py: 1.5,
+                            },
+                          }}
+                        >
                           <TableHead>
                             <TableRow>
                               <TableCell>Item</TableCell>
