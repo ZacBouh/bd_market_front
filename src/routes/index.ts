@@ -1,4 +1,5 @@
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import HomeIcon from '@mui/icons-material/Home';
 import ScanIcon from '@mui/icons-material/Flip';
@@ -42,6 +43,13 @@ const routes: Routes = [
     path: '/market',
     title: 'Market',
     icon: StoreFront,
+    isProtected: true
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/AdminPage')),
+    path: '/admin',
+    title: 'Admin',
+    icon: AdminPanelSettingsIcon,
     isProtected: true
   },
   {
