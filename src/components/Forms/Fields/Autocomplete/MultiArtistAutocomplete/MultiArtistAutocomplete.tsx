@@ -12,7 +12,7 @@ export type MultiArtistAutocompleteEntry = {
 }
 
 export type MultiArtistAutocompleteProps = BoxProps & Omit<ArtistSkillsSelectProps, 'multiple' | 'onChange' | 'value'> & ArtistAutocompleteProps & {
-    onMultiArtistChange?: (value : MultiArtistAutocompleteEntry[]) => any
+    onMultiArtistChange?: (value : MultiArtistAutocompleteEntry[]) => void
     artistsContributions?: NewArtistContribution[]
     artistsMap?: Record<number, {id: number, firstName: string, lastName: string, pseudo: string}>
 }
@@ -27,10 +27,15 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
     })) : undefined
     const hasPrepolutedEntries = props.artistsContributions && !!props.artistsMap
     const [artists, setArtists] = useState<MultiArtistAutocompleteEntry[]>(prePopulatedEntries ?? [emptyArtistEntry])
-    const triggerOnMultiArtistChange = (value : MultiArtistAutocompleteEntry[]) =>  onMultiArtistChange &&  onMultiArtistChange(value)
-    return <Box sx={sx ?? {width: '100%'}}>
+    const triggerOnMultiArtistChange = (value : MultiArtistAutocompleteEntry[]) => {
+        if (onMultiArtistChange) {
+            onMultiArtistChange(value)
+        }
+    }
+    const mergedSx = Array.isArray(sx) ? sx : sx ? [sx] : []
+    return <Box sx={[{width: '100%', display: 'flex', flexDirection: 'column', gap: 2}, ...mergedSx]}>
         {artists.map( (entry, index) => {
-            return  <Stack direction={'row'} key={entry._id} sx={{width: '100%'}} >
+            return  <Stack direction={'row'} spacing={2} key={entry._id} sx={{width: '100%'}} >
                 <ArtistAutocomplete 
                     sx={{flex: 1}}
                     onChangeCallback={(_, artist) =>{
@@ -38,7 +43,7 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
                         setArtists(updatedArtists)
                         triggerOnMultiArtistChange(updatedArtists)
                     }}
-                    // @ts-ignore
+                    // @ts-expect-error MUI Autocomplete expects a full artist object
                     value={(hasPrepolutedEntries && entry.artist) ? {...props?.artistsMap?.[entry?.artist], coverImage: undefined }: undefined} 
                  />
                 <ArtistSkillsSelect
@@ -57,11 +62,11 @@ const MultiArtistAutocomplete = (props : MultiArtistAutocompleteProps) => {
             </Stack>
             
         })}
-        <Button 
+        <Button
             onClick={() => setArtists(artists => [...artists, emptyArtistEntry])}
             sx={{width: '100%'}}
             ><AddIcon/> Add Artist Contribution</Button>
-    </Box> 
+    </Box>
 }
 
 function removeFromArrayAtIndex<T>( array : T[], index: number): T[]  {
