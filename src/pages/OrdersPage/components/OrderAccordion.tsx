@@ -52,7 +52,7 @@ const OrderAccordion = ({
       : order.updatedAt !== order.createdAt));
   const orderStatusLabel = formatOrderStatus(order.status);
   const hasConfirmedItems = order.items.some((item) => !!item.buyerConfirmedAt);
-  const canCancelOrder = !hasConfirmedItems;
+  const canCancelOrder = !hasConfirmedItems && order.status !== 'CANCELED';
   const isCancellingOrder = cancellingOrderRef === order.orderRef;
   const isOrderActionInProgress =
     isCancellingOrder || Boolean(cancellingItemKey?.startsWith(`${order.orderRef}:`));
