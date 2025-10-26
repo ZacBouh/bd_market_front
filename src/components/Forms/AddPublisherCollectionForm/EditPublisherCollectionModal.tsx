@@ -19,7 +19,7 @@ const mapCollectionToInitialValues = (collection?: CreatedPublisherCollection) =
     publisher: collection.publisher,
     birthDate: collection.birthDate,
     deathDate: collection.deathDate,
-  } satisfies Partial<NewPublisherCollection> & { publisher?: CreatedPublisher };
+  } satisfies AddPublisherCollectionFormProps['prePopulatedInputs'];
 };
 
 const EditPublisherCollectionModal = ({

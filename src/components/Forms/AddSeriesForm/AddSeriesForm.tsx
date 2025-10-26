@@ -9,7 +9,7 @@ import { createSeries } from "@/backend/api/series"
 import { SupportedLanguage } from "@/types/common"
 import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
-import { SupportedOnGoingStatus } from "@/types/enums/onGoingStatus"
+import { SupportedOnGoingStatus, onGoingStatusLabel } from "@/types/enums/onGoingStatus"
 
 export type AddSeriesFormProps = {
     prePopulatedName?:string,
@@ -91,7 +91,10 @@ const AddSeriesForm = (props: AddSeriesFormProps) => {
             required
         />
         <OnGoingStatusSelect
-            defaultValue={newSeries.onGoingStatus as SupportedOnGoingStatus}
+            defaultValue={newSeries.onGoingStatus ? {
+                label: onGoingStatusLabel[newSeries.onGoingStatus as SupportedOnGoingStatus],
+                value: newSeries.onGoingStatus as SupportedOnGoingStatus,
+            } : undefined}
             onChange={(status) => setNewSeries(series => ({...series, onGoingStatus: status?.value}))}
         />
         <FormSubmitAndResetButtons

@@ -17,9 +17,8 @@ declare global {
         publisher: CreatedPublisher
         createdAt: string,
         updatedAt: string,
-        coverImage?: {
-            id: UploadedImage['id']
-            imageName: UploadedImage['imageName']
-        }
+        coverImage?: UploadedImage
     }
 }
+
+export {}

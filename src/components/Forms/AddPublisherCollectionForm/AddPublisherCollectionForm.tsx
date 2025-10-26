@@ -10,8 +10,8 @@ import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
 import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
 
-type AddPublisherCollectionFormProps = {
-    prePopulatedInputs?: Partial<NewPublisherCollection> & { publisher?: CreatedPublisher }
+export type AddPublisherCollectionFormProps = {
+    prePopulatedInputs?: (Partial<NewPublisherCollection> & { publisher?: CreatedPublisher }) & { id?: number }
     surface?: FormLayoutSurface
     onSubmit?: (formData: FormData, state: Partial<NewPublisherCollection>) => Promise<unknown> | unknown
     submitLabel?: string

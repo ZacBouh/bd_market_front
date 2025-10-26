@@ -4,6 +4,7 @@ import { routerNavigate } from "@/utils/routerNavigate"
 import { useAtom } from "jotai"
 import { userAtom } from "@/store"
 import { getUser } from "@/backend/api/auth"
+import { USER_ROLES } from "@/types/enums/UserRole"
 
 const OauthRedirect = () => {
     const [ _, setUser] = useAtom(userAtom)
@@ -12,12 +13,12 @@ const OauthRedirect = () => {
         const token = params.get('token')
         if(token){
             setUser({user: {
-                id: 0, 
+                id: 0,
                 email: 'placeholder',
                 createdAt: 'placeholder',
                 pseudo: 'placeholder',
                 updatedAt: 'placeholder',
-                role: ['placeholder']
+                roles: [USER_ROLES.USER]
             }, token: token})
             getUser(() => {
                 routerNavigate.postLoginRedirect()

@@ -4,7 +4,6 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import AppModal from '@/components/Common/AppModal';
 import TitleForm, { TitleFormProps } from './TitleForm';
 import { getTitles, updateTitle } from '@/backend/api/title';
-import type { NewArtistContribution } from '@/types/title';
 import type { SupportedLanguage } from '@/types/common';
 
 const normalizeContributions = (title?: CreatedTitle) => {
@@ -12,9 +11,9 @@ const normalizeContributions = (title?: CreatedTitle) => {
     return { contributions: undefined, artistsMap: undefined } as const;
   }
 
-  const contributionsArray = Array.isArray(title.artistsContributions)
+  const contributionsArray: CreatedContribution[] = Array.isArray(title.artistsContributions)
     ? title.artistsContributions
-    : Object.values(title.artistsContributions);
+    : Object.values(title.artistsContributions) as CreatedContribution[];
 
   const contributions = contributionsArray.map<NewArtistContribution>((contribution) => ({
     artist: typeof contribution.artist === 'object' ? contribution.artist.id : contribution.artist,
