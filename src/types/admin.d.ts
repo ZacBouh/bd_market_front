@@ -1,3 +1,6 @@
+import type { PayoutTaskPaymentType } from "./enums/PayoutTaskPaymentType";
+import type { PayoutTaskStatus } from "./enums/PayoutTaskStatus";
+
 declare global {
   type PayoutTaskSeller = {
     id: number;
@@ -20,7 +23,7 @@ declare global {
   };
 
   type UpdatePayoutTaskPayload = {
-    status: string;
+    status: PayoutTaskStatus;
   };
 
   type AdminUser = {
@@ -40,13 +43,6 @@ declare global {
     roles?: string[];
   };
 
-  type PayoutTaskPaymentType = 'ORDER' | 'REFUND';
-
-  type PayoutTaskStatus =
-    | 'PENDING_PAYMENT_INFORMATION'
-    | 'PENDING_TO_PAY'
-    | 'PAID'
-    | 'ARCHIVED';
 }
 
 export {};

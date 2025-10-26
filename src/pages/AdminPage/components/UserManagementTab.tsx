@@ -305,7 +305,7 @@ function UserManagementTab() {
               component="form"
               onSubmit={onSubmit}
               surface="card"
-              title={selectedUser.pseudo || selectedUser.email || `User #${selectedUser.id}`}
+              title={`Account #${selectedUser.id}`}
               description={`Created ${
                 selectedUser.createdAt
                   ? dayjs(selectedUser.createdAt).format('DD MMM YYYY · HH:mm')
@@ -328,16 +328,18 @@ function UserManagementTab() {
                   alignItems={{ xs: 'flex-start', md: 'center' }}
                   justifyContent="space-between"
                 >
-                  <Stack spacing={0.5}>
+                  <Stack spacing={0.75}>
                     <Typography variant="overline" color="text.secondary">
-                      Account
+                      Identity
                     </Typography>
                     <Typography variant="h4" fontWeight={600} color="text.primary">
-                      {selectedUser.pseudo || selectedUser.email || `User #${selectedUser.id}`}
+                      {selectedUser.pseudo || selectedUser.email || '—'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {selectedUser.email || '—'}
-                    </Typography>
+                    {selectedUser.email ? (
+                      <Typography variant="body1" color="text.secondary">
+                        {selectedUser.email}
+                      </Typography>
+                    ) : null}
                   </Stack>
                   <Stack spacing={1} alignItems={{ xs: 'flex-start', md: 'flex-end' }}>
                     {selectedUser.emailVerified === true ? (
@@ -415,25 +417,6 @@ function UserManagementTab() {
                       ? 'The email address is not verified.'
                       : 'Email verification status is unknown.'}
                   </Typography>
-                </Stack>
-                <Divider />
-                <Stack spacing={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Raw payload
-                  </Typography>
-                  <Box
-                    component="pre"
-                    sx={{
-                      m: 0,
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: (theme) => theme.palette.action.hover,
-                      overflowX: 'auto',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    {JSON.stringify(selectedUser, null, 2)}
-                  </Box>
                 </Stack>
               </Stack>
             </FormLayout>

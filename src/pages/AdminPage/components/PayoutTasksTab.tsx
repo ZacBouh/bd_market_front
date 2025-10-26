@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -24,6 +23,14 @@ import { isAxiosError } from 'axios';
 import { getPayoutTasks, updatePayoutTask } from '@/backend/api/payoutTasks';
 import FormLayout from '@/components/Forms/FormLayout/FormLayout';
 import { notification } from '@/utils/padNotification';
+import {
+  PAYOUT_TASK_PAYMENT_TYPES,
+  type PayoutTaskPaymentType,
+} from '@/types/enums/PayoutTaskPaymentType';
+import {
+  PAYOUT_TASK_STATUSES,
+  type PayoutTaskStatus,
+} from '@/types/enums/PayoutTaskStatus';
 
 const formatCurrency = (amountInCents: number) =>
   new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(amountInCents / 100);
@@ -31,13 +38,15 @@ const formatCurrency = (amountInCents: number) =>
 const formatDateTime = (date?: string) => (date ? dayjs(date).format('DD MMM YYYY · HH:mm') : '—');
 
 type PayoutTaskFormValues = {
-  status: string;
+  status: PayoutTaskStatus | '';
 };
 
 function PayoutTasksTab() {
   const [tasks, setTasks] = useState<PayoutTask[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [paymentTypeFilter, setPaymentTypeFilter] = useState<'all' | PayoutTaskPaymentType>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | PayoutTaskStatus>('all');
+  const [paymentTypeFilter, setPaymentTypeFilter] = useState<
+    'all' | PayoutTaskPaymentType
+  >('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
@@ -53,16 +62,10 @@ function PayoutTasksTab() {
     [tasks, selectedTaskId],
   );
 
-  const statusOptions = useMemo(() => {
-    const statuses = new Set<string>();
-    tasks.forEach((task) => {
-      if (task.status) {
-        statuses.add(task.status);
-      }
-    });
-
-    return Array.from(statuses).sort((left, right) => left.localeCompare(right));
-  }, [tasks]);
+  const statusOptions = useMemo<PayoutTaskStatus[]>(
+    () => Object.values(PAYOUT_TASK_STATUSES),
+    [],
+  );
 
   const filteredTasks = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -108,7 +111,10 @@ function PayoutTasksTab() {
     async (controller: AbortController) => {
       setLoading(true);
       try {
-        const data = await getPayoutTasks(statusFilter === 'all' ? undefined : statusFilter, controller.signal);
+        const data = await getPayoutTasks(
+          statusFilter === 'all' ? undefined : statusFilter,
+          controller.signal,
+        );
         console.log('[Admin] Loaded payout tasks', data);
         setTasks(data);
       } catch (error) {
@@ -141,7 +147,7 @@ function PayoutTasksTab() {
       return;
     }
 
-    const nextStatus = values.status.trim();
+    const nextStatus = values.status;
     if (!nextStatus) {
       notification.show('Please provide a status before saving.', {
         severity: 'warning',
@@ -187,7 +193,9 @@ function PayoutTasksTab() {
                 size="small"
                 label="Filter by status"
                 value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value as 'all' | PayoutTaskStatus)
+                }
               >
                 <MenuItem value="all">All statuses</MenuItem>
                 {statusOptions.map((status) => (
@@ -205,8 +213,11 @@ function PayoutTasksTab() {
                 onChange={(event) => setPaymentTypeFilter(event.target.value as 'all' | PayoutTaskPaymentType)}
               >
                 <MenuItem value="all">All payment types</MenuItem>
-                <MenuItem value="ORDER">Order</MenuItem>
-                <MenuItem value="REFUND">Refund</MenuItem>
+                {Object.values(PAYOUT_TASK_PAYMENT_TYPES).map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type === PAYOUT_TASK_PAYMENT_TYPES.ORDER ? 'Order' : 'Refund'}
+                  </MenuItem>
+                ))}
               </TextField>
               <TextField
                 fullWidth
@@ -413,14 +424,23 @@ function PayoutTasksTab() {
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
-                      <Autocomplete
+                      <TextField
                         {...field}
-                        freeSolo
-                        options={statusOptions}
+                        select
+                        label="Status"
+                        required
+                        fullWidth
                         value={field.value ?? ''}
-                        onChange={(_event, value) => field.onChange(value ?? '')}
-                        renderInput={(params) => <TextField {...params} label="Status" required />}
-                      />
+                        onChange={(event) =>
+                          field.onChange(event.target.value as PayoutTaskStatus)
+                        }
+                      >
+                        {statusOptions.map((status) => (
+                          <MenuItem key={status} value={status}>
+                            {status}
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     )}
                   />
                 </Stack>
@@ -448,25 +468,6 @@ function PayoutTasksTab() {
                       This payout task does not include metadata.
                     </Typography>
                   )}
-                </Stack>
-                <Divider />
-                <Stack spacing={2}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Raw payload
-                  </Typography>
-                  <Box
-                    component="pre"
-                    sx={{
-                      m: 0,
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: (theme) => theme.palette.action.hover,
-                      overflowX: 'auto',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    {JSON.stringify(selectedTask, null, 2)}
-                  </Box>
                 </Stack>
               </Stack>
             </FormLayout>

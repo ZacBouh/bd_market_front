@@ -1,6 +1,11 @@
+import type { PayoutTaskStatus } from '@/types/enums/PayoutTaskStatus';
+
 import { api } from './api';
 
-const getPayoutTasks = async (status?: string, signal?: AbortSignal) => {
+const getPayoutTasks = async (
+  status?: PayoutTaskStatus,
+  signal?: AbortSignal,
+) => {
   const response = await api.get<PayoutTask[]>('/payment/payout-tasks', {
     params: status ? { status } : undefined,
     signal,
