@@ -4,7 +4,6 @@ import { Controller, useForm } from 'react-hook-form';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid2';
@@ -26,8 +25,8 @@ import { getPayoutTasks, updatePayoutTask } from '@/backend/api/payoutTasks';
 import FormLayout from '@/components/Forms/FormLayout/FormLayout';
 import { notification } from '@/utils/padNotification';
 
-const formatCurrency = (amount: number) =>
-  new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(amount);
+const formatCurrency = (amountInCents: number) =>
+  new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(amountInCents / 100);
 
 const formatDateTime = (date?: string) => (date ? dayjs(date).format('DD MMM YYYY · HH:mm') : '—');
 
@@ -38,6 +37,11 @@ type PayoutTaskFormValues = {
 function PayoutTasksTab() {
   const [tasks, setTasks] = useState<PayoutTask[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [paymentTypeFilter, setPaymentTypeFilter] = useState<'all' | PayoutTaskPaymentType>('all');
+  const [sellerSearch, setSellerSearch] = useState('');
+  const [orderRefSearch, setOrderRefSearch] = useState('');
+  const [orderItemIdSearch, setOrderItemIdSearch] = useState('');
+  const [orderItemNameSearch, setOrderItemNameSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -63,14 +67,48 @@ function PayoutTasksTab() {
     return Array.from(statuses).sort((left, right) => left.localeCompare(right));
   }, [tasks]);
 
+  const filteredTasks = useMemo(() => {
+    const lowerSeller = sellerSearch.trim().toLowerCase();
+    const lowerOrderRef = orderRefSearch.trim().toLowerCase();
+    const lowerOrderItemId = orderItemIdSearch.trim().toLowerCase();
+    const lowerOrderItemName = orderItemNameSearch.trim().toLowerCase();
+
+    return tasks.filter((task) => {
+      if (paymentTypeFilter !== 'all' && task.paymentType !== paymentTypeFilter) {
+        return false;
+      }
+
+      if (
+        lowerSeller &&
+        !`${task.sellerPseudo}${task.sellerId}`.toLowerCase().includes(lowerSeller)
+      ) {
+        return false;
+      }
+
+      if (lowerOrderRef && !task.orderRef.toLowerCase().includes(lowerOrderRef)) {
+        return false;
+      }
+
+      if (lowerOrderItemId && !task.orderItemId.toLowerCase().includes(lowerOrderItemId)) {
+        return false;
+      }
+
+      if (lowerOrderItemName && !task.orderItemName.toLowerCase().includes(lowerOrderItemName)) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [orderItemIdSearch, orderItemNameSearch, orderRefSearch, paymentTypeFilter, sellerSearch, tasks]);
+
   useEffect(() => {
-    if (!selectedTaskId && tasks.length > 0) {
-      setSelectedTaskId(tasks[0].id);
+    if (!selectedTaskId && filteredTasks.length > 0) {
+      setSelectedTaskId(filteredTasks[0].id);
     }
-    if (selectedTaskId && !tasks.some((task) => task.id === selectedTaskId)) {
-      setSelectedTaskId(tasks[0]?.id ?? null);
+    if (selectedTaskId && !filteredTasks.some((task) => task.id === selectedTaskId)) {
+      setSelectedTaskId(filteredTasks[0]?.id ?? null);
     }
-  }, [tasks, selectedTaskId]);
+  }, [filteredTasks, selectedTaskId]);
 
   useEffect(() => {
     reset({ status: selectedTask?.status ?? '' });
@@ -141,9 +179,9 @@ function PayoutTasksTab() {
   });
 
   return (
-    <Stack spacing={4} sx={{ mt: 3 }}>
+    <Stack spacing={4} sx={{ mt: 2 }}>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4, xl: 3 }}>
           <Stack spacing={2.5}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h6">Payout tasks</Typography>
@@ -151,37 +189,79 @@ function PayoutTasksTab() {
                 Refresh
               </Button>
             </Stack>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Filter by status"
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <MenuItem value="all">All statuses</MenuItem>
-              {statusOptions.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Stack spacing={1.5}>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                label="Filter by status"
+                value={statusFilter}
+                onChange={(event) => setStatusFilter(event.target.value)}
+              >
+                <MenuItem value="all">All statuses</MenuItem>
+                {statusOptions.map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                fullWidth
+                size="small"
+                label="Payment type"
+                value={paymentTypeFilter}
+                onChange={(event) => setPaymentTypeFilter(event.target.value as 'all' | PayoutTaskPaymentType)}
+              >
+                <MenuItem value="all">All payment types</MenuItem>
+                <MenuItem value="ORDER">Order</MenuItem>
+                <MenuItem value="REFUND">Refund</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by seller pseudo or ID"
+                value={sellerSearch}
+                onChange={(event) => setSellerSearch(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by order reference"
+                value={orderRefSearch}
+                onChange={(event) => setOrderRefSearch(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by order item ID"
+                value={orderItemIdSearch}
+                onChange={(event) => setOrderItemIdSearch(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by order item name"
+                value={orderItemNameSearch}
+                onChange={(event) => setOrderItemNameSearch(event.target.value)}
+              />
+            </Stack>
             <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
               {loading ? <LinearProgress /> : null}
               <List disablePadding>
-                {tasks.length === 0 && !loading ? (
+                {filteredTasks.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
                       No payout tasks found.
                     </Typography>
                   </Box>
                 ) : null}
-                {tasks.map((task) => (
+                {filteredTasks.map((task) => (
                   <ListItem key={task.id} disablePadding>
                     <ListItemButton selected={task.id === selectedTaskId} onClick={() => setSelectedTaskId(task.id)}>
                       <ListItemText
-                        primary={`Task #${task.id}`}
-                        secondary={`Amount · ${formatCurrency(task.amount)} · ${task.status}`}
+                        primary={`Task #${task.id} · ${task.paymentType}`}
+                        secondary={`${formatCurrency(task.amount)} · ${task.sellerPseudo} · ${task.orderItemName}`}
                       />
                     </ListItemButton>
                   </ListItem>
@@ -190,7 +270,7 @@ function PayoutTasksTab() {
             </Paper>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8, xl: 9 }}>
           {selectedTask ? (
             <FormLayout
               component="form"
@@ -214,28 +294,33 @@ function PayoutTasksTab() {
                   </Box>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2" color="text.secondary">
-                      Status
+                      Payment type
                     </Typography>
-                    <Chip label={selectedTask.status || '—'} color="primary" variant="outlined" />
+                    <Typography variant="body1">{selectedTask.paymentType}</Typography>
                   </Box>
                 </Stack>
                 <Divider />
                 <Stack spacing={1.5}>
                   <Typography variant="subtitle2" color="text.secondary">
-                    Vendor
+                    Seller
                   </Typography>
-                  {selectedTask.vendor ? (
-                    <Stack spacing={0.5}>
-                      <Typography variant="body1">{selectedTask.vendor.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {selectedTask.vendor.email ?? 'No email provided'}
-                      </Typography>
-                    </Stack>
-                  ) : (
+                  <Stack spacing={0.5}>
+                    <Typography variant="body1">{selectedTask.sellerPseudo}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      No vendor linked to this payout.
+                      Seller ID · {selectedTask.sellerId}
                     </Typography>
-                  )}
+                  </Stack>
+                </Stack>
+                <Divider />
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Order information
+                  </Typography>
+                  <Stack spacing={0.5}>
+                    <Typography variant="body2">Order reference · {selectedTask.orderRef}</Typography>
+                    <Typography variant="body2">Item ID · {selectedTask.orderItemId}</Typography>
+                    <Typography variant="body2">Item name · {selectedTask.orderItemName}</Typography>
+                  </Stack>
                 </Stack>
                 <Divider />
                 <Stack spacing={1.5}>
@@ -293,9 +378,9 @@ function PayoutTasksTab() {
                   </Box>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2" color="text.secondary">
-                      Vendor ID
+                      Current status
                     </Typography>
-                    <Typography variant="body2">{selectedTask.vendorId ?? '—'}</Typography>
+                    <Typography variant="body2">{selectedTask.status}</Typography>
                   </Box>
                 </Stack>
               </Stack>

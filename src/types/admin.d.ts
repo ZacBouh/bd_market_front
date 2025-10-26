@@ -1,18 +1,16 @@
 declare global {
-  type PayoutTaskVendor = {
-    id: number;
-    name: string;
-    email?: string | null;
-  };
-
   type PayoutTask = {
     id: number;
     amount: number;
-    status: string;
+    status: PayoutTaskStatus;
+    paymentType: PayoutTaskPaymentType;
     createdAt: string;
     updatedAt: string;
-    vendorId?: number;
-    vendor?: PayoutTaskVendor | null;
+    sellerId: number;
+    sellerPseudo: string;
+    orderRef: string;
+    orderItemId: string;
+    orderItemName: string;
     metadata?: Record<string, unknown> | null;
   };
 
@@ -26,7 +24,6 @@ declare global {
     email: string;
     roles: string[];
     status?: string | null;
-    googleSub?: string | null;
     createdAt?: string;
     updatedAt?: string;
   };
@@ -37,8 +34,15 @@ declare global {
     pseudo?: string;
     roles?: string[];
     status?: string | null;
-    googleSub?: string | null;
   };
+
+  type PayoutTaskPaymentType = 'ORDER' | 'REFUND';
+
+  type PayoutTaskStatus =
+    | 'PENDING_PAYMENT_INFORMATION'
+    | 'PENDING_TO_PAY'
+    | 'PAID'
+    | 'ARCHIVED';
 }
 
 export {};

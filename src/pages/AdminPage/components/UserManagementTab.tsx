@@ -37,11 +37,12 @@ type UserFormValues = {
   pseudo: string;
   roles: string[];
   status: string;
-  googleSub: string;
 };
 
 function UserManagementTab() {
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [pseudoSearch, setPseudoSearch] = useState('');
+  const [emailSearch, setEmailSearch] = useState('');
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
@@ -56,7 +57,6 @@ function UserManagementTab() {
       pseudo: '',
       roles: [],
       status: '',
-      googleSub: '',
     },
   });
 
@@ -74,25 +74,15 @@ function UserManagementTab() {
   }, [users]);
 
   useEffect(() => {
-    if (!selectedUserId && users.length > 0) {
-      setSelectedUserId(users[0].id);
-    }
-    if (selectedUserId && !users.some((user) => user.id === selectedUserId)) {
-      setSelectedUserId(users[0]?.id ?? null);
-    }
-  }, [selectedUserId, users]);
-
-  useEffect(() => {
     if (selectedUser) {
       reset({
         email: selectedUser.email,
         pseudo: selectedUser.pseudo,
         roles: Array.from(new Set(selectedUser.roles)),
         status: selectedUser.status ?? '',
-        googleSub: selectedUser.googleSub ?? '',
       });
     } else {
-      reset({ email: '', pseudo: '', roles: [], status: '', googleSub: '' });
+      reset({ email: '', pseudo: '', roles: [], status: '' });
     }
     setHardDelete(false);
   }, [reset, selectedUser]);
@@ -152,7 +142,6 @@ function UserManagementTab() {
         pseudo: values.pseudo.trim(),
         roles: values.roles.map((role) => role.trim()).filter(Boolean),
         status: values.status.trim() || null,
-        googleSub: values.googleSub.trim() || null,
       });
       notification.show(`User #${selectedUser.id} updated`, {
         severity: 'success',
@@ -197,10 +186,34 @@ function UserManagementTab() {
     }
   };
 
+  const filteredUsers = useMemo(() => {
+    const lowerPseudo = pseudoSearch.trim().toLowerCase();
+    const lowerEmail = emailSearch.trim().toLowerCase();
+
+    return users.filter((user) => {
+      if (lowerPseudo && !user.pseudo.toLowerCase().includes(lowerPseudo)) {
+        return false;
+      }
+      if (lowerEmail && !user.email.toLowerCase().includes(lowerEmail)) {
+        return false;
+      }
+      return true;
+    });
+  }, [emailSearch, pseudoSearch, users]);
+
+  useEffect(() => {
+    if (!selectedUserId && filteredUsers.length > 0) {
+      setSelectedUserId(filteredUsers[0].id);
+    }
+    if (selectedUserId && !filteredUsers.some((user) => user.id === selectedUserId)) {
+      setSelectedUserId(filteredUsers[0]?.id ?? null);
+    }
+  }, [filteredUsers, selectedUserId]);
+
   return (
-    <Stack spacing={4} sx={{ mt: 3 }}>
+    <Stack spacing={4} sx={{ mt: 2 }}>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4, xl: 3 }}>
           <Stack spacing={2.5}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h6">Users</Typography>
@@ -208,17 +221,33 @@ function UserManagementTab() {
                 Refresh
               </Button>
             </Stack>
+            <Stack spacing={1.5}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by pseudo"
+                value={pseudoSearch}
+                onChange={(event) => setPseudoSearch(event.target.value)}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Search by email"
+                value={emailSearch}
+                onChange={(event) => setEmailSearch(event.target.value)}
+              />
+            </Stack>
             <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
               {loading ? <LinearProgress /> : null}
               <List disablePadding>
-                {users.length === 0 && !loading ? (
+                {filteredUsers.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
                       No users found.
                     </Typography>
                   </Box>
                 ) : null}
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                   <ListItem key={user.id} disablePadding>
                     <ListItemButton selected={user.id === selectedUserId} onClick={() => setSelectedUserId(user.id)}>
                       <ListItemText
@@ -232,7 +261,7 @@ function UserManagementTab() {
             </Paper>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8, xl: 9 }}>
           {selectedUser ? (
             <FormLayout
               component="form"
@@ -298,17 +327,12 @@ function UserManagementTab() {
                 <Divider />
                 <Stack spacing={1.5}>
                   <Typography variant="subtitle2" color="text.secondary">
-                    Status & identity
+                    Status
                   </Typography>
                   <Controller
                     name="status"
                     control={control}
                     render={({ field }) => <TextField {...field} label="Status" fullWidth />}
-                  />
-                  <Controller
-                    name="googleSub"
-                    control={control}
-                    render={({ field }) => <TextField {...field} label="Google Sub" fullWidth />}
                   />
                 </Stack>
                 <Divider />

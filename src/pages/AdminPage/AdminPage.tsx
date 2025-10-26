@@ -1,8 +1,6 @@
 import { SyntheticEvent, useMemo, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -65,42 +63,49 @@ function AdminPage() {
   return (
     <>
       <meta name="title" content="Admin" />
-      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
-        <Stack spacing={{ xs: 4, md: 5 }}>
-          <PageHero
-            title="Administration"
-            description="Monitor payouts and maintain user accounts from a single dashboard."
-          />
-          <Paper elevation={0} sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3 }}>
-            <Tabs
-              value={tab}
-              onChange={handleChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="Administration sections"
-            >
-              {tabConfig.map((config) => (
-                <Tab
-                  key={config.value}
-                  value={config.value}
-                  label={config.label}
-                  id={`admin-tab-${config.value}`}
-                  aria-controls={`admin-tabpanel-${config.value}`}
-                />
-              ))}
-            </Tabs>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-              {activeDescription}
-            </Typography>
-            <TabPanel value="payoutTasks" current={tab}>
-              <PayoutTasksTab />
-            </TabPanel>
-            <TabPanel value="users" current={tab}>
-              <UserManagementTab />
-            </TabPanel>
-          </Paper>
+      <Stack spacing={{ xs: 4, md: 6 }} sx={{ px: { xs: 2.5, sm: 4 }, py: { xs: 6, md: 8 } }}>
+        <PageHero
+          title="Administration"
+          description="Monitor payouts and maintain user accounts from a single dashboard."
+        />
+        <Stack spacing={3}>
+          <Tabs
+            value={tab}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="Administration sections"
+            sx={{
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+              '& .MuiTabs-flexContainer': {
+                gap: 0.5,
+              },
+              '& .MuiTab-root': {
+                minHeight: 48,
+              },
+            }}
+          >
+            {tabConfig.map((config) => (
+              <Tab
+                key={config.value}
+                value={config.value}
+                label={config.label}
+                id={`admin-tab-${config.value}`}
+                aria-controls={`admin-tabpanel-${config.value}`}
+              />
+            ))}
+          </Tabs>
+          <Typography variant="body2" color="text.secondary">
+            {activeDescription}
+          </Typography>
         </Stack>
-      </Container>
+        <TabPanel value="payoutTasks" current={tab}>
+          <PayoutTasksTab />
+        </TabPanel>
+        <TabPanel value="users" current={tab}>
+          <UserManagementTab />
+        </TabPanel>
+      </Stack>
     </>
   );
 }
