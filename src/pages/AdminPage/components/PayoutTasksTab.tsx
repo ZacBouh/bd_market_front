@@ -171,9 +171,9 @@ function PayoutTasksTab() {
 
   return (
     <Stack spacing={4} sx={{ mt: 2 }}>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4, xl: 3 }}>
-          <Stack spacing={2.5}>
+      <Grid container spacing={3} alignItems="stretch">
+        <Grid size={{ xs: 12, md: 5, xl: 4 }}>
+          <Stack spacing={2.5} sx={{ height: '100%' }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h6">Payout tasks</Typography>
               <Button onClick={handleRefresh} startIcon={<RefreshIcon />} disabled={loading} size="small">
@@ -217,9 +217,12 @@ function PayoutTasksTab() {
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
             </Stack>
-            <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+            <Paper
+              variant="outlined"
+              sx={{ borderRadius: 2, overflow: 'hidden', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+            >
               {loading ? <LinearProgress /> : null}
-              <List disablePadding>
+              <List disablePadding sx={{ flex: 1 }}>
                 {filteredTasks.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
@@ -270,7 +273,7 @@ function PayoutTasksTab() {
             </Paper>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, md: 8, xl: 9 }}>
+        <Grid size={{ xs: 12, md: 7, xl: 8 }}>
           {selectedTask ? (
             <FormLayout
               component="form"
@@ -283,6 +286,7 @@ function PayoutTasksTab() {
                   {updating ? <CircularProgress size={20} /> : 'Save status'}
                 </Button>,
               ]}
+              sx={{ maxWidth: 'none', alignSelf: 'stretch', height: '100%' }}
             >
               <Stack spacing={2.5}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
@@ -409,7 +413,10 @@ function PayoutTasksTab() {
               </Stack>
             </FormLayout>
           ) : (
-            <Paper elevation={0} sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3, minHeight: 320 }}>
+            <Paper
+              elevation={0}
+              sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3, minHeight: 320, height: '100%' }}
+            >
               <Stack justifyContent="center" alignItems="center" sx={{ height: '100%' }} spacing={1}>
                 <Typography variant="subtitle1">Select a payout task to view its details.</Typography>
                 <Typography variant="body2" color="text.secondary" align="center">

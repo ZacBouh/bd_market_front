@@ -207,9 +207,9 @@ function UserManagementTab() {
 
   return (
     <Stack spacing={4} sx={{ mt: 2 }}>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4, xl: 3 }}>
-          <Stack spacing={2.5}>
+      <Grid container spacing={3} alignItems="stretch">
+        <Grid size={{ xs: 12, md: 5, xl: 4 }}>
+          <Stack spacing={2.5} sx={{ height: '100%' }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between">
               <Typography variant="h6">Users</Typography>
               <Button onClick={handleRefresh} startIcon={<RefreshIcon />} disabled={loading} size="small">
@@ -226,9 +226,12 @@ function UserManagementTab() {
                 onChange={(event) => setSearchQuery(event.target.value)}
               />
             </Stack>
-            <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+            <Paper
+              variant="outlined"
+              sx={{ borderRadius: 2, overflow: 'hidden', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+            >
               {loading ? <LinearProgress /> : null}
-              <List disablePadding>
+              <List disablePadding sx={{ flex: 1 }}>
                 {filteredUsers.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
@@ -279,14 +282,18 @@ function UserManagementTab() {
             </Paper>
           </Stack>
         </Grid>
-        <Grid size={{ xs: 12, md: 8, xl: 9 }}>
+        <Grid size={{ xs: 12, md: 7, xl: 8 }}>
           {selectedUser ? (
             <FormLayout
               component="form"
               onSubmit={onSubmit}
               surface="card"
               title={selectedUser.pseudo || selectedUser.email}
-              description={`Created ${selectedUser.createdAt ? dayjs(selectedUser.createdAt).format('DD MMM YYYY · HH:mm') : '—'}`}
+              description={`Created ${
+                selectedUser.createdAt
+                  ? dayjs(selectedUser.createdAt).format('DD MMM YYYY · HH:mm')
+                  : '—'
+              }`}
               actions={[
                 <Button key="delete" type="button" color="error" variant="outlined" onClick={handleOpenDeleteDialog}>
                   Delete user
@@ -295,6 +302,7 @@ function UserManagementTab() {
                   {saving ? <CircularProgress size={20} /> : 'Save changes'}
                 </Button>,
               ]}
+              sx={{ maxWidth: 'none', alignSelf: 'stretch', height: '100%' }}
             >
               <Stack spacing={2.5}>
                 <Stack spacing={1.5}>
@@ -396,7 +404,10 @@ function UserManagementTab() {
               </Stack>
             </FormLayout>
           ) : (
-            <Paper elevation={0} sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3, minHeight: 320 }}>
+            <Paper
+              elevation={0}
+              sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3, minHeight: 320, height: '100%' }}
+            >
               <Stack justifyContent="center" alignItems="center" sx={{ height: '100%' }} spacing={1}>
                 <Typography variant="subtitle1">Select a user to manage their account.</Typography>
                 <Typography variant="body2" color="text.secondary" align="center">
