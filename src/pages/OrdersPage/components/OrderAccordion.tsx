@@ -48,6 +48,13 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
           '& .MuiAccordionSummary-expandIconWrapper': {
             ml: 2,
           },
+          '& .MuiAccordionSummary-content': {
+            width: '100%',
+            margin: 0,
+          },
+          '& .MuiAccordionSummary-content.Mui-expanded': {
+            margin: 0,
+          },
         }}
       >
         <Stack
@@ -61,7 +68,7 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
             <Typography
               variant="subtitle1"
               fontWeight={600}
-              noWrap
+              noWrap={!isMobile}
               sx={{
                 maxWidth: { xs: '100%', sm: '60ch' },
                 overflow: 'hidden',
@@ -74,7 +81,12 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
               Placed on {formatDateOnly(order.createdAt)}
             </Typography>
           </Stack>
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ mr: 1 }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={2}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            sx={{ mr: { sm: 1 } }}
+          >
             <Typography variant="subtitle1" fontWeight={600}>
               {formatCurrency(order.amountTotal, order.currency)}
             </Typography>
