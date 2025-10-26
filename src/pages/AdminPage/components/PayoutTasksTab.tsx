@@ -77,7 +77,8 @@ function PayoutTasksTab() {
       }
 
       const haystacks = [
-        task.sellerPseudo,
+        task.seller?.pseudo,
+        task.seller?.id != null ? String(task.seller.id) : '',
         task.sellerId != null ? String(task.sellerId) : '',
         task.orderRef,
         task.orderItemId,
@@ -229,7 +230,8 @@ function PayoutTasksTab() {
                 {filteredTasks.map((task) => {
                   const summary = [
                     formatCurrency(task.amount),
-                    task.sellerPseudo || (task.sellerId != null ? `Seller #${task.sellerId}` : null),
+                    task.seller?.pseudo || (task.seller?.id != null ? `Seller #${task.seller.id}` : null) ||
+                      (task.sellerId != null ? `Seller #${task.sellerId}` : null),
                     task.orderItemName || task.orderItemId || task.orderRef,
                   ]
                     .filter((value): value is string => Boolean(value))
@@ -285,9 +287,13 @@ function PayoutTasksTab() {
                     Seller
                   </Typography>
                   <Stack spacing={0.5}>
-                    <Typography variant="body1">{selectedTask.sellerPseudo || '—'}</Typography>
+                    <Typography variant="body1">
+                      {selectedTask.seller?.pseudo ||
+                        (selectedTask.seller?.id != null ? `Seller #${selectedTask.seller.id}` : null) ||
+                        (selectedTask.sellerId != null ? `Seller #${selectedTask.sellerId}` : '—')}
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Seller ID · {selectedTask.sellerId ?? '—'}
+                      Seller ID · {selectedTask.seller?.id ?? selectedTask.sellerId ?? '—'}
                     </Typography>
                   </Stack>
                 </Stack>

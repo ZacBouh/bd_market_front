@@ -1,4 +1,9 @@
 declare global {
+  type PayoutTaskSeller = {
+    id: number;
+    pseudo: string;
+  };
+
   type PayoutTask = {
     id: number;
     amount: number;
@@ -6,11 +11,11 @@ declare global {
     paymentType: PayoutTaskPaymentType;
     createdAt: string;
     updatedAt: string;
-    sellerId: number;
-    sellerPseudo: string;
-    orderRef: string;
-    orderItemId: string;
-    orderItemName: string;
+    sellerId?: number | null;
+    seller?: PayoutTaskSeller | null;
+    orderRef?: string | null;
+    orderItemId?: string | null;
+    orderItemName?: string | null;
     metadata?: Record<string, unknown> | null;
   };
 
