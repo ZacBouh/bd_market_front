@@ -27,6 +27,7 @@ type OrderAccordionProps = {
 const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionProps) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isAccordionNarrow = useMediaQuery(theme.breakpoints.down('md'));
 
   const itemNames = order.items.map((item) => item.copy.name).join(', ');
   const createdAtDate = parseDate(order.createdAt);
@@ -58,19 +59,19 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
         }}
       >
         <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={{ xs: 1, sm: 2 }}
-          alignItems={{ xs: 'flex-start', sm: 'center' }}
+          direction={isAccordionNarrow ? 'column' : 'row'}
+          spacing={isAccordionNarrow ? 1.5 : 2}
+          alignItems={isAccordionNarrow ? 'flex-start' : 'center'}
           justifyContent="space-between"
-          sx={{ width: '100%', pb: { xs: 1, sm: 0 } }}
+          sx={{ width: '100%', pb: isAccordionNarrow ? 1 : 0 }}
         >
           <Stack spacing={0.5}>
             <Typography
               variant="subtitle1"
               fontWeight={600}
-              noWrap={!isMobile}
+              noWrap={!isAccordionNarrow}
               sx={{
-                maxWidth: { xs: '100%', sm: '60ch' },
+                maxWidth: isAccordionNarrow ? '100%' : '60ch',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
               }}
@@ -82,10 +83,10 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
             </Typography>
           </Stack>
           <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
-            alignItems={{ xs: 'flex-start', sm: 'center' }}
-            sx={{ mr: { sm: 1 } }}
+            direction={isAccordionNarrow ? 'column' : 'row'}
+            spacing={isAccordionNarrow ? 1.5 : 2}
+            alignItems={isAccordionNarrow ? 'flex-start' : 'center'}
+            sx={{ mr: isAccordionNarrow ? 0 : 1 }}
           >
             <Typography variant="subtitle1" fontWeight={600}>
               {formatCurrency(order.amountTotal, order.currency)}
