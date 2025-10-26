@@ -85,7 +85,7 @@ const TitleForm = (props : TitleFormProps) => {
           onChange={(event) => setTitleForm((title) => ({...title, isbn: event.target.value}))}
         />
         <SeriesAutocomplete
-          onChange={series => setTitleForm(title => ({...title, series})) }
+          onChange={series => setTitleForm(title => ({...title, series: series?.id.toString()})) }
         />
         <PublisherCollectionAutocomplete
           onChange={collection => setTitleForm(title => ({...title, collection: collection}))}

@@ -113,14 +113,14 @@ const sharedTheme: ThemeOptions = {
     },
     MuiFormLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: () => ({
           fontWeight: 600,
         }),
       },
     },
     MuiInputLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: () => ({
           fontWeight: 600,
         }),
       },
