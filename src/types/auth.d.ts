@@ -7,11 +7,13 @@ type NewUser = LoginCredentials & {
     pseudo: string
 }
 
+import type { UserRole } from "./enums/UserRole";
+
 type CreatedUser = Omit<NewUser, 'password'> & {
     id: number,
     createdAt: string,
     updatedAt: string,
-    role: string[]
+    roles: UserRole[]
 }
 
 type LoggedInUser = {

@@ -1,10 +1,8 @@
 import { TextField } from '@mui/material';
-import { newPublisherForm, initialState } from './atom';
-import { useAtom } from 'jotai';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { createPublisher } from '@/backend/api/publisher';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import objectToFormData from '@/utils/formData';
 import FileInput from '../Fields/FileUpload/FileInput';
 import FormLayout, { FormLayoutSurface } from '../FormLayout/FormLayout';
@@ -14,49 +12,66 @@ type PublisherFormProps = {
     prePopulatedName?: string,
     onSuccess?: (createdPublisher? : CreatedPublisher) => void
     surface?: FormLayoutSurface
+    publisher?: CreatedPublisher | null
+    onSubmit?: (formData: FormData, state: NewPublisher) => Promise<unknown> | unknown
+    submitLabel?: string
 }
 
 const PublisherForm = (props : PublisherFormProps) => {
-    const {prePopulatedName, onSuccess, surface = 'card'} = props
-    const [publisherForm, setPublisherForm] = useAtom<NewPublisher>(newPublisherForm)
+    const {prePopulatedName, onSuccess, surface = 'card', publisher, onSubmit, submitLabel} = props
+    const createInitialState = useCallback((): NewPublisher => ({
+        name: publisher?.name ?? prePopulatedName ?? '',
+        description: publisher?.description ?? '',
+        birthDate: publisher?.birthDate ?? null,
+        deathDate: publisher?.deathDate ?? null,
+        coverImageFile: undefined,
+    }), [prePopulatedName, publisher?.birthDate, publisher?.deathDate, publisher?.description, publisher?.name])
+
+    const [publisherForm, setPublisherForm] = useState<NewPublisher>(() => createInitialState())
+
     useEffect(() => {
-        prePopulatedName && setPublisherForm((publisher) => ({...publisher, name: prePopulatedName}))
-    }
-     ,[prePopulatedName, setPublisherForm])
+        setPublisherForm(createInitialState())
+    }, [createInitialState])
 
     return <FormLayout onSubmit={async (event) => {
             event.stopPropagation()
             event.preventDefault()
             console.log("Form submitted", publisherForm)
-            const createdPublisher = await createPublisher(objectToFormData(publisherForm))
-            console.log("Publisher Form Response", createdPublisher)
-            onSuccess && onSuccess(createdPublisher)
+            const formData = objectToFormData(publisherForm)
+            if (onSubmit) {
+                await onSubmit(formData, publisherForm)
+            } else {
+                const createdPublisher = await createPublisher(formData)
+                console.log("Publisher Form Response", createdPublisher)
+                onSuccess && onSuccess(createdPublisher)
+                setPublisherForm(createInitialState())
+            }
         }}
         surface={surface}
         >
             <TextField
             label="Name"
             value={publisherForm.name}
-            onChange={(event) => setPublisherForm((publisher) => ({...publisher, name: event.target.value}))}
+            onChange={(event) => setPublisherForm((publisherState) => ({...publisherState, name: event.target.value}))}
             required
             />
             <TextField
             label="Description"
-            value={publisherForm.description}
-            onChange={(event) => setPublisherForm((publisher) => ({...publisher, description: event.target.value}))}
+            value={publisherForm.description ?? ''}
+            onChange={(event) => setPublisherForm((publisherState) => ({...publisherState, description: event.target.value}))}
             multiline
             rows={3}
             />
             <DatePicker
             label="Creation Date"
             value={publisherForm.birthDate ? dayjs(publisherForm.birthDate) : null}
-            onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, birthDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            onChange={(newDate) => setPublisherForm((publisherState) => ({...publisherState, birthDate: newDate ? dayjs(newDate).startOf('day').format('YYYY-MM-DD') : null}))}
             slotProps={{ textField: { fullWidth: true } }}
             />
             <DatePicker
             label="Death Date"
             value={publisherForm.deathDate ? dayjs(publisherForm.deathDate) : null}
-            onChange={(newDate) => setPublisherForm((publisher) => ({...publisher, deathDate: dayjs(newDate).startOf('day').format('YYYY-MM-DD')}))}
+            onChange={(newDate) => setPublisherForm((publisherState) => ({...publisherState, deathDate: newDate ? dayjs(newDate).startOf('day').format('YYYY-MM-DD') : null}))}
             slotProps={{ textField: { fullWidth: true } }}
             />
             <FileInput
@@ -64,12 +79,12 @@ const PublisherForm = (props : PublisherFormProps) => {
                 accept='image/*'
                 direction="column"
                 spacing={1}
-                onFileChange={(event) => setPublisherForm(publisherForm => ({...publisherForm, coverImageFile: event.target.files?.[0]})) }
+                onFileChange={(event) => setPublisherForm(publisherFormState => ({...publisherFormState, coverImageFile: event.target.files?.[0]})) }
             />
             <FormSubmitAndResetButtons
                 state={publisherForm}
-                handleReset={() => setPublisherForm(() => ({ ...initialState }))}
-                submitLabel="Save publisher"
+                handleReset={() => setPublisherForm(() => createInitialState())}
+                submitLabel={submitLabel ?? "Save publisher"}
             />
         </FormLayout>
 }

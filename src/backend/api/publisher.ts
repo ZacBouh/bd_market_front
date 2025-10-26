@@ -18,5 +18,24 @@ const getPublishers = () => {
     return () => controller.abort()
 }
 
-export { createPublisher, getPublishers }
+type RemovePublisherOptions = {
+    hardDelete?: boolean
+}
+
+const removePublisher = async (publisherId: CreatedPublisher['id'], options?: RemovePublisherOptions) => {
+    const response = await api.delete<DeleteResponse>('/publishers', {
+        data: {
+            id: publisherId,
+            hardDelete: options?.hardDelete ?? false,
+        },
+    })
+    return response.data
+}
+
+const updatePublisher = async (payload: FormData) => {
+    const response = await api.post<ApiResponse>('/publishers/update', payload)
+    return response.data
+}
+
+export { createPublisher, getPublishers, removePublisher, updatePublisher }
 

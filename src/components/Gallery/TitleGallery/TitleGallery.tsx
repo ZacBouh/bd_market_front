@@ -6,8 +6,19 @@ import {
   CardContent,
   Typography,
   Container,
+  CardActions,
+  IconButton,
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useState } from 'react';
+import { useNotifications } from '@toolpad/core/useNotifications';
+
 import { API_BASE_URL } from '@/backend/api/api';
+import ButtonMenu from '@/components/Menu/ButtonMenu/ButtonMenu';
+import { getTitles, removeTitle } from '@/backend/api/title';
+import EditTitleModal from '@/components/Forms/TitleForm/EditTitleModal';
+import { useUser } from '@/hooks/useUser';
+import { USER_ROLES } from '@/types/enums/UserRole';
 
 type TitleGalleryProps = {
     titles: CreatedTitle[]
@@ -68,7 +79,32 @@ const getContributorsLabel = (contributions?: CreatedContribution[] | Record<str
 
 const TitleGallery = (props : TitleGalleryProps) => {
     const {titles} = props
-    
+    const [editModalOpen, setEditModalOpen] = useState(false)
+    const [selectedTitle, setSelectedTitle] = useState<CreatedTitle | undefined>(undefined)
+    const notifications = useNotifications()
+    const { user } = useUser()
+    const isAdmin = user?.user.roles?.includes(USER_ROLES.ADMIN) ?? false
+
+    const handleRemoveTitle = async (titleId: CreatedTitle['id'], hardDelete = false) => {
+      try {
+        const response = await removeTitle(titleId, { hardDelete })
+        notifications.show(response.message ?? 'Title removed successfully.', {
+          severity: 'success',
+          autoHideDuration: 3000,
+        })
+        getTitles()
+      } catch (error) {
+        const axiosError = error as { response?: { data?: ApiResponse; status?: number } }
+        const errorMessage =
+          axiosError?.response?.data?.message ??
+          (axiosError?.response?.status === 404 ? 'Title not found.' : 'Failed to remove the title.')
+        notifications.show(errorMessage, {
+          severity: 'error',
+          autoHideDuration: 4000,
+        })
+      }
+    }
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
@@ -101,10 +137,42 @@ const TitleGallery = (props : TitleGalleryProps) => {
                   </Typography>
                 </CardContent>
               </CardActionArea>
+              <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <ButtonMenu
+                  ButtonElement={IconButton}
+                  buttonProps={{ children: <MoreVertIcon />, sx: { borderRadius: 2 } }}
+                  menuItems={[
+                    {
+                      label: 'Update Title',
+                      handleClick: () => {
+                        setSelectedTitle(title)
+                        setEditModalOpen(true)
+                      },
+                    },
+                    {
+                      label: 'Delete Title',
+                      handleClick: () => handleRemoveTitle(title.id),
+                    },
+                    ...(isAdmin
+                      ? [
+                          {
+                            label: 'Hard Delete Title',
+                            handleClick: () => handleRemoveTitle(title.id, true),
+                          } as const,
+                        ]
+                      : []),
+                  ]}
+                />
+              </CardActions>
             </Card>
           </Grid2>
         ))}
       </Grid2>
+      <EditTitleModal
+        open={editModalOpen}
+        handleClose={() => setEditModalOpen(false)}
+        title={selectedTitle}
+      />
     </Container>
   );
 }

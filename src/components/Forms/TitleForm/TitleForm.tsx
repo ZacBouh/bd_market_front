@@ -27,6 +27,8 @@ export type TitleFormProps = {
   series?: string
   isbn?: string
   surface?: FormLayoutSurface
+  onSubmit?: (formData: FormData, state: NewTitleFormState) => Promise<unknown> | unknown
+  submitLabel?: string
 }
 
 const TitleForm = (props : TitleFormProps) => {
@@ -43,6 +45,8 @@ const TitleForm = (props : TitleFormProps) => {
     series,
     isbn,
     surface = 'card',
+    onSubmit,
+    submitLabel,
   } = props
   const createInitialState = useCallback((): NewTitleFormState => ({
     name: prePopulatedName ?? '',
@@ -57,9 +61,9 @@ const TitleForm = (props : TitleFormProps) => {
   }), [artistsContributions, coverImageFile, description, isbn, language, prePopulatedName, publisher?.id, releaseDate, series])
 
   const [titleForm, setTitleForm] = useState<NewTitleFormState>(() => createInitialState())
-  useEffect( () => {
-    prePopulatedName && setTitleForm(title => ({...title, name: prePopulatedName}))
-  } , [prePopulatedName])
+  useEffect(() => {
+    setTitleForm(createInitialState())
+  }, [createInitialState])
 
   const displayLangName = new Intl.DisplayNames([navigator.language || 'en'], {type: 'language'})
 
@@ -67,9 +71,15 @@ const TitleForm = (props : TitleFormProps) => {
         event.stopPropagation()
         event.preventDefault()
         console.log("Form submitted", titleForm)
-        const createdTitle = await createTitle(objectToFormData(titleForm))
-        console.log("response from createTitle", createdTitle)
-        onTitleCreated && onTitleCreated(createdTitle)
+        const formData = objectToFormData(titleForm)
+        if (onSubmit) {
+          await onSubmit(formData, titleForm)
+        } else {
+          const createdTitle = await createTitle(formData)
+          console.log("response from createTitle", createdTitle)
+          onTitleCreated && onTitleCreated(createdTitle)
+          setTitleForm(createInitialState())
+        }
       }}
       surface={surface}
       >
@@ -135,7 +145,7 @@ const TitleForm = (props : TitleFormProps) => {
         <FormSubmitAndResetButtons
           state={titleForm}
           handleReset={() => setTitleForm(createInitialState())}
-          submitLabel="Save title"
+          submitLabel={submitLabel ?? 'Save title'}
         />
       </FormLayout>
 }

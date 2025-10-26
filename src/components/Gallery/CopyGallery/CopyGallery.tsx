@@ -18,6 +18,8 @@ import EditCopyModal from '@/components/Forms/AddCopyForm/EditCopyModal';
 import objectToFormData from '@/utils/formData';
 import PutCopyForSaleModal from './PutCopyForSaleModal';
 import { convertPriceToApi, formatCurrencyAmount } from '@/utils/price';
+import { useUser } from '@/hooks/useUser';
+import { USER_ROLES } from '@/types/enums/UserRole';
 
 interface CopyGalleryProps {
   copies: CreatedCopy[];
@@ -32,6 +34,8 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
     loading: boolean;
   }>({ open: false, copy: undefined, loading: false });
   const notifications = useNotifications();
+  const { user } = useUser();
+  const isAdmin = user?.user.roles?.includes(USER_ROLES.ADMIN) ?? false;
 
   const closeForSaleModal = () => setForSaleModalState({ open: false, copy: undefined, loading: false });
 
@@ -61,6 +65,28 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
       });
       closeForSaleModal();
     });
+  };
+
+  const handleCopyRemoval = async (copyId: CreatedCopy['id'], hardDelete = false) => {
+    try {
+      const response = await removeCopy(copyId, { hardDelete });
+      notifications.show(response.message ?? 'Copy removed successfully.', {
+        severity: 'success',
+        autoHideDuration: 3000,
+      });
+      getCopies();
+    } catch (error) {
+      const axiosError = error as { response?: { data?: ApiResponse; status?: number } };
+      const errorMessage =
+        axiosError?.response?.data?.message ??
+        (axiosError?.response?.status === 404
+          ? 'Copy not found.'
+          : 'Failed to remove the copy.');
+      notifications.show(errorMessage, {
+        severity: 'error',
+        autoHideDuration: 4000,
+      });
+    }
   };
 
   return (
@@ -131,14 +157,16 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
                     },
                     {
                       label: 'Remove from Library',
-                      handleClick: () => {
-                        console.log('removing copy with id: ', copy.id);
-                        removeCopy(copy.id, (response) => {
-                          console.log(response?.message);
-                          getCopies();
-                        });
-                      },
+                      handleClick: () => handleCopyRemoval(copy.id),
                     },
+                    ...(isAdmin
+                      ? [
+                          {
+                            label: 'Hard Delete Copy',
+                            handleClick: () => handleCopyRemoval(copy.id, true),
+                          } as const,
+                        ]
+                      : []),
                     {
                       label: 'Edit Copy',
                       handleClick: () => {

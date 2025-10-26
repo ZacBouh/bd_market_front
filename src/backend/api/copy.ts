@@ -41,15 +41,23 @@ const getCopies = (callback?: (copies:CreatedCopy[]) => unknown) => {
     return () => controller.abort()
 }
 
-const removeCopy = (copyId : CreatedCopy['id'] , callback?: (arg?: DeleteResponse) => unknown) => {
-    const controller = new AbortController()
-    api.delete<DeleteResponse>('/copy', {data: {id: copyId}})
-    .then(response =>{
-        if (callback) {
-            callback(response.data)
-        }
+type RemoveCopyOptions = {
+    hardDelete?: boolean
+}
+
+const removeCopy = async (
+    copyId : CreatedCopy['id'],
+    options?: RemoveCopyOptions,
+    callback?: (arg?: DeleteResponse) => unknown
+) => {
+    const response = await api.delete<DeleteResponse>('/copy', {
+        data: {
+            id: copyId,
+            hardDelete: options?.hardDelete ?? false,
+        },
     })
-    return () => controller.abort()
+    callback?.(response.data)
+    return response.data
 }
 
 const updateCopy = (updatedCopy: FormData, callback?: (copy: ApiResponse) => unknown ) => {

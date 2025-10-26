@@ -12,13 +12,14 @@ type NewTitleFormState = NewTitle & {
   coverImageFile: File | undefined
 }
 
-type CreatedTitle = NewTitle & {
+type CreatedTitle = Omit<NewTitle, 'publisher'> & {
     id: number,
     createdAt: string,
     updatedAt: string,
     coverImage: UploadedImage
     uploadedImages: UploadedImage[]
     artistsContributions : CreatedContribution[] | Record<string | number, CreatedContribution>
+    publisher: CreatedPublisher | null
 }
 
 type NewArtistContribution = {
