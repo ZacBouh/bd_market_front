@@ -1,5 +1,6 @@
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
+import { useEffect } from 'react';
 
 import { getArtists } from '@/backend/api/artist';
 import ArtistForm from '@/components/Forms/ArtistForm/ArtistForm';
@@ -8,6 +9,7 @@ import PageHero from '@/components/PageHero';
 import { useArtists } from '@/hooks';
 
 const ArtistPage = () => {
+  useEffect(() => getArtists(), []);
   const { artists } = useArtists();
   return (
     <>

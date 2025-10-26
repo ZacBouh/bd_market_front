@@ -20,4 +20,23 @@ const getSeries = () => {
     return () => controller.abort()
 }
 
-export {createSeries, getSeries}
+type RemoveSeriesOptions = {
+    hardDelete?: boolean
+}
+
+const removeSeries = async (seriesId: CreatedSeries['id'], options?: RemoveSeriesOptions) => {
+    const response = await api.delete<DeleteResponse>('/series', {
+        data: {
+            id: seriesId,
+            hardDelete: options?.hardDelete ?? false,
+        },
+    })
+    return response.data
+}
+
+const updateSeries = async (payload: FormData) => {
+    const response = await api.post<ApiResponse>('/series/update', payload)
+    return response.data
+}
+
+export {createSeries, getSeries, removeSeries, updateSeries}
