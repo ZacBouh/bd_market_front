@@ -40,7 +40,7 @@ const PriceInputSelect = (props: PriceInputSelectProps) => {
                             onChange && onChange(newPrice)
                         }
                     }}
-                    sx={{ flexGrow: 1, width: { xs: 1, sm: "auto" } }}
+                    sx={{ flexGrow: 1, width: { xs: 1, sm: "auto" }, minWidth: 0 }}
                     slotProps={{ input: { slotProps: { input: { sx: { textAlign: "right" }, placeholder: label } } } }}
                 />
                 <CurrencySelect
@@ -50,8 +50,7 @@ const PriceInputSelect = (props: PriceInputSelectProps) => {
                         onChange && onChange(newPrice)
                     }}
                     defaultValue="euro"
-                    fullWidth
-                    sx={{ width: { xs: 1, sm: "auto" }, minWidth: { sm: "110px" } }}
+                    sx={{ width: { xs: 1, sm: "auto" }, minWidth: { sm: "110px" }, flexShrink: 0 }}
                 />
             </Stack>
         </Box>
