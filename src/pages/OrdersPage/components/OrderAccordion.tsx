@@ -62,7 +62,7 @@ const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionP
           spacing={{ xs: 1, sm: 2 }}
           alignItems={{ xs: 'flex-start', sm: 'center' }}
           justifyContent="space-between"
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', pb: { xs: 1, sm: 0 } }}
         >
           <Stack spacing={0.5}>
             <Typography
