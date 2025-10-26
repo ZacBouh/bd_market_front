@@ -5,6 +5,7 @@ import ScanIcon from '@mui/icons-material/Flip';
 import LibraryIcon from '@mui/icons-material/Inventory'
 import asyncComponentLoader from '@/utils/loader';
 import StoreFront from '@mui/icons-material/Storefront'
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import { Routes } from './types';
 
@@ -27,6 +28,13 @@ const routes: Routes = [
     path: '/library',
     title: 'My Library',
     icon: LibraryIcon,
+    isProtected: true
+  },
+  {
+    component: asyncComponentLoader(() => import('@/pages/OrdersPage')),
+    path: '/orders',
+    title: 'My Orders',
+    icon: ReceiptLongIcon,
     isProtected: true
   },
   {
