@@ -26,8 +26,8 @@ type OrderAccordionProps = {
 
 const OrderAccordion = ({ order, confirmingItemKey, onConfirm }: OrderAccordionProps) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isAccordionNarrow = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isAccordionNarrow = useMediaQuery(theme.breakpoints.down('lg'));
 
   const itemNames = order.items.map((item) => item.copy.name).join(', ');
   const createdAtDate = parseDate(order.createdAt);
