@@ -26,4 +26,14 @@ const confirmOrderItem = (orderRef: string, itemId: number) =>
     },
   });
 
-export { confirmOrderItem, getOrders };
+const cancelOrderItem = (orderRef: string, itemId: number) =>
+  api.post<void>('/orders/cancel', undefined, {
+    params: {
+      orderRef,
+      itemId,
+    },
+  });
+
+const cancelOrder = (orderRef: string) => api.post<void>(`/orders/${orderRef}/cancel`);
+
+export { cancelOrder, cancelOrderItem, confirmOrderItem, getOrders };

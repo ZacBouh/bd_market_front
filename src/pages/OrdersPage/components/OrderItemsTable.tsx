@@ -17,10 +17,21 @@ type OrderItemsTableProps = {
   items: Order['items'];
   orderRef: string;
   confirmingItemKey: string | null;
+  cancellingItemKey: string | null;
+  isOrderBeingCancelled: boolean;
   onConfirm: (orderRef: string, itemId: number) => void;
+  onCancel: (orderRef: string, itemId: number) => void;
 };
 
-const OrderItemsTable = ({ items, orderRef, confirmingItemKey, onConfirm }: OrderItemsTableProps) => (
+const OrderItemsTable = ({
+  items,
+  orderRef,
+  confirmingItemKey,
+  cancellingItemKey,
+  isOrderBeingCancelled,
+  onConfirm,
+  onCancel,
+}: OrderItemsTableProps) => (
   <TableContainer component={Paper} variant="outlined">
     <Table
       size="small"
@@ -60,7 +71,10 @@ const OrderItemsTable = ({ items, orderRef, confirmingItemKey, onConfirm }: Orde
                     size="small"
                     variant="contained"
                     disabled={
-                      !!item.buyerConfirmedAt || confirmingItemKey === `${orderRef}:${item.id}`
+                      !!item.buyerConfirmedAt ||
+                      confirmingItemKey === `${orderRef}:${item.id}` ||
+                      cancellingItemKey === `${orderRef}:${item.id}` ||
+                      isOrderBeingCancelled
                     }
                     onClick={() => onConfirm(orderRef, item.id)}
                     startIcon={<CheckIcon fontSize="small" />}
@@ -71,9 +85,12 @@ const OrderItemsTable = ({ items, orderRef, confirmingItemKey, onConfirm }: Orde
                     size="small"
                     variant="outlined"
                     color="inherit"
-                    onClick={() =>
-                      console.log(`Cancel confirmation for order ${orderRef}, item ${item.id}`)
+                    disabled={
+                      !!item.buyerConfirmedAt ||
+                      cancellingItemKey === `${orderRef}:${item.id}` ||
+                      isOrderBeingCancelled
                     }
+                    onClick={() => onCancel(orderRef, item.id)}
                     startIcon={<CloseIcon fontSize="small" />}
                   >
                     Cancel

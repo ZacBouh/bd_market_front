@@ -12,13 +12,26 @@ type OrderItemsMobileListProps = {
   items: Order['items'];
   orderRef: string;
   confirmingItemKey: string | null;
+  cancellingItemKey: string | null;
+  isOrderBeingCancelled: boolean;
   onConfirm: (orderRef: string, itemId: number) => void;
+  onCancel: (orderRef: string, itemId: number) => void;
 };
 
-const OrderItemsMobileList = ({ items, orderRef, confirmingItemKey, onConfirm }: OrderItemsMobileListProps) => (
+const OrderItemsMobileList = ({
+  items,
+  orderRef,
+  confirmingItemKey,
+  cancellingItemKey,
+  isOrderBeingCancelled,
+  onConfirm,
+  onCancel,
+}: OrderItemsMobileListProps) => (
   <Stack spacing={1.5}>
     {items.map((item) => {
       const isConfirming = confirmingItemKey === `${orderRef}:${item.id}`;
+      const isCancelling = cancellingItemKey === `${orderRef}:${item.id}`;
+      const isDisabled = !!item.buyerConfirmedAt || isConfirming || isCancelling || isOrderBeingCancelled;
 
       return (
         <Paper key={item.id} variant="outlined" sx={{ p: 2 }}>
@@ -58,7 +71,7 @@ const OrderItemsMobileList = ({ items, orderRef, confirmingItemKey, onConfirm }:
                   fullWidth
                   size="small"
                   variant="contained"
-                  disabled={!!item.buyerConfirmedAt || isConfirming}
+                  disabled={isDisabled}
                   onClick={() => onConfirm(orderRef, item.id)}
                   startIcon={<CheckIcon fontSize="small" />}
                 >
@@ -69,9 +82,8 @@ const OrderItemsMobileList = ({ items, orderRef, confirmingItemKey, onConfirm }:
                   size="small"
                   variant="outlined"
                   color="inherit"
-                  onClick={() =>
-                    console.log(`Cancel confirmation for order ${orderRef}, item ${item.id}`)
-                  }
+                  disabled={isDisabled}
+                  onClick={() => onCancel(orderRef, item.id)}
                   startIcon={<CloseIcon fontSize="small" />}
                 >
                   Cancel

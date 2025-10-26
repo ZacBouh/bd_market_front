@@ -1,10 +1,16 @@
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { confirmOrderItem, getOrders } from '@/backend/api/orders';
+import { cancelOrder, cancelOrderItem, confirmOrderItem, getOrders } from '@/backend/api/orders';
 import PageHero from '@/components/PageHero';
 import { useOrders } from '@/hooks/useOrders';
 import { useUser } from '@/hooks/useUser';
@@ -16,6 +22,12 @@ const OrdersPage = () => {
 
   const userId = user?.user?.id;
   const [confirmingItemKey, setConfirmingItemKey] = useState<string | null>(null);
+  const [cancelDialog, setCancelDialog] = useState<
+    | { type: 'item'; orderRef: string; itemId: number }
+    | { type: 'order'; orderRef: string }
+    | null
+  >(null);
+  const [cancellingTarget, setCancellingTarget] = useState<typeof cancelDialog>(null);
 
   useEffect(() => {
     if (!userId) {
@@ -55,6 +67,66 @@ const OrdersPage = () => {
     [userId],
   );
 
+  const handleRequestCancelItem = useCallback((orderRef: string, itemId: number) => {
+    setCancelDialog({ type: 'item', orderRef, itemId });
+  }, []);
+
+  const handleRequestCancelOrder = useCallback((orderRef: string) => {
+    setCancelDialog({ type: 'order', orderRef });
+  }, []);
+
+  const handleCloseCancelDialog = useCallback(() => {
+    if (cancellingTarget) {
+      return;
+    }
+
+    setCancelDialog(null);
+  }, [cancellingTarget]);
+
+  const handleConfirmCancel = useCallback(async () => {
+    if (!cancelDialog || !userId) {
+      return;
+    }
+
+    setCancellingTarget(cancelDialog);
+
+    try {
+      if (cancelDialog.type === 'item') {
+        await cancelOrderItem(cancelDialog.orderRef, cancelDialog.itemId);
+      } else {
+        await cancelOrder(cancelDialog.orderRef);
+      }
+
+      getOrders(userId);
+    } catch (error) {
+      const targetLabel = cancelDialog.type === 'item' ? 'order item' : 'order';
+      console.error(`Failed to cancel ${targetLabel}`, error);
+    } finally {
+      setCancellingTarget(null);
+      setCancelDialog(null);
+    }
+  }, [cancelDialog, userId]);
+
+  const cancellingItemKey =
+    cancellingTarget?.type === 'item' ? `${cancellingTarget.orderRef}:${cancellingTarget.itemId}` : null;
+  const cancellingOrderRef =
+    cancellingTarget?.type === 'order' ? cancellingTarget.orderRef : null;
+
+  const dialogTitle = cancelDialog?.type === 'item' ? 'Cancel item purchase' : 'Cancel order';
+  const cancelActionLabel = cancelDialog?.type === 'item' ? 'Cancel item' : 'Cancel order';
+  const keepActionLabel = cancelDialog?.type === 'item' ? 'Keep item' : 'Keep order';
+
+  const cancelDialogItemName = useMemo(() => {
+    if (!cancelDialog || cancelDialog.type !== 'item') {
+      return null;
+    }
+
+    const order = orders.find((entry) => entry.orderRef === cancelDialog.orderRef);
+    const item = order?.items.find((entry) => entry.id === cancelDialog.itemId);
+
+    return item?.copy.name ?? null;
+  }, [cancelDialog, orders]);
+
   return (
     <>
       <meta name="title" content="Orders" />
@@ -80,13 +152,43 @@ const OrdersPage = () => {
                   key={order.orderRef}
                   order={order}
                   confirmingItemKey={confirmingItemKey}
+                  cancellingItemKey={cancellingItemKey}
+                  cancellingOrderRef={cancellingOrderRef}
                   onConfirm={handleConfirm}
+                  onCancelItem={handleRequestCancelItem}
+                  onCancelOrder={handleRequestCancelOrder}
                 />
               ))}
             </Stack>
           )}
         </Stack>
       </Container>
+
+      <Dialog open={!!cancelDialog} onClose={handleCloseCancelDialog} fullWidth maxWidth="xs">
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {cancelDialog?.type === 'item' ? (
+              <>
+                Are you sure you want to cancel the purchase
+                {cancelDialogItemName ? ` of ${cancelDialogItemName}` : ' of this item'} from order
+                {' '}
+                {cancelDialog?.orderRef}?
+              </>
+            ) : (
+              <>Are you sure you want to cancel the entire order {cancelDialog?.orderRef}?</>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCancelDialog} disabled={!!cancellingTarget}>
+            {keepActionLabel}
+          </Button>
+          <Button onClick={handleConfirmCancel} color="error" disabled={!!cancellingTarget}>
+            {cancelActionLabel}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
