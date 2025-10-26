@@ -41,8 +41,7 @@ type UserFormValues = {
 
 function UserManagementTab() {
   const [users, setUsers] = useState<AdminUser[]>([]);
-  const [pseudoSearch, setPseudoSearch] = useState('');
-  const [emailSearch, setEmailSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
@@ -92,6 +91,7 @@ function UserManagementTab() {
       setLoading(true);
       try {
         const data = await getAdminUsers(controller.signal);
+        console.log('[Admin] Loaded users', data);
         setUsers(data);
       } catch (error) {
         if (!isAxiosError(error) || error.code !== 'ERR_CANCELED') {
@@ -187,19 +187,18 @@ function UserManagementTab() {
   };
 
   const filteredUsers = useMemo(() => {
-    const lowerPseudo = pseudoSearch.trim().toLowerCase();
-    const lowerEmail = emailSearch.trim().toLowerCase();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    return users.filter((user) => {
-      if (lowerPseudo && !user.pseudo.toLowerCase().includes(lowerPseudo)) {
-        return false;
-      }
-      if (lowerEmail && !user.email.toLowerCase().includes(lowerEmail)) {
-        return false;
-      }
-      return true;
-    });
-  }, [emailSearch, pseudoSearch, users]);
+    if (!normalizedQuery) {
+      return users;
+    }
+
+    return users.filter((user) =>
+      [user.pseudo, user.email]
+        .filter((value): value is string => Boolean(value))
+        .some((value) => value.toLowerCase().includes(normalizedQuery)),
+    );
+  }, [searchQuery, users]);
 
   useEffect(() => {
     if (!selectedUserId && filteredUsers.length > 0) {
@@ -225,16 +224,10 @@ function UserManagementTab() {
               <TextField
                 fullWidth
                 size="small"
-                label="Search by pseudo"
-                value={pseudoSearch}
-                onChange={(event) => setPseudoSearch(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                size="small"
-                label="Search by email"
-                value={emailSearch}
-                onChange={(event) => setEmailSearch(event.target.value)}
+                label="Search users"
+                placeholder="Search by pseudo or email"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
               />
             </Stack>
             <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -247,16 +240,26 @@ function UserManagementTab() {
                     </Typography>
                   </Box>
                 ) : null}
-                {filteredUsers.map((user) => (
-                  <ListItem key={user.id} disablePadding>
-                    <ListItemButton selected={user.id === selectedUserId} onClick={() => setSelectedUserId(user.id)}>
-                      <ListItemText
-                        primary={`${user.pseudo} · ${user.email}`}
-                        secondary={user.roles.join(', ') || 'No roles'}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                {filteredUsers.map((user) => {
+                  const summary = [
+                    user.email,
+                    user.status ? `Status: ${user.status}` : null,
+                    user.roles.length > 0 ? `Roles: ${user.roles.join(', ')}` : null,
+                  ]
+                    .filter((value): value is string => Boolean(value))
+                    .join(' · ');
+
+                  return (
+                    <ListItem key={user.id} disablePadding>
+                      <ListItemButton selected={user.id === selectedUserId} onClick={() => setSelectedUserId(user.id)}>
+                        <ListItemText
+                          primary={user.pseudo || user.email}
+                          secondary={summary || '—'}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
               </List>
             </Paper>
           </Stack>
@@ -267,7 +270,7 @@ function UserManagementTab() {
               component="form"
               onSubmit={onSubmit}
               surface="card"
-              title={selectedUser.pseudo}
+              title={selectedUser.pseudo || selectedUser.email}
               description={`Created ${selectedUser.createdAt ? dayjs(selectedUser.createdAt).format('DD MMM YYYY · HH:mm') : '—'}`}
               actions={[
                 <Button key="delete" type="button" color="error" variant="outlined" onClick={handleOpenDeleteDialog}>
@@ -350,6 +353,25 @@ function UserManagementTab() {
                       Account ID
                     </Typography>
                     <Typography variant="body2">{selectedUser.id}</Typography>
+                  </Box>
+                </Stack>
+                <Divider />
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Raw payload
+                  </Typography>
+                  <Box
+                    component="pre"
+                    sx={{
+                      m: 0,
+                      p: 2,
+                      borderRadius: 2,
+                      bgcolor: (theme) => theme.palette.action.hover,
+                      overflowX: 'auto',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    {JSON.stringify(selectedUser, null, 2)}
                   </Box>
                 </Stack>
               </Stack>

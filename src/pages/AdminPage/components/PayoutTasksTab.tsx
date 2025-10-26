@@ -38,10 +38,7 @@ function PayoutTasksTab() {
   const [tasks, setTasks] = useState<PayoutTask[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [paymentTypeFilter, setPaymentTypeFilter] = useState<'all' | PayoutTaskPaymentType>('all');
-  const [sellerSearch, setSellerSearch] = useState('');
-  const [orderRefSearch, setOrderRefSearch] = useState('');
-  const [orderItemIdSearch, setOrderItemIdSearch] = useState('');
-  const [orderItemNameSearch, setOrderItemNameSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [refreshToken, setRefreshToken] = useState(0);
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
@@ -68,38 +65,30 @@ function PayoutTasksTab() {
   }, [tasks]);
 
   const filteredTasks = useMemo(() => {
-    const lowerSeller = sellerSearch.trim().toLowerCase();
-    const lowerOrderRef = orderRefSearch.trim().toLowerCase();
-    const lowerOrderItemId = orderItemIdSearch.trim().toLowerCase();
-    const lowerOrderItemName = orderItemNameSearch.trim().toLowerCase();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
     return tasks.filter((task) => {
       if (paymentTypeFilter !== 'all' && task.paymentType !== paymentTypeFilter) {
         return false;
       }
 
-      if (
-        lowerSeller &&
-        !`${task.sellerPseudo}${task.sellerId}`.toLowerCase().includes(lowerSeller)
-      ) {
-        return false;
+      if (!normalizedQuery) {
+        return true;
       }
 
-      if (lowerOrderRef && !task.orderRef.toLowerCase().includes(lowerOrderRef)) {
-        return false;
-      }
+      const haystacks = [
+        task.sellerPseudo,
+        task.sellerId != null ? String(task.sellerId) : '',
+        task.orderRef,
+        task.orderItemId,
+        task.orderItemName,
+      ];
 
-      if (lowerOrderItemId && !task.orderItemId.toLowerCase().includes(lowerOrderItemId)) {
-        return false;
-      }
-
-      if (lowerOrderItemName && !task.orderItemName.toLowerCase().includes(lowerOrderItemName)) {
-        return false;
-      }
-
-      return true;
+      return haystacks
+        .filter((value): value is string => Boolean(value))
+        .some((value) => value.toLowerCase().includes(normalizedQuery));
     });
-  }, [orderItemIdSearch, orderItemNameSearch, orderRefSearch, paymentTypeFilter, sellerSearch, tasks]);
+  }, [paymentTypeFilter, searchQuery, tasks]);
 
   useEffect(() => {
     if (!selectedTaskId && filteredTasks.length > 0) {
@@ -119,6 +108,7 @@ function PayoutTasksTab() {
       setLoading(true);
       try {
         const data = await getPayoutTasks(statusFilter === 'all' ? undefined : statusFilter, controller.signal);
+        console.log('[Admin] Loaded payout tasks', data);
         setTasks(data);
       } catch (error) {
         if (!isAxiosError(error) || error.code !== 'ERR_CANCELED') {
@@ -220,30 +210,10 @@ function PayoutTasksTab() {
               <TextField
                 fullWidth
                 size="small"
-                label="Search by seller pseudo or ID"
-                value={sellerSearch}
-                onChange={(event) => setSellerSearch(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                size="small"
-                label="Search by order reference"
-                value={orderRefSearch}
-                onChange={(event) => setOrderRefSearch(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                size="small"
-                label="Search by order item ID"
-                value={orderItemIdSearch}
-                onChange={(event) => setOrderItemIdSearch(event.target.value)}
-              />
-              <TextField
-                fullWidth
-                size="small"
-                label="Search by order item name"
-                value={orderItemNameSearch}
-                onChange={(event) => setOrderItemNameSearch(event.target.value)}
+                label="Search tasks"
+                placeholder="Search seller, order ref, item ID or name"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
               />
             </Stack>
             <Paper variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
@@ -256,16 +226,26 @@ function PayoutTasksTab() {
                     </Typography>
                   </Box>
                 ) : null}
-                {filteredTasks.map((task) => (
-                  <ListItem key={task.id} disablePadding>
-                    <ListItemButton selected={task.id === selectedTaskId} onClick={() => setSelectedTaskId(task.id)}>
-                      <ListItemText
-                        primary={`Task #${task.id} · ${task.paymentType}`}
-                        secondary={`${formatCurrency(task.amount)} · ${task.sellerPseudo} · ${task.orderItemName}`}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                {filteredTasks.map((task) => {
+                  const summary = [
+                    formatCurrency(task.amount),
+                    task.sellerPseudo || (task.sellerId != null ? `Seller #${task.sellerId}` : null),
+                    task.orderItemName || task.orderItemId || task.orderRef,
+                  ]
+                    .filter((value): value is string => Boolean(value))
+                    .join(' · ');
+
+                  return (
+                    <ListItem key={task.id} disablePadding>
+                      <ListItemButton selected={task.id === selectedTaskId} onClick={() => setSelectedTaskId(task.id)}>
+                        <ListItemText
+                          primary={`Task #${task.id} · ${task.paymentType}${task.status ? ` · ${task.status}` : ''}`}
+                          secondary={summary || '—'}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
               </List>
             </Paper>
           </Stack>
@@ -305,9 +285,9 @@ function PayoutTasksTab() {
                     Seller
                   </Typography>
                   <Stack spacing={0.5}>
-                    <Typography variant="body1">{selectedTask.sellerPseudo}</Typography>
+                    <Typography variant="body1">{selectedTask.sellerPseudo || '—'}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Seller ID · {selectedTask.sellerId}
+                      Seller ID · {selectedTask.sellerId ?? '—'}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -317,9 +297,9 @@ function PayoutTasksTab() {
                     Order information
                   </Typography>
                   <Stack spacing={0.5}>
-                    <Typography variant="body2">Order reference · {selectedTask.orderRef}</Typography>
-                    <Typography variant="body2">Item ID · {selectedTask.orderItemId}</Typography>
-                    <Typography variant="body2">Item name · {selectedTask.orderItemName}</Typography>
+                    <Typography variant="body2">Order reference · {selectedTask.orderRef || '—'}</Typography>
+                    <Typography variant="body2">Item ID · {selectedTask.orderItemId || '—'}</Typography>
+                    <Typography variant="body2">Item name · {selectedTask.orderItemName || '—'}</Typography>
                   </Stack>
                 </Stack>
                 <Divider />
@@ -381,6 +361,25 @@ function PayoutTasksTab() {
                       Current status
                     </Typography>
                     <Typography variant="body2">{selectedTask.status}</Typography>
+                  </Box>
+                </Stack>
+                <Divider />
+                <Stack spacing={1.5}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Raw payload
+                  </Typography>
+                  <Box
+                    component="pre"
+                    sx={{
+                      m: 0,
+                      p: 2,
+                      borderRadius: 2,
+                      bgcolor: (theme) => theme.palette.action.hover,
+                      overflowX: 'auto',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    {JSON.stringify(selectedTask, null, 2)}
                   </Box>
                 </Stack>
               </Stack>
