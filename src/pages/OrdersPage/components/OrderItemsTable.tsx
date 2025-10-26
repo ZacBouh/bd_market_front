@@ -71,6 +71,7 @@ const OrderItemsTable = ({
                     size="small"
                     variant="contained"
                     disabled={
+                      item.status === 'CANCELED' ||
                       !!item.buyerConfirmedAt ||
                       confirmingItemKey === `${orderRef}:${item.id}` ||
                       cancellingItemKey === `${orderRef}:${item.id}` ||
@@ -86,6 +87,7 @@ const OrderItemsTable = ({
                     variant="outlined"
                     color="inherit"
                     disabled={
+                      item.status === 'CANCELED' ||
                       !!item.buyerConfirmedAt ||
                       cancellingItemKey === `${orderRef}:${item.id}` ||
                       isOrderBeingCancelled

@@ -31,7 +31,12 @@ const OrderItemsMobileList = ({
     {items.map((item) => {
       const isConfirming = confirmingItemKey === `${orderRef}:${item.id}`;
       const isCancelling = cancellingItemKey === `${orderRef}:${item.id}`;
-      const isDisabled = !!item.buyerConfirmedAt || isConfirming || isCancelling || isOrderBeingCancelled;
+      const isDisabled =
+        item.status === 'CANCELED' ||
+        !!item.buyerConfirmedAt ||
+        isConfirming ||
+        isCancelling ||
+        isOrderBeingCancelled;
 
       return (
         <Paper key={item.id} variant="outlined" sx={{ p: 2 }}>
