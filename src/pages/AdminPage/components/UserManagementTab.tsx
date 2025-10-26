@@ -19,7 +19,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -228,10 +227,16 @@ function UserManagementTab() {
             </Stack>
             <Paper
               variant="outlined"
-              sx={{ borderRadius: 2, overflow: 'hidden', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+              sx={{
+                borderRadius: 2,
+                overflow: 'hidden',
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
             >
               {loading ? <LinearProgress /> : null}
-              <List disablePadding sx={{ flex: 1 }}>
+              <List disablePadding sx={{ flex: 1, py: 1 }}>
                 {filteredUsers.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
@@ -240,40 +245,52 @@ function UserManagementTab() {
                   </Box>
                 ) : null}
                 {filteredUsers.map((user) => {
-                  const emailText = user.email || null;
-                  const rolesText = user.roles.length > 0 ? user.roles.join(', ') : null;
-
-                  const emailVerifiedLabel =
-                    user.emailVerified === true
-                      ? 'Email verified'
-                      : user.emailVerified === false
-                      ? 'Email not verified'
-                      : null;
-
                   return (
                     <ListItem key={user.id} disablePadding>
-                      <ListItemButton selected={user.id === selectedUserId} onClick={() => setSelectedUserId(user.id)}>
-                        <ListItemText
-                          primary={user.pseudo || user.email}
-                          secondary={
-                            <Stack spacing={0.25}>
-                              <Typography variant="body2" color="text.primary">
-                                {emailText || '—'}
+                      <ListItemButton
+                        selected={user.id === selectedUserId}
+                        onClick={() => setSelectedUserId(user.id)}
+                        sx={{ alignItems: 'flex-start', py: 1.75, px: 2, gap: 1.5 }}
+                      >
+                        <Stack spacing={1} flex={1} minWidth={0}>
+                          <Stack
+                            direction="row"
+                            alignItems="flex-start"
+                            justifyContent="space-between"
+                            spacing={1.5}
+                          >
+                            <Stack spacing={0.5} minWidth={0}>
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight={600}
+                                sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                              >
+                                {user.pseudo || user.email || `User #${user.id}`}
                               </Typography>
-                              {rolesText ? (
-                                <Typography variant="caption" color="text.secondary">
-                                  Roles: {rolesText}
-                                </Typography>
-                              ) : null}
-                              {emailVerifiedLabel ? (
-                                <Typography variant="caption" color="text.secondary">
-                                  {emailVerifiedLabel}
-                                </Typography>
-                              ) : null}
+                              <Typography variant="body2" color="text.secondary" noWrap>
+                                {user.email || '—'}
+                              </Typography>
                             </Stack>
-                          }
-                          secondaryTypographyProps={{ component: 'div' }}
-                        />
+                            <Typography variant="body2" color="text.secondary">
+                              ID · {user.id}
+                            </Typography>
+                          </Stack>
+                          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                            {user.roles.map((role) => (
+                              <Chip key={role} label={role} size="small" variant="outlined" />
+                            ))}
+                            {user.roles.length === 0 ? (
+                              <Typography variant="body2" color="text.secondary">
+                                No roles assigned
+                              </Typography>
+                            ) : null}
+                            {user.emailVerified === true ? (
+                              <Chip label="Email verified" size="small" color="success" variant="outlined" />
+                            ) : user.emailVerified === false ? (
+                              <Chip label="Email not verified" size="small" color="warning" variant="outlined" />
+                            ) : null}
+                          </Stack>
+                        </Stack>
                       </ListItemButton>
                     </ListItem>
                   );
@@ -288,7 +305,7 @@ function UserManagementTab() {
               component="form"
               onSubmit={onSubmit}
               surface="card"
-              title={selectedUser.pseudo || selectedUser.email}
+              title={selectedUser.pseudo || selectedUser.email || `User #${selectedUser.id}`}
               description={`Created ${
                 selectedUser.createdAt
                   ? dayjs(selectedUser.createdAt).format('DD MMM YYYY · HH:mm')
@@ -304,28 +321,64 @@ function UserManagementTab() {
               ]}
               sx={{ maxWidth: 'none', alignSelf: 'stretch', height: '100%' }}
             >
-              <Stack spacing={2.5}>
-                <Stack spacing={1.5}>
+              <Stack spacing={3}>
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  spacing={3}
+                  alignItems={{ xs: 'flex-start', md: 'center' }}
+                  justifyContent="space-between"
+                >
+                  <Stack spacing={0.5}>
+                    <Typography variant="overline" color="text.secondary">
+                      Account
+                    </Typography>
+                    <Typography variant="h4" fontWeight={600} color="text.primary">
+                      {selectedUser.pseudo || selectedUser.email || `User #${selectedUser.id}`}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {selectedUser.email || '—'}
+                    </Typography>
+                  </Stack>
+                  <Stack spacing={1} alignItems={{ xs: 'flex-start', md: 'flex-end' }}>
+                    {selectedUser.emailVerified === true ? (
+                      <Chip label="Email verified" size="small" color="success" variant="outlined" />
+                    ) : selectedUser.emailVerified === false ? (
+                      <Chip label="Email not verified" size="small" color="warning" variant="outlined" />
+                    ) : null}
+                    <Typography variant="body2" color="text.secondary">
+                      Account ID · {selectedUser.id}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Last updated · {selectedUser.updatedAt ? dayjs(selectedUser.updatedAt).format('DD MMM YYYY · HH:mm') : '—'}
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Divider />
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Contact information
                   </Typography>
-                  <Controller
-                    name="email"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <TextField {...field} label="Email" type="email" required fullWidth />
-                    )}
-                  />
-                  <Controller
-                    name="pseudo"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => <TextField {...field} label="Pseudo" required fullWidth />}
-                  />
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Controller
+                        name="email"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => <TextField {...field} label="Email" type="email" required fullWidth />}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Controller
+                        name="pseudo"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => <TextField {...field} label="Pseudo" required fullWidth />}
+                      />
+                    </Grid>
+                  </Grid>
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Roles
                   </Typography>
@@ -351,39 +404,20 @@ function UserManagementTab() {
                   />
                 </Stack>
                 <Divider />
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Last update
-                    </Typography>
-                    <Typography variant="body2">
-                      {selectedUser.updatedAt ? dayjs(selectedUser.updatedAt).format('DD MMM YYYY · HH:mm') : '—'}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Account ID
-                    </Typography>
-                    <Typography variant="body2">{selectedUser.id}</Typography>
-                  </Box>
+                <Stack spacing={2}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Email verification
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedUser.emailVerified === true
+                      ? 'The email address is verified.'
+                      : selectedUser.emailVerified === false
+                      ? 'The email address is not verified.'
+                      : 'Email verification status is unknown.'}
+                  </Typography>
                 </Stack>
                 <Divider />
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Email verified
-                    </Typography>
-                    <Typography variant="body2">
-                      {selectedUser.emailVerified === true
-                        ? 'Yes'
-                        : selectedUser.emailVerified === false
-                        ? 'No'
-                        : '—'}
-                    </Typography>
-                  </Box>
-                </Stack>
-                <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Raw payload
                   </Typography>

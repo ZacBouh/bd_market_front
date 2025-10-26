@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid2';
@@ -11,7 +12,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -219,10 +219,16 @@ function PayoutTasksTab() {
             </Stack>
             <Paper
               variant="outlined"
-              sx={{ borderRadius: 2, overflow: 'hidden', flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+              sx={{
+                borderRadius: 2,
+                overflow: 'hidden',
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
             >
               {loading ? <LinearProgress /> : null}
-              <List disablePadding sx={{ flex: 1 }}>
+              <List disablePadding sx={{ flex: 1, py: 1 }}>
                 {filteredTasks.length === 0 && !loading ? (
                   <Box sx={{ py: 6, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">
@@ -236,35 +242,60 @@ function PayoutTasksTab() {
                     (task.seller?.id != null ? `Seller #${task.seller.id}` : null) ||
                     (task.sellerId != null ? `Seller #${task.sellerId}` : null);
 
-                  const secondaryLine = [
-                    formatCurrency(task.amount),
-                    sellerLabel,
-                    task.orderItemName || task.orderItemId,
-                  ]
-                    .filter((value): value is string => Boolean(value))
-                    .join(' · ');
-
                   return (
                     <ListItem key={task.id} disablePadding>
-                      <ListItemButton selected={task.id === selectedTaskId} onClick={() => setSelectedTaskId(task.id)}>
-                        <ListItemText
-                          primary={`Task #${task.id} · ${task.paymentType}${
-                            task.orderRef ? ` · ${task.orderRef}` : ''
-                          }`}
-                          secondary={
-                            <Stack spacing={0.25}>
-                              <Typography variant="body2" color="text.primary">
-                                {secondaryLine || '—'}
+                      <ListItemButton
+                        selected={task.id === selectedTaskId}
+                        onClick={() => setSelectedTaskId(task.id)}
+                        sx={{ alignItems: 'flex-start', py: 1.75, px: 2, gap: 1.5 }}
+                      >
+                        <Stack spacing={1} flex={1} minWidth={0}>
+                          <Stack
+                            direction="row"
+                            alignItems={{ xs: 'flex-start', sm: 'center' }}
+                            justifyContent="space-between"
+                            spacing={1.5}
+                          >
+                            <Stack spacing={0.5} minWidth={0}>
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight={600}
+                                sx={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                              >
+                                {`Task #${task.id}`}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" noWrap>
+                                {task.orderRef ? `Order · ${task.orderRef}` : 'Order · —'}
+                              </Typography>
+                            </Stack>
+                            <Stack spacing={0.5} alignItems="flex-end" textAlign="right">
+                              <Typography variant="subtitle1" fontWeight={600} color="text.primary">
+                                {formatCurrency(task.amount)}
                               </Typography>
                               {task.status ? (
                                 <Typography variant="caption" color="text.secondary">
-                                  Status: {task.status}
+                                  {task.status}
                                 </Typography>
                               ) : null}
                             </Stack>
-                          }
-                          secondaryTypographyProps={{ component: 'div' }}
-                        />
+                          </Stack>
+                          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                            <Chip size="small" label={task.paymentType} variant="outlined" color="primary" />
+                            {sellerLabel ? (
+                              <Typography variant="body2" color="text.secondary">
+                                {sellerLabel}
+                              </Typography>
+                            ) : null}
+                            {task.orderItemName || task.orderItemId ? (
+                              <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+                                {task.orderItemName || `Item #${task.orderItemId}`}
+                              </Typography>
+                            ) : null}
+                            <Typography variant="body2" color="text.secondary">
+                              Updated · {formatDateTime(task.updatedAt)}
+                            </Typography>
+                          </Stack>
+                        </Stack>
                       </ListItemButton>
                     </ListItem>
                   );
@@ -288,50 +319,92 @@ function PayoutTasksTab() {
               ]}
               sx={{ maxWidth: 'none', alignSelf: 'stretch', height: '100%' }}
             >
-              <Stack spacing={2.5}>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
+              <Stack spacing={3}>
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  spacing={3}
+                  alignItems={{ xs: 'flex-start', md: 'center' }}
+                  justifyContent="space-between"
+                >
+                  <Stack spacing={0.5}>
+                    <Typography variant="overline" color="text.secondary">
                       Amount
                     </Typography>
-                    <Typography variant="h6">{formatCurrency(selectedTask.amount)}</Typography>
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Payment type
+                    <Typography variant="h4" fontWeight={600} color="text.primary">
+                      {formatCurrency(selectedTask.amount)}
                     </Typography>
-                    <Typography variant="body1">{selectedTask.paymentType}</Typography>
-                  </Box>
+                  </Stack>
+                  <Stack spacing={1} alignItems={{ xs: 'flex-start', md: 'flex-end' }}>
+                    <Chip label={selectedTask.paymentType} color="primary" variant="outlined" size="medium" />
+                    <Typography variant="body2" color="text.secondary">
+                      Last updated · {formatDateTime(selectedTask.updatedAt)}
+                    </Typography>
+                  </Stack>
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Seller
                   </Typography>
-                  <Stack spacing={0.5}>
-                    <Typography variant="body1">
-                      {selectedTask.seller?.pseudo ||
-                        (selectedTask.seller?.id != null ? `Seller #${selectedTask.seller.id}` : null) ||
-                        (selectedTask.sellerId != null ? `Seller #${selectedTask.sellerId}` : '—')}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Seller ID · {selectedTask.seller?.id ?? selectedTask.sellerId ?? '—'}
-                    </Typography>
-                  </Stack>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Stack spacing={0.5}>
+                        <Typography variant="overline" color="text.secondary">
+                          Seller name
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedTask.seller?.pseudo ||
+                            (selectedTask.seller?.id != null ? `Seller #${selectedTask.seller.id}` : null) ||
+                            (selectedTask.sellerId != null ? `Seller #${selectedTask.sellerId}` : '—')}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Stack spacing={0.5}>
+                        <Typography variant="overline" color="text.secondary">
+                          Seller ID
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedTask.seller?.id ?? selectedTask.sellerId ?? '—'}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Order information
                   </Typography>
-                  <Stack spacing={0.5}>
-                    <Typography variant="body2">Order reference · {selectedTask.orderRef || '—'}</Typography>
-                    <Typography variant="body2">Item ID · {selectedTask.orderItemId || '—'}</Typography>
-                    <Typography variant="body2">Item name · {selectedTask.orderItemName || '—'}</Typography>
-                  </Stack>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Stack spacing={0.5}>
+                        <Typography variant="overline" color="text.secondary">
+                          Order reference
+                        </Typography>
+                        <Typography variant="body1">{selectedTask.orderRef || '—'}</Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <Stack spacing={0.5}>
+                        <Typography variant="overline" color="text.secondary">
+                          Order item ID
+                        </Typography>
+                        <Typography variant="body1">{selectedTask.orderItemId || '—'}</Typography>
+                      </Stack>
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Stack spacing={0.5}>
+                        <Typography variant="overline" color="text.secondary">
+                          Order item name
+                        </Typography>
+                        <Typography variant="body1">{selectedTask.orderItemName || '—'}</Typography>
+                      </Stack>
+                    </Grid>
+                  </Grid>
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Update status
                   </Typography>
@@ -352,7 +425,7 @@ function PayoutTasksTab() {
                   />
                 </Stack>
                 <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Metadata
                   </Typography>
@@ -377,22 +450,7 @@ function PayoutTasksTab() {
                   )}
                 </Stack>
                 <Divider />
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Last update
-                    </Typography>
-                    <Typography variant="body2">{formatDateTime(selectedTask.updatedAt)}</Typography>
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Current status
-                    </Typography>
-                    <Typography variant="body2">{selectedTask.status}</Typography>
-                  </Box>
-                </Stack>
-                <Divider />
-                <Stack spacing={1.5}>
+                <Stack spacing={2}>
                   <Typography variant="subtitle2" color="text.secondary">
                     Raw payload
                   </Typography>
