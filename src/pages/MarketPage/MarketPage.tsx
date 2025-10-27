@@ -1,3 +1,4 @@
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { Button, Container, MenuItem, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -19,8 +20,6 @@ type MarketFilterForm = {
   minPrice?: string;
   maxPrice?: string;
   currency?: GetCopiesForSaleParams['currency'];
-  titlePublisher?: GetCopiesForSaleParams['titlePublisher'];
-  titleIsbn?: GetCopiesForSaleParams['titleIsbn'];
 };
 
 const ORDER_OPTIONS = [
@@ -34,6 +33,7 @@ const MarketPage = () => {
   const [filters, setFilters] = useState<MarketFilterForm>({
     order: DEFAULT_MARKET_FILTERS.order,
   });
+  const [showFilters, setShowFilters] = useState(false);
 
   const copyConditionOptions = useMemo(
     () => Object.entries(CopyConditionOptions) as Array<[keyof typeof CopyConditionOptions, string]>,
@@ -87,15 +87,6 @@ const MarketPage = () => {
       nextFilters.currency = filters.currency;
     }
 
-    const trimmedPublisher = filters.titlePublisher?.trim();
-    if (trimmedPublisher) {
-      nextFilters.titlePublisher = trimmedPublisher;
-    }
-    const trimmedIsbn = filters.titleIsbn?.trim();
-    if (trimmedIsbn) {
-      nextFilters.titleIsbn = trimmedIsbn;
-    }
-
     return nextFilters;
   }, [filters]);
 
@@ -113,12 +104,6 @@ const MarketPage = () => {
       return true;
     }
     if (filters.currency) {
-      return true;
-    }
-    if (filters.titlePublisher && filters.titlePublisher.trim() !== '') {
-      return true;
-    }
-    if (filters.titleIsbn && filters.titleIsbn.trim() !== '') {
       return true;
     }
     return false;
@@ -157,148 +142,137 @@ const MarketPage = () => {
             title="Market"
             description="Search the marketplace to discover copies currently listed for sale by the community."
           />
-          <TextField
-            placeholder="Search the marketplace"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            fullWidth
-          />
-          <Paper variant="outlined" sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3 }}>
-            <Stack spacing={{ xs: 2.5, md: 3 }}>
-              <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                spacing={{ xs: 1.5, sm: 2 }}
-                alignItems={{ sm: 'center' }}
-                justifyContent="space-between"
-              >
-                <Typography variant="h6">Filter copies for sale</Typography>
-                <Button onClick={handleResetFilters} disabled={!hasCustomFilters} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}>
-                  Reset filters
-                </Button>
-              </Stack>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  select
-                  label="Order"
-                  value={filters.order ?? DEFAULT_MARKET_FILTERS.order}
-                  onChange={(event) => {
-                    const value = event.target.value as (typeof ORDER_OPTIONS)[number]['value'];
-                    setFilters((previous) => ({
-                      ...previous,
-                      order: value,
-                    }));
-                  }}
-                  fullWidth
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 2 }} alignItems={{ sm: 'center' }}>
+            <TextField
+              placeholder="Search the marketplace"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              fullWidth
+            />
+            <Button
+              startIcon={<FilterListIcon />}
+              variant={showFilters || hasCustomFilters ? 'contained' : 'outlined'}
+              onClick={() => setShowFilters((previous) => !previous)}
+            >
+              {hasCustomFilters ? 'Filters applied' : 'Filters'}
+            </Button>
+          </Stack>
+          {(showFilters || hasCustomFilters) && (
+            <Paper variant="outlined" sx={{ p: { xs: 2.5, md: 3 }, borderRadius: 3 }}>
+              <Stack spacing={{ xs: 2.5, md: 3 }}>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={{ xs: 1.5, sm: 2 }}
+                  alignItems={{ sm: 'center' }}
+                  justifyContent="space-between"
                 >
-                  {ORDER_OPTIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  select
-                  label="Condition"
-                  value={filters.copyCondition ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value as (typeof copyConditionOptions)[number][0] | '';
-                    setFilters((previous) => ({
-                      ...previous,
-                      copyCondition: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value="">Any condition</MenuItem>
-                  {copyConditionOptions.map(([value, label]) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  label="ISBN"
-                  value={filters.titleIsbn ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      titleIsbn: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                />
+                  <Typography variant="h6">Filter copies for sale</Typography>
+                  <Button
+                    onClick={handleResetFilters}
+                    disabled={!hasCustomFilters}
+                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
+                  >
+                    Reset filters
+                  </Button>
+                </Stack>
+                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                  <TextField
+                    select
+                    label="Order"
+                    value={filters.order ?? DEFAULT_MARKET_FILTERS.order}
+                    onChange={(event) => {
+                      const value = event.target.value as (typeof ORDER_OPTIONS)[number]['value'];
+                      setFilters((previous) => ({
+                        ...previous,
+                        order: value,
+                      }));
+                    }}
+                    fullWidth
+                  >
+                    {ORDER_OPTIONS.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <TextField
+                    select
+                    label="Condition"
+                    value={filters.copyCondition ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value as (typeof copyConditionOptions)[number][0] | '';
+                      setFilters((previous) => ({
+                        ...previous,
+                        copyCondition: value === '' ? undefined : value,
+                      }));
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Any condition</MenuItem>
+                    {copyConditionOptions.map(([value, label]) => (
+                      <MenuItem key={value} value={value}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Stack>
+                <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                  <TextField
+                    label="Minimum price"
+                    type="number"
+                    value={filters.minPrice ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((previous) => ({
+                        ...previous,
+                        minPrice: value === '' ? undefined : value,
+                      }));
+                    }}
+                    inputProps={{ min: 0, step: 0.01 }}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Maximum price"
+                    type="number"
+                    value={filters.maxPrice ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setFilters((previous) => ({
+                        ...previous,
+                        maxPrice: value === '' ? undefined : value,
+                      }));
+                    }}
+                    inputProps={{ min: 0, step: 0.01 }}
+                    fullWidth
+                  />
+                  <TextField
+                    select
+                    label="Currency"
+                    value={filters.currency ?? ''}
+                    onChange={(event) => {
+                      const value = event.target.value as (typeof currencyOptions)[number][0] | '';
+                      setFilters((previous) => ({
+                        ...previous,
+                        currency: value === '' ? undefined : value,
+                      }));
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="">Any currency</MenuItem>
+                    {currencyOptions.map(([value, label]) => (
+                      <MenuItem key={value} value={value}>
+                        {value === 'euro' ? `Euro (${label})` : label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Stack>
+                <Typography variant="body2" color="text.secondary">
+                  Filters apply to the latest marketplace listings. Enter a search query to explore every copy regardless of the
+                  selected filters.
+                </Typography>
               </Stack>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  label="Minimum price"
-                  type="number"
-                  value={filters.minPrice ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      minPrice: value === '' ? undefined : value,
-                    }));
-                  }}
-                  inputProps={{ min: 0, step: 0.01 }}
-                  fullWidth
-                />
-                <TextField
-                  label="Maximum price"
-                  type="number"
-                  value={filters.maxPrice ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      maxPrice: value === '' ? undefined : value,
-                    }));
-                  }}
-                  inputProps={{ min: 0, step: 0.01 }}
-                  fullWidth
-                />
-                <TextField
-                  select
-                  label="Currency"
-                  value={filters.currency ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value as (typeof currencyOptions)[number][0] | '';
-                    setFilters((previous) => ({
-                      ...previous,
-                      currency: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value="">Any currency</MenuItem>
-                  {currencyOptions.map(([value, label]) => (
-                    <MenuItem key={value} value={value}>
-                      {value === 'euro' ? `Euro (${label})` : label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Stack>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  label="Publisher"
-                  value={filters.titlePublisher ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      titlePublisher: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                />
-              </Stack>
-              <Typography variant="body2" color="text.secondary">
-                Filters apply to the latest marketplace listings. Enter a search query to explore every copy regardless of the
-                selected filters.
-              </Typography>
-            </Stack>
-          </Paper>
+            </Paper>
+          )}
           <MarketGallery copies={copies} />
         </Stack>
       </Container>
