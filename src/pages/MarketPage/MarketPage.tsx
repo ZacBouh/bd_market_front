@@ -8,9 +8,19 @@ import { CopyConditionOptions } from '@/components/Forms/Fields/Select/CopyCondi
 import { CurrencySelectOptions } from '@/components/Forms/Fields/Select/CurrencySelect/CurrencySelect';
 import debounce from '@/utils/debounce';
 
-const DEFAULT_MARKET_FILTERS: GetCopiesForSaleParams = {
+const DEFAULT_MARKET_FILTERS: Pick<GetCopiesForSaleParams, 'limit' | 'order'> = {
   limit: 20,
   order: 'DESC',
+};
+
+type MarketFilterForm = {
+  order?: GetCopiesForSaleParams['order'];
+  copyCondition?: GetCopiesForSaleParams['copyCondition'];
+  minPrice?: string;
+  maxPrice?: string;
+  currency?: GetCopiesForSaleParams['currency'];
+  titlePublisher?: GetCopiesForSaleParams['titlePublisher'];
+  titleIsbn?: GetCopiesForSaleParams['titleIsbn'];
 };
 
 const ORDER_OPTIONS = [
@@ -21,7 +31,9 @@ const ORDER_OPTIONS = [
 const MarketPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [copies, setCopies] = useState<CreatedCopy[]>([]);
-  const [filters, setFilters] = useState<GetCopiesForSaleParams>({ ...DEFAULT_MARKET_FILTERS });
+  const [filters, setFilters] = useState<MarketFilterForm>({
+    order: DEFAULT_MARKET_FILTERS.order,
+  });
 
   const copyConditionOptions = useMemo(
     () => Object.entries(CopyConditionOptions) as Array<[keyof typeof CopyConditionOptions, string]>,
@@ -52,21 +64,24 @@ const MarketPage = () => {
 
   const sanitizedFilters = useMemo<GetCopiesForSaleParams>(() => {
     const nextFilters: GetCopiesForSaleParams = {
-      limit: filters.limit ?? DEFAULT_MARKET_FILTERS.limit,
+      limit: DEFAULT_MARKET_FILTERS.limit,
       order: filters.order ?? DEFAULT_MARKET_FILTERS.order,
     };
 
-    if (filters.offset !== undefined) {
-      nextFilters.offset = filters.offset;
-    }
     if (filters.copyCondition) {
       nextFilters.copyCondition = filters.copyCondition;
     }
-    if (filters.minPrice !== undefined) {
-      nextFilters.minPrice = filters.minPrice;
+    if (filters.minPrice !== undefined && filters.minPrice.trim() !== '') {
+      const parsedMinPrice = Number.parseFloat(filters.minPrice);
+      if (!Number.isNaN(parsedMinPrice)) {
+        nextFilters.minPrice = Math.round(parsedMinPrice * 100);
+      }
     }
-    if (filters.maxPrice !== undefined) {
-      nextFilters.maxPrice = filters.maxPrice;
+    if (filters.maxPrice !== undefined && filters.maxPrice.trim() !== '') {
+      const parsedMaxPrice = Number.parseFloat(filters.maxPrice);
+      if (!Number.isNaN(parsedMaxPrice)) {
+        nextFilters.maxPrice = Math.round(parsedMaxPrice * 100);
+      }
     }
     if (filters.currency) {
       nextFilters.currency = filters.currency;
@@ -75,10 +90,6 @@ const MarketPage = () => {
     const trimmedPublisher = filters.titlePublisher?.trim();
     if (trimmedPublisher) {
       nextFilters.titlePublisher = trimmedPublisher;
-    }
-    const trimmedTitle = filters.titleName?.trim();
-    if (trimmedTitle) {
-      nextFilters.titleName = trimmedTitle;
     }
     const trimmedIsbn = filters.titleIsbn?.trim();
     if (trimmedIsbn) {
@@ -89,31 +100,22 @@ const MarketPage = () => {
   }, [filters]);
 
   const hasCustomFilters = useMemo(() => {
-    if ((filters.limit ?? DEFAULT_MARKET_FILTERS.limit) !== DEFAULT_MARKET_FILTERS.limit) {
-      return true;
-    }
     if ((filters.order ?? DEFAULT_MARKET_FILTERS.order) !== DEFAULT_MARKET_FILTERS.order) {
-      return true;
-    }
-    if (filters.offset !== undefined) {
       return true;
     }
     if (filters.copyCondition) {
       return true;
     }
-    if (filters.minPrice !== undefined) {
+    if (filters.minPrice && filters.minPrice.trim() !== '') {
       return true;
     }
-    if (filters.maxPrice !== undefined) {
+    if (filters.maxPrice && filters.maxPrice.trim() !== '') {
       return true;
     }
     if (filters.currency) {
       return true;
     }
     if (filters.titlePublisher && filters.titlePublisher.trim() !== '') {
-      return true;
-    }
-    if (filters.titleName && filters.titleName.trim() !== '') {
       return true;
     }
     if (filters.titleIsbn && filters.titleIsbn.trim() !== '') {
@@ -141,7 +143,9 @@ const MarketPage = () => {
   }, [handleSearch, searchQuery]);
 
   const handleResetFilters = useCallback(() => {
-    setFilters({ ...DEFAULT_MARKET_FILTERS });
+    setFilters({
+      order: DEFAULT_MARKET_FILTERS.order,
+    });
   }, []);
 
   return (
@@ -174,34 +178,6 @@ const MarketPage = () => {
               </Stack>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextField
-                  label="Maximum results"
-                  type="number"
-                  value={filters.limit ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      limit: value === '' ? undefined : Number(value),
-                    }));
-                  }}
-                  inputProps={{ min: 1, max: 50, step: 1 }}
-                  fullWidth
-                />
-                <TextField
-                  label="Skip results"
-                  type="number"
-                  value={filters.offset ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      offset: value === '' ? undefined : Number(value),
-                    }));
-                  }}
-                  inputProps={{ min: 0, step: 1 }}
-                  fullWidth
-                />
-                <TextField
                   select
                   label="Order"
                   value={filters.order ?? DEFAULT_MARKET_FILTERS.order}
@@ -220,8 +196,6 @@ const MarketPage = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-              </Stack>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextField
                   select
                   label="Condition"
@@ -243,6 +217,48 @@ const MarketPage = () => {
                   ))}
                 </TextField>
                 <TextField
+                  label="ISBN"
+                  value={filters.titleIsbn ?? ''}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setFilters((previous) => ({
+                      ...previous,
+                      titleIsbn: value === '' ? undefined : value,
+                    }));
+                  }}
+                  fullWidth
+                />
+              </Stack>
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                <TextField
+                  label="Minimum price"
+                  type="number"
+                  value={filters.minPrice ?? ''}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setFilters((previous) => ({
+                      ...previous,
+                      minPrice: value === '' ? undefined : value,
+                    }));
+                  }}
+                  inputProps={{ min: 0, step: 0.01 }}
+                  fullWidth
+                />
+                <TextField
+                  label="Maximum price"
+                  type="number"
+                  value={filters.maxPrice ?? ''}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setFilters((previous) => ({
+                      ...previous,
+                      maxPrice: value === '' ? undefined : value,
+                    }));
+                  }}
+                  inputProps={{ min: 0, step: 0.01 }}
+                  fullWidth
+                />
+                <TextField
                   select
                   label="Currency"
                   value={filters.currency ?? ''}
@@ -262,64 +278,8 @@ const MarketPage = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-                <TextField
-                  label="ISBN"
-                  value={filters.titleIsbn ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      titleIsbn: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                />
               </Stack>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  label="Minimum price (cents)"
-                  type="number"
-                  value={filters.minPrice ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      minPrice: value === '' ? undefined : Number(value),
-                    }));
-                  }}
-                  inputProps={{ min: 0, step: 1 }}
-                  helperText="Provide values in cents"
-                  fullWidth
-                />
-                <TextField
-                  label="Maximum price (cents)"
-                  type="number"
-                  value={filters.maxPrice ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      maxPrice: value === '' ? undefined : Number(value),
-                    }));
-                  }}
-                  inputProps={{ min: 0, step: 1 }}
-                  helperText="Provide values in cents"
-                  fullWidth
-                />
-              </Stack>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <TextField
-                  label="Title name"
-                  value={filters.titleName ?? ''}
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    setFilters((previous) => ({
-                      ...previous,
-                      titleName: value === '' ? undefined : value,
-                    }));
-                  }}
-                  fullWidth
-                />
                 <TextField
                   label="Publisher"
                   value={filters.titlePublisher ?? ''}
