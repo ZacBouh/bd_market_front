@@ -106,7 +106,7 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
                   alt={copy?.coverImage?.imageName ?? copy.title.name}
                   sx={galleryCardStyles.media}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{copy.title.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     by {copy?.title?.artistsContributions?.[0].artist.fullName}

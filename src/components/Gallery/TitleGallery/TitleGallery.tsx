@@ -125,7 +125,7 @@ const TitleGallery = (props : TitleGalleryProps) => {
                   alt={title?.coverImage?.imageName ?? title.name}
                   sx={galleryCardStyles.media}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{title.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     by {getContributorsLabel(title?.artistsContributions)}

@@ -80,7 +80,7 @@ const ArtistGallery = ({ artists }: ArtistGalleryProps) => {
                     backgroundColor: artist?.coverImage?.url ? undefined : 'grey.100',
                   }}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{getArtistFullName(artist)}</Typography>
                   {artist.skills?.sort().map(skill => (
                     <Typography key={skill}  variant="body2" color="text.secondary">

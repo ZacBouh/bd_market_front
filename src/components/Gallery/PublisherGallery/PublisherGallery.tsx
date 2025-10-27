@@ -69,7 +69,7 @@ const PublisherGallery = (props : PublisherGalleryProps) => {
                   alt={publisher?.coverImage?.imageName ?? publisher.name}
                   sx={galleryCardStyles.media}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{publisher.name}</Typography>
                 </CardContent>
               </CardActionArea>

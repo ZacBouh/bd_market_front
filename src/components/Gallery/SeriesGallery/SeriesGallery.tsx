@@ -66,7 +66,7 @@ const SeriesGallery = ({ series }: { series: CreatedSeries[] }) => {
                     backgroundColor: item.coverImage?.url ? undefined : 'grey.100',
                   }}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{item.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Publisher: {item.publisher?.name ?? 'Unknown'}

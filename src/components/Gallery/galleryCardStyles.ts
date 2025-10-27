@@ -4,6 +4,7 @@ type GalleryCardStyles = {
   card: SxProps<Theme>;
   actionArea: SxProps<Theme>;
   media: SxProps<Theme>;
+  content: SxProps<Theme>;
 };
 
 const cardStyles: GalleryCardStyles['card'] = {
@@ -32,10 +33,20 @@ const mediaStyles: GalleryCardStyles['media'] = {
   flexShrink: 0,
 };
 
+const contentStyles: GalleryCardStyles['content'] = {
+  flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  gap: 1,
+  minHeight: 120,
+};
+
 export const galleryCardStyles: GalleryCardStyles = {
   card: cardStyles,
   actionArea: actionAreaStyles,
   media: mediaStyles,
+  content: contentStyles,
 };
 
 export default galleryCardStyles;

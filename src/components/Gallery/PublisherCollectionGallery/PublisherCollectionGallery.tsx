@@ -64,7 +64,7 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
                     backgroundColor: collection.coverImage?.url ? undefined : 'grey.100',
                   }}
                 />
-                <CardContent>
+                <CardContent sx={galleryCardStyles.content}>
                   <Typography variant="h6">{collection.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
                     Publisher: {collection.publisher?.name ?? 'Unknown'}
