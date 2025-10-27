@@ -21,6 +21,7 @@ import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 import { onGoingStatusLabel, type SupportedOnGoingStatus } from '@/types/enums/onGoingStatus';
 import { getImageUrl } from '@/utils/image';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 const SeriesGallery = ({ series }: { series: CreatedSeries[] }) => {
   const notifications = useNotifications();
@@ -54,23 +55,16 @@ const SeriesGallery = ({ series }: { series: CreatedSeries[] }) => {
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
         {series.map((item) => (
           <Grid2 key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <Card
-              sx={{
-                height: '100%',
-                borderRadius: 2,
-                transition: 'transform 0.2s, box-shadow 0.3s',
-                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1 }}>
+            <Card sx={galleryCardStyles.card}>
+              <CardActionArea sx={galleryCardStyles.actionArea}>
                 <CardMedia
                   component="img"
-                  height="300"
                   image={getImageUrl(item.coverImage?.url)}
                   alt={item.coverImage?.imageName ?? item.name}
-                  sx={{ backgroundColor: item.coverImage?.url ? undefined : 'grey.100' }}
+                  sx={{
+                    ...galleryCardStyles.media,
+                    backgroundColor: item.coverImage?.url ? undefined : 'grey.100',
+                  }}
                 />
                 <CardContent>
                   <Typography variant="h6">{item.name}</Typography>

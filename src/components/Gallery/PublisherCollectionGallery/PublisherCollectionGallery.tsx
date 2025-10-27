@@ -19,6 +19,7 @@ import EditPublisherCollectionModal from '@/components/Forms/AddPublisherCollect
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 import { getImageUrl } from '@/utils/image';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 const PublisherCollectionGallery = ({ collections }: { collections: CreatedPublisherCollection[] }) => {
   const notifications = useNotifications();
@@ -52,26 +53,14 @@ const PublisherCollectionGallery = ({ collections }: { collections: CreatedPubli
       <Grid2 container spacing={{ xs: 2, sm: 3, md: 4 }}>
         {collections.map((collection) => (
           <Grid2 key={collection.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <Card
-              sx={{
-                height: '100%',
-                width: '100%',
-                borderRadius: 2,
-                transition: 'transform 0.2s, box-shadow 0.3s',
-                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1 }}>
+            <Card sx={{ ...galleryCardStyles.card, width: '100%' }}>
+              <CardActionArea sx={galleryCardStyles.actionArea}>
                 <CardMedia
                   component="img"
-                  height="300"
                   image={getImageUrl(collection.coverImage?.url)}
                   alt={collection.coverImage?.imageName ?? collection.name}
                   sx={{
-                    width: '100%',
-                    objectFit: 'cover',
+                    ...galleryCardStyles.media,
                     backgroundColor: collection.coverImage?.url ? undefined : 'grey.100',
                   }}
                 />

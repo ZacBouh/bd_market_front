@@ -20,6 +20,7 @@ import { convertPriceToApi, formatCurrencyAmount } from '@/utils/price';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 import { getImageUrl } from '@/utils/image';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 interface CopyGalleryProps {
   copies: CreatedCopy[];
@@ -97,22 +98,13 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
 
           return (
             <Grid2 key={copy.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <Card
-              sx={{
-                height: '100%',
-                borderRadius: 2,
-                transition: 'transform 0.2s, box-shadow 0.3s',
-                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1 }}>
+              <Card sx={galleryCardStyles.card}>
+                <CardActionArea sx={galleryCardStyles.actionArea}>
                 <CardMedia
                   component="img"
-                  height="300"
                   image={getImageUrl(copy?.coverImage?.url)}
                   alt={copy?.coverImage?.imageName ?? copy.title.name}
+                  sx={galleryCardStyles.media}
                 />
                 <CardContent>
                   <Typography variant="h6">{copy.title.name}</Typography>
@@ -120,7 +112,7 @@ const CopyGallery = ({ copies }: CopyGalleryProps) => {
                     by {copy?.title?.artistsContributions?.[0].artist.fullName}
                   </Typography>
                 </CardContent>
-              </CardActionArea>
+                </CardActionArea>
               <CardActions sx={{ mt: 'auto', display: 'flex', justifyContent: 'space-between' }}>
                 <Box>
                   {priceLabel && (

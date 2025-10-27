@@ -19,6 +19,7 @@ import { getTitles, removeTitle } from '@/backend/api/title';
 import EditTitleModal from '@/components/Forms/TitleForm/EditTitleModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 type TitleGalleryProps = {
     titles: CreatedTitle[]
@@ -113,22 +114,16 @@ const TitleGallery = (props : TitleGalleryProps) => {
             key={title.id}
             size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
           >
-            <Card
-              sx={{
-                height: '100%',
-                borderRadius: 2,
-                transition: 'transform 0.2s, box-shadow 0.3s',
-                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1 }} onClick={() => props.onTitleClick && props.onTitleClick(title) } >
+            <Card sx={galleryCardStyles.card}>
+              <CardActionArea
+                sx={galleryCardStyles.actionArea}
+                onClick={() => props.onTitleClick && props.onTitleClick(title) }
+              >
                 <CardMedia
                   component="img"
-                  height="300"
                   image={getImageUrl(title?.coverImage?.url)}
                   alt={title?.coverImage?.imageName ?? title.name}
+                  sx={galleryCardStyles.media}
                 />
                 <CardContent>
                   <Typography variant="h6">{title.name}</Typography>

@@ -12,6 +12,7 @@ import { shoppingCartAtom } from '@/store/shoppingCart';
 import { useAtom } from 'jotai';
 import { formatCurrencyAmount } from '@/utils/price';
 import { getImageUrl } from '@/utils/image';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 export type MarketGalleryProps = {
     copies : CreatedCopy[]
@@ -28,22 +29,13 @@ const MarketGallery = ({ copies }: MarketGalleryProps) => {
 
           return (
             <Grid2 key={copy.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-              <Card
-                sx={{
-                  height: '100%',
-                  borderRadius: 2,
-                  transition: 'transform 0.2s, box-shadow 0.3s',
-                  '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <CardActionArea sx={{ flexGrow: 1 }}>
+              <Card sx={galleryCardStyles.card}>
+                <CardActionArea sx={galleryCardStyles.actionArea}>
                   <CardMedia
                     component="img"
-                    height="300"
                     image={getImageUrl(copy?.coverImage?.url)}
                     alt={copy?.coverImage?.imageName ?? copy.title.name}
+                    sx={galleryCardStyles.media}
                   />
                   <CardContent>
                     <Typography variant="h6">{copy.title.name}</Typography>

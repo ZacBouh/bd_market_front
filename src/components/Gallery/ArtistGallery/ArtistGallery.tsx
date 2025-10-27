@@ -19,6 +19,7 @@ import EditArtistModal from '@/components/Forms/ArtistForm/EditArtistModal';
 import { useUser } from '@/hooks/useUser';
 import { USER_ROLES } from '@/types/enums/UserRole';
 import { getImageUrl } from '@/utils/image';
+import galleryCardStyles from '@/components/Gallery/galleryCardStyles';
 
 type ArtistGalleryProps = {
     artists: CreatedArtist[]
@@ -68,23 +69,16 @@ const ArtistGallery = ({ artists }: ArtistGalleryProps) => {
             key={artist.id}
             size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
           >
-            <Card
-              sx={{
-                height: '100%',
-                borderRadius: 2,
-                transition: 'transform 0.2s, box-shadow 0.3s',
-                '&:hover': { transform: 'scale(1.03)', boxShadow: 6 },
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <CardActionArea sx={{ flexGrow: 1 }}>
+            <Card sx={galleryCardStyles.card}>
+              <CardActionArea sx={galleryCardStyles.actionArea}>
                 <CardMedia
                   component="img"
-                  height="300"
                   image={getImageUrl(artist?.coverImage?.url)}
                   alt={artist?.coverImage?.imageName ?? getArtistFullName(artist)}
-                  sx={{ backgroundColor: artist?.coverImage?.url ? undefined : 'grey.100' }}
+                  sx={{
+                    ...galleryCardStyles.media,
+                    backgroundColor: artist?.coverImage?.url ? undefined : 'grey.100',
+                  }}
                 />
                 <CardContent>
                   <Typography variant="h6">{getArtistFullName(artist)}</Typography>
