@@ -45,6 +45,19 @@ type RemoveCopyOptions = {
     hardDelete?: boolean
 }
 
+export type GetCopiesForSaleParams = {
+    limit?: number
+    offset?: number
+    copyCondition?: CopyCondition
+    minPrice?: number
+    maxPrice?: number
+    currency?: string
+    titlePublisher?: string
+    titleName?: string
+    titleIsbn?: string
+    order?: 'ASC' | 'DESC'
+}
+
 const removeCopy = async (
     copyId : CreatedCopy['id'],
     options?: RemoveCopyOptions,
@@ -94,4 +107,18 @@ const searchCopy = ( params: SearchCopyParams, callback?: (copies?: CreatedCopy[
     return () => controller.abort()
 }
 
-export {createCopy, getCopies, removeCopy, updateCopy, searchCopy}
+const getCopiesForSale = (params?: GetCopiesForSaleParams, callback?: (copies?: CreatedCopy[]) => unknown) => {
+    const controller = new AbortController()
+    api.get<CopyWithRawPrices[]>('/copy/for-sale', {
+        params,
+        signal: controller.signal,
+    })
+        .then((result) => {
+            if (callback) {
+                callback(result.data.map(normalizeCopy))
+            }
+        })
+    return () => controller.abort()
+}
+
+export {createCopy, getCopies, removeCopy, updateCopy, searchCopy, getCopiesForSale}
