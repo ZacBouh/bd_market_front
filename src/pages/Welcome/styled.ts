@@ -1,5 +1,5 @@
 import { Grid, Stack, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 
 const HeroSection = styled('section')(({ theme }) => ({
   position: 'relative',
@@ -7,7 +7,7 @@ const HeroSection = styled('section')(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
   backgroundImage: `linear-gradient(135deg, rgba(19, 24, 40, 0.9), rgba(19, 24, 40, 0.6))`,
   backgroundRepeat: 'no-repeat',
-  color: theme.palette.primary.contrastText,
+  color: alpha(theme.palette.common.white, 0.92),
 }));
 
 const HeroLayout = styled(Grid)(({ theme }) => ({
@@ -22,6 +22,18 @@ const HeroContent = styled(Stack)(({ theme }) => ({
     textAlign: 'center',
     alignItems: 'center',
   },
+  '& .MuiTypography-root': {
+    color: alpha(theme.palette.common.white, 0.92),
+  },
+  '& .MuiTypography-body1': {
+    color: alpha(theme.palette.common.white, 0.85),
+  },
+  '& .MuiTypography-body2': {
+    color: alpha(theme.palette.common.white, 0.75),
+  },
+  '& .MuiTypography-overline': {
+    color: alpha(theme.palette.common.white, 0.7),
+  },
 }));
 
 const HeroTagline = styled('div')(({ theme }) => ({
@@ -30,6 +42,7 @@ const HeroTagline = styled('div')(({ theme }) => ({
   gap: theme.spacing(1.5),
   fontWeight: 500,
   fontSize: theme.typography.body1.fontSize,
+  color: alpha(theme.palette.common.white, 0.75),
   [theme.breakpoints.down('sm')]: {
     justifyContent: 'center',
     textAlign: 'center',
@@ -51,46 +64,6 @@ const HeroActions = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
   [theme.breakpoints.down('sm')]: {
     justifyContent: 'center',
-  },
-}));
-
-const HeroArtwork = styled('div')(({ theme }) => ({
-  position: 'relative',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: 320,
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: theme.spacing(3),
-    borderRadius: theme.shape.borderRadius * 3,
-    background: `radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 60%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.15), transparent 55%)`,
-  },
-  [theme.breakpoints.down('md')]: {
-    marginTop: theme.spacing(6),
-  },
-}));
-
-const HeroArtworkPrimary = styled('img')(({ theme }) => ({
-  position: 'relative',
-  zIndex: 1,
-  width: 'min(100%, 340px)',
-  borderRadius: theme.shape.borderRadius * 2.5,
-  boxShadow: theme.shadows[18],
-}));
-
-const HeroArtworkSecondary = styled('img')(({ theme }) => ({
-  position: 'absolute',
-  right: theme.spacing(-2),
-  bottom: theme.spacing(-4),
-  width: 'min(45%, 180px)',
-  borderRadius: theme.shape.borderRadius * 2,
-  boxShadow: theme.shadows[12],
-  transform: 'rotate(-6deg)',
-  [theme.breakpoints.down('sm')]: {
-    right: theme.spacing(2),
-    bottom: theme.spacing(-2),
   },
 }));
 
@@ -146,9 +119,6 @@ export {
   FAQList,
   FinalCtaSection,
   HeroActions,
-  HeroArtwork,
-  HeroArtworkPrimary,
-  HeroArtworkSecondary,
   HeroContent,
   HeroSection,
   HeroTagline,

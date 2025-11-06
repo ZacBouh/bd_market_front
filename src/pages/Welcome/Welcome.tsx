@@ -6,9 +6,6 @@ import {
   FAQList,
   FinalCtaSection,
   HeroActions,
-  HeroArtwork,
-  HeroArtworkPrimary,
-  HeroArtworkSecondary,
   HeroContent,
   HeroLayout,
   HeroSection,
@@ -93,7 +90,7 @@ function Welcome() {
         <HeroSection>
           <Container maxWidth="lg">
             <HeroLayout container spacing={{ xs: 4, md: 6 }}>
-              <Grid item xs={12} md={7}>
+              <Grid item xs={12} md={8} lg={7}>
                 <HeroContent>
                   <Stack spacing={2}>
                     <Typography component="p" variant="overline" sx={{ letterSpacing: 2 }}>
@@ -128,12 +125,6 @@ function Welcome() {
                     </Button>
                   </Typography>
                 </HeroContent>
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <HeroArtwork>
-                  <HeroArtworkPrimary src="/cover.png" alt="Comic Hood collection interface preview" />
-                  <HeroArtworkSecondary src="/bundle.png" alt="BD Market marketplace preview collage" />
-                </HeroArtwork>
               </Grid>
             </HeroLayout>
           </Container>
