@@ -1,2 +1,4 @@
+Sitemap: https://comic-hood.api.zacharie.cloud/sitemap.xml
 User-agent: *
-Allow: /
+Disallow: /login
+Disallow: /register
