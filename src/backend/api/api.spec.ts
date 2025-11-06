@@ -39,7 +39,7 @@ describe('api unauthorized interceptor', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     routerNavigateForTest.setNavigate(vi.fn());
-    window.history.replaceState({}, '', '/shopping-cart?coupon=SPRING');
+    window.history.replaceState({}, '', '/shopping-cart?success=true');
   });
 
   afterEach(() => {
@@ -57,8 +57,8 @@ describe('api unauthorized interceptor', () => {
 
     await expect(interceptor(error)).rejects.toBe(error);
 
-    expect(window.sessionStorage.getItem('redirectAfterLogin')).toBe('/shopping-cart?coupon=SPRING');
-    expect(setIntendedToSpy).toHaveBeenCalledWith('/shopping-cart?coupon=SPRING');
+    expect(window.sessionStorage.getItem('redirectAfterLogin')).toBe('/shopping-cart?success=true');
+    expect(setIntendedToSpy).toHaveBeenCalledWith('/shopping-cart?success=true');
     expect(logout).toHaveBeenCalledTimes(1);
 
     expect(navigateSpy).toHaveBeenCalledWith('/login');
