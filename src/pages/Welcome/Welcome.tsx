@@ -14,6 +14,7 @@ import {
   SectionTitle,
   TextList,
   TextListItem,
+  TextSection,
 } from './styled';
 
 function Welcome() {
@@ -125,7 +126,7 @@ function Welcome() {
               </HeroTagline>
               <HeroActions>
                 <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
-                  Create your account
+                  Create your account, it's free!
                 </Button>
                 <Typography variant="body1">Free • ~1 minute • No card needed</Typography>
               </HeroActions>
@@ -138,25 +139,6 @@ function Welcome() {
             </HeroContent>
           </Container>
         </HeroSection>
-
-        <Section>
-          <Container maxWidth="md">
-            <SectionTitle component="h2" variant="h4">
-              Why sign up first?
-            </SectionTitle>
-            <TextList>
-              <TextListItem>
-                <strong>Private by default</strong> — your library, wishlists, and prices are member-only.
-              </TextListItem>
-              <TextListItem>
-                <strong>Less spam, more trust</strong> — verified accounts only.
-              </TextListItem>
-              <TextListItem>
-                <strong>One profile</strong> for collection, selling, and purchases.
-              </TextListItem>
-            </TextList>
-          </Container>
-        </Section>
 
         <Section>
           <Container maxWidth="lg">
@@ -194,6 +176,22 @@ function Welcome() {
             </Grid>
           </Container>
         </Section>
+
+        <TextSection>
+          <Container maxWidth="sm">
+            <Stack alignItems="center" spacing={2} textAlign="center">
+              <Typography component="h2" variant="h5" fontWeight={700}>
+                Start your private hub today
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Sign up to unlock the full library manager, wishlist alerts, and ready-to-go marketplace tools.
+              </Typography>
+              <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
+                Create your account, it's free!
+              </Button>
+            </Stack>
+          </Container>
+        </TextSection>
 
         <Section>
           <Container maxWidth="md">
@@ -270,7 +268,7 @@ function Welcome() {
                 Comic Hood keeps your collection front and center, with marketplace tools ready whenever you are.
               </Typography>
               <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
-                Create your account — free, fast, and collector-friendly
+                Create your account, it's free!
               </Button>
             </Stack>
           </Container>

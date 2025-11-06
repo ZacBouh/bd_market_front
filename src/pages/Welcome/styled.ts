@@ -2,8 +2,13 @@ import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const HeroSection = styled('section')(({ theme }) => ({
+  position: 'relative',
   padding: theme.spacing(12, 0, 10),
-  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+  backgroundColor: theme.palette.primary.dark,
+  backgroundImage: `linear-gradient(135deg, rgba(19, 24, 40, 0.85), rgba(19, 24, 40, 0.45)), url('/demo-dark.png')`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
   color: theme.palette.primary.contrastText,
 }));
 
@@ -48,6 +53,10 @@ const HeroActions = styled(Stack)(({ theme }) => ({
 
 const Section = styled('section')(({ theme }) => ({
   padding: theme.spacing(8, 0),
+}));
+
+const TextSection = styled(Section)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -100,6 +109,7 @@ export {
   Section,
   SectionSubtitle,
   SectionTitle,
+  TextSection,
   TextList,
   TextListItem,
 };
