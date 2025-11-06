@@ -6,7 +6,11 @@ import {
   FAQList,
   FinalCtaSection,
   HeroActions,
+  HeroArtwork,
+  HeroArtworkPrimary,
+  HeroArtworkSecondary,
   HeroContent,
+  HeroLayout,
   HeroSection,
   HeroTagline,
   Section,
@@ -23,82 +27,62 @@ function Welcome() {
   const handleCreateAccount = () => navigate('/subscribe');
   const handleLogin = () => navigate('/login');
 
-  const heroHighlights = ['Edition-first catalog', 'AI Scan', 'Secure payments'];
+  const heroHighlights = ['Library workspace', 'Marketplace listings', 'Cover scanning'];
 
   const collectionFeatures = [
     {
-      title: 'Personal Library',
-      description: 'catalog by series, publisher, language, ISBN.',
+      title: 'Personal library',
+      description: 'Search the catalog and keep every issue organized in one place.',
     },
     {
-      title: 'AI Scan',
-      description: 'snap a cover; we suggest edition metadata you can confirm or tweak.',
+      title: 'Cover scanning',
+      description: 'Upload front, back, and spine photos to pre-fill title details.',
     },
     {
-      title: 'Condition & Notes',
-      description: 'simple scale (Mint → Acceptable) plus your remarks.',
+      title: 'Condition & pricing',
+      description: 'Track each copy’s grade, asking price, and purchase cost.',
     },
     {
-      title: 'Duplicates & Sets',
-      description: 'spot doubles, group variants and runs.',
+      title: 'Cover gallery',
+      description: 'Browse crisp cover art for the books you already own.',
     },
     {
-      title: 'Wishlist & Alerts',
-      description: 'track what you’re hunting; get notified when copies appear.',
-    },
-    {
-      title: 'Valuation Glimpse',
-      description: 'see recent floor/median prices for editions you own.',
-    },
-    {
-      title: 'Import/Export',
-      description: 'CSV in & out so your data never feels locked in.',
-    },
-    {
-      title: 'Privacy Controls',
-      description: 'keep everything private or share a read-only view—your call.',
+      title: 'Edit & manage',
+      description: 'Update details, replace covers, or remove copies whenever you need.',
     },
   ];
 
   const marketplaceFeatures = [
     {
-      title: 'Edition-first search',
-      description: 'land on the exact edition, then compare copies.',
+      title: 'Search the market',
+      description: 'Browse copies listed by the community with live filters.',
+    },
+    {
+      title: 'Filter by condition',
+      description: 'Zero-in on the grades and sort order that matter most to you.',
+    },
+    {
+      title: 'Price ranges & currency',
+      description: 'Set min and max price targets and choose the currency you prefer.',
     },
     {
       title: 'List from your library',
-      description: 'pick a book you own, set condition & price, publish.',
-    },
-    {
-      title: 'Secure checkout (Stripe)',
-      description: 'payment details never touch our servers.',
-    },
-    {
-      title: 'Funds on hold',
-      description: 'until both sides confirm the exchange.',
-    },
-    {
-      title: 'Simple dispute path',
-      description: 'if something doesn’t match.',
+      description: 'Publish a copy for sale directly from the collection view.',
     },
   ];
 
   const faqs = [
     {
-      question: 'Can I use Comic Hood just for collection tracking?',
-      answer: 'Yes. Catalog, wishlist, and alerts work even if you never sell.',
+      question: 'How do I add comics to my library?',
+      answer: 'Search for an existing title or run a cover scan, then fill in condition, price, and photos.',
     },
     {
-      question: 'Is my collection public?',
-      answer: 'No. It’s private by default. You can share a read-only view if you choose.',
+      question: 'Do I have to sell to use Comic Hood?',
+      answer: 'No. Keep a private library and only list copies when it makes sense for you.',
     },
     {
-      question: 'Do I need an ISBN to add a book?',
-      answer: 'No. Title/series/publisher works, and AI Scan helps pre-fill details.',
-    },
-    {
-      question: 'When do sellers get paid?',
-      answer: 'After buyer and seller confirm the exchange. You’ll see status updates in your dashboard.',
+      question: 'Can I list a copy for sale later?',
+      answer: 'Yes. Toggle the “Put for Sale” action on any copy in your library when you’re ready.',
     },
   ];
 
@@ -108,35 +92,50 @@ function Welcome() {
       <Box component="main">
         <HeroSection>
           <Container maxWidth="lg">
-            <HeroContent>
-              <Stack spacing={2}>
-                <Typography component="p" variant="overline" sx={{ letterSpacing: 2 }}>
-                  Manage your collection. Buy & sell when you want.
-                </Typography>
-                <Typography component="h1" variant="h2" fontWeight={800}>
-                  Comic Hood is your collection manager + marketplace for comics, manga & BD.
-                </Typography>
-              </Stack>
-              <HeroTagline>
-                {heroHighlights.map((text) => (
-                  <Typography component="span" key={text} variant="body1">
-                    {text}
+            <HeroLayout container spacing={{ xs: 4, md: 6 }}>
+              <Grid item xs={12} md={7}>
+                <HeroContent>
+                  <Stack spacing={2}>
+                    <Typography component="p" variant="overline" sx={{ letterSpacing: 2 }}>
+                      Manage your collection. Buy & sell when you want.
+                    </Typography>
+                    <Typography component="h1" variant="h2" fontWeight={800}>
+                      Comic Hood is your collection manager + marketplace for comics, manga & BD.
+                    </Typography>
+                  </Stack>
+                  <HeroTagline>
+                    {heroHighlights.map((text) => (
+                      <Typography component="span" key={text} variant="body1">
+                        {text}
+                      </Typography>
+                    ))}
+                  </HeroTagline>
+                  <HeroActions>
+                    <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
+                      Create your account, it's free!
+                    </Button>
+                    <Typography variant="body1">Free • ~1 minute • No card needed</Typography>
+                  </HeroActions>
+                  <Typography variant="body2">
+                    Already a member?{' '}
+                    <Button
+                      color="inherit"
+                      onClick={handleLogin}
+                      size="small"
+                      sx={{ textTransform: 'none', padding: 0 }}
+                    >
+                      <strong>Log in</strong>
+                    </Button>
                   </Typography>
-                ))}
-              </HeroTagline>
-              <HeroActions>
-                <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
-                  Create your account, it's free!
-                </Button>
-                <Typography variant="body1">Free • ~1 minute • No card needed</Typography>
-              </HeroActions>
-              <Typography variant="body2">
-                Already a member?{' '}
-                <Button color="inherit" onClick={handleLogin} size="small" sx={{ textTransform: 'none', padding: 0 }}>
-                  <strong>Log in</strong>
-                </Button>
-              </Typography>
-            </HeroContent>
+                </HeroContent>
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <HeroArtwork>
+                  <HeroArtworkPrimary src="/cover.png" alt="Comic Hood collection interface preview" />
+                  <HeroArtworkSecondary src="/bundle.png" alt="BD Market marketplace preview collage" />
+                </HeroArtwork>
+              </Grid>
+            </HeroLayout>
           </Container>
         </HeroSection>
 
@@ -184,7 +183,7 @@ function Welcome() {
                 Start your private hub today
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Sign up to unlock the full library manager, wishlist alerts, and ready-to-go marketplace tools.
+                Sign up to unlock the full library workspace, cover scanning, and integrated marketplace tools.
               </Typography>
               <Button color="secondary" onClick={handleCreateAccount} size="large" variant="contained">
                 Create your account, it's free!
@@ -200,16 +199,16 @@ function Welcome() {
             </SectionTitle>
             <Stack divider={<Divider flexItem />} spacing={3}>
               <Typography variant="body1">
-                <strong>1) Create your account</strong> — unlock library, wishlist, and alerts.
+                <strong>1) Create your account</strong> — unlock the library workspace and scanning tools.
               </Typography>
               <Typography variant="body1">
-                <strong>2) Add books</strong> — import CSV or use AI Scan to speed up cataloging.
+                <strong>2) Add books</strong> — search existing titles or scan covers to pre-fill the details.
               </Typography>
               <Typography variant="body1">
-                <strong>3) Track & enjoy</strong> — manage duplicates, set goals, get edition alerts.
+                <strong>3) Track & enjoy</strong> — update condition, prices, and cover art as your collection grows.
               </Typography>
               <Typography variant="body1">
-                <strong>4) Sell when ready</strong> — list directly from your collection, get paid after confirmation.
+                <strong>4) Sell when ready</strong> — publish listings straight from the copies you already track.
               </Typography>
             </Stack>
           </Container>
@@ -222,19 +221,19 @@ function Welcome() {
             </SectionTitle>
             <TextList>
               <TextListItem>
-                <strong>Smart Search</strong> with typo tolerance & ISBN support.
+                <strong>Unified dashboard</strong> — add copies, upload covers, and manage sale status from one place.
               </TextListItem>
               <TextListItem>
-                <strong>Clear Conditions</strong> explained in plain language.
+                <strong>Cover scanning</strong> — analyze your photos to jump-start title and copy details.
               </TextListItem>
               <TextListItem>
-                <strong>Photo-first listings</strong> that show real wear.
+                <strong>Marketplace filters</strong> — sort by newest, narrow by grade, and set price ranges.
               </TextListItem>
               <TextListItem>
-                <strong>Helpful notifications</strong> that say what happened and what’s next.
+                <strong>Editable copies</strong> — adjust pricing, replace covers, or remove items in seconds.
               </TextListItem>
               <TextListItem>
-                <strong>Minimal data</strong> — only what’s needed to buy/sell; EXIF cleanup on uploads.
+                <strong>Collection gallery</strong> — browse your books through rich cover cards.
               </TextListItem>
             </TextList>
           </Container>

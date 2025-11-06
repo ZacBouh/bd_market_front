@@ -1,15 +1,18 @@
-import { Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const HeroSection = styled('section')(({ theme }) => ({
   position: 'relative',
   padding: theme.spacing(12, 0, 10),
   backgroundColor: theme.palette.primary.dark,
-  backgroundImage: `linear-gradient(135deg, rgba(19, 24, 40, 0.85), rgba(19, 24, 40, 0.45)), url('/demo-dark.png')`,
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
+  backgroundImage: `linear-gradient(135deg, rgba(19, 24, 40, 0.9), rgba(19, 24, 40, 0.6))`,
   backgroundRepeat: 'no-repeat',
   color: theme.palette.primary.contrastText,
+}));
+
+const HeroLayout = styled(Grid)(({ theme }) => ({
+  alignItems: 'center',
+  gap: theme.spacing(8),
 }));
 
 const HeroContent = styled(Stack)(({ theme }) => ({
@@ -48,6 +51,46 @@ const HeroActions = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(2),
   [theme.breakpoints.down('sm')]: {
     justifyContent: 'center',
+  },
+}));
+
+const HeroArtwork = styled('div')(({ theme }) => ({
+  position: 'relative',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: 320,
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: theme.spacing(3),
+    borderRadius: theme.shape.borderRadius * 3,
+    background: `radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 60%), radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.15), transparent 55%)`,
+  },
+  [theme.breakpoints.down('md')]: {
+    marginTop: theme.spacing(6),
+  },
+}));
+
+const HeroArtworkPrimary = styled('img')(({ theme }) => ({
+  position: 'relative',
+  zIndex: 1,
+  width: 'min(100%, 340px)',
+  borderRadius: theme.shape.borderRadius * 2.5,
+  boxShadow: theme.shadows[18],
+}));
+
+const HeroArtworkSecondary = styled('img')(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(-2),
+  bottom: theme.spacing(-4),
+  width: 'min(45%, 180px)',
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[12],
+  transform: 'rotate(-6deg)',
+  [theme.breakpoints.down('sm')]: {
+    right: theme.spacing(2),
+    bottom: theme.spacing(-2),
   },
 }));
 
@@ -103,9 +146,13 @@ export {
   FAQList,
   FinalCtaSection,
   HeroActions,
+  HeroArtwork,
+  HeroArtworkPrimary,
+  HeroArtworkSecondary,
   HeroContent,
   HeroSection,
   HeroTagline,
+  HeroLayout,
   Section,
   SectionSubtitle,
   SectionTitle,
