@@ -1,4 +1,6 @@
-import { Grid, Stack, Typography } from '@mui/material';
+import { forwardRef } from 'react';
+
+import { Grid, Stack, Typography, type TypographyProps } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 
 const HeroSection = styled('section')(({ theme }) => ({
@@ -75,7 +77,11 @@ const TextSection = styled(Section)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
 }));
 
-const SectionTitle = styled(Typography)(({ theme }) => ({
+const SectionTitle = styled(
+  forwardRef<HTMLSpanElement, TypographyProps>(function SectionTitle(props, ref) {
+    return <Typography ref={ref} {...props} />;
+  }),
+)(({ theme }) => ({
   fontWeight: 700,
   marginBottom: theme.spacing(2),
 }));
