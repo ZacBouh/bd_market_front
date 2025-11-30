@@ -90,6 +90,7 @@ const SeriesAutocomplete = (props: SeriesAutocompleteProps) => {
         prePolutatedLanguage={state.value?.language}
         handleClose={() => setState((prev) => ({ ...prev, modalOpen: false }))}
         onSeriesCreated={(newSeries) => {
+          getSeries()
           const newState: SeriesAutocompleteState = {
             ...state,
             value: newSeries,

@@ -10,10 +10,11 @@ type PublisherCollectionAutocompleteProps =
 const PublisherCollectionAutocomplete = (props: PublisherCollectionAutocompleteProps) => {
     const [collections, setCollections] = useCollections()
     useEffect(() => {
-        getPublisherCollections((collections) => {
+        const abort = getPublisherCollections((collections) => {
             console.debug("Got the Collections ", collections)
             setCollections(collections)
         })
+        return abort
     }, [])
     const createOption : StandardAutocompleteProps<CreatedPublisherCollection>['createOption']  = {
         id: 0,
