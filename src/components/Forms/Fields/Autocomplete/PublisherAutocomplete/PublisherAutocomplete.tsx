@@ -110,6 +110,7 @@ const PublisherAutocomplete = (props: PublisherAutocompleteProps) => {
         prePopulatedName={prevInputValue}
         onPublisherCreated={(newPublisher) => {
           if (newPublisher) {
+            getPublishers()
             setInputValue(newPublisher.name)
             setValue(newPublisher)
             onChange && onChange(null, newPublisher, 'selectOption', { option: newPublisher })

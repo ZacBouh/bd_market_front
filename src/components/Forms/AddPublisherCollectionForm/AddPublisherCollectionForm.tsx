@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import FileInput from "../Fields/FileUpload/FileInput"
 import objectToFormData from "@/utils/formData"
-import { createPublisherCollection } from "@/backend/api/publisherCollection"
+import { createPublisherCollection, getPublisherCollections } from "@/backend/api/publisherCollection"
 import LanguageSelect from "../Fields/Select/LanguageSelect/LanguageSelect"
 import FormLayout, { FormLayoutSurface } from "../FormLayout/FormLayout"
 import FormSubmitAndResetButtons from "../Buttons/FormSubmitAndResetButtons"
@@ -16,10 +16,11 @@ export type AddPublisherCollectionFormProps = {
     onSubmit?: (formData: FormData, state: Partial<NewPublisherCollection>) => Promise<unknown> | unknown
     submitLabel?: string
     onCollectionCreated?: (response?: ApiResponse) => void
+    handleClose?: () => void
 }
 
 const AddPublisherCollectionForm = (props: AddPublisherCollectionFormProps) => {
-    const { prePopulatedInputs, surface = 'card', onSubmit, submitLabel, onCollectionCreated } = props
+    const { prePopulatedInputs, surface = 'card', onSubmit, submitLabel, onCollectionCreated, handleClose } = props
     const initialState = useMemo<Partial<NewPublisherCollection>>(() => ({
         name: prePopulatedInputs?.name ?? '',
         description: prePopulatedInputs?.description ?? '',
@@ -52,10 +53,12 @@ const AddPublisherCollectionForm = (props: AddPublisherCollectionFormProps) => {
         } else {
             const response = await createPublisherCollection(formData)
             onCollectionCreated && onCollectionCreated(response)
+            getPublisherCollections()
+            handleClose && handleClose()
             setCollection(initialState)
             setSelectedPublisher(prePopulatedInputs?.publisher)
         }
-    }, [collection, initialState, onCollectionCreated, onSubmit, prePopulatedInputs?.publisher])
+    }, [collection, handleClose, initialState, onCollectionCreated, onSubmit, prePopulatedInputs?.publisher])
 
     return <FormLayout
         surface={surface}
