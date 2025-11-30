@@ -7,10 +7,19 @@ type CopyWithRawPrices = Omit<CreatedCopy, 'price' | 'boughtForPrice'> & {
     boughtForPrice?: string | number | null,
 };
 
+type CopyDetailResponse = CopyWithRawPrices & {
+    uploadedImages?: UploadedImage[],
+};
+
 const normalizeCopy = (copy: CopyWithRawPrices): CreatedCopy => ({
     ...copy,
     price: convertPriceFromApi(copy.price),
     boughtForPrice: convertPriceFromApi(copy.boughtForPrice),
+});
+
+const normalizeCopyDetail = (copy: CopyDetailResponse): DetailedCopy => ({
+    ...normalizeCopy(copy),
+    uploadedImages: copy.uploadedImages,
 });
 
 const createCopy = (newCopy : FormData, callback?: (copy: CreatedCopy) => unknown) => {
@@ -121,4 +130,14 @@ const getCopiesForSale = (params?: GetCopiesForSaleParams, callback?: (copies?: 
     return () => controller.abort()
 }
 
-export {createCopy, getCopies, removeCopy, updateCopy, searchCopy, getCopiesForSale}
+const getCopyById = async (
+    copyId: number,
+    options?: { signal?: AbortSignal },
+) => {
+    const response = await api.get<CopyDetailResponse>(`/copy/${copyId}`, {
+        signal: options?.signal,
+    })
+    return normalizeCopyDetail(response.data)
+}
+
+export {createCopy, getCopies, removeCopy, updateCopy, searchCopy, getCopiesForSale, getCopyById}

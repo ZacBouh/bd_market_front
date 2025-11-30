@@ -20,3 +20,7 @@ type CreatedCopy = Omit<NewCopy, 'ownerId' | 'titleId'>  & {
     title: Partial<CreatedTitle>,
     coverImage: UploadedImage
 }
+
+type DetailedCopy = CreatedCopy & {
+    uploadedImages?: UploadedImage[],
+}

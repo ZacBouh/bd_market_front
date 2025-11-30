@@ -110,6 +110,11 @@ const routes: Routes = [
     isProtected: false
   },
   {
+    component: asyncComponentLoader(() => import('@/pages/CopyDetailsPage')),
+    path: '/copy/:copyId',
+    isProtected: true
+  },
+  {
     component: asyncComponentLoader(() => import('@/pages/NotFound')),
     path: '*',
   },
